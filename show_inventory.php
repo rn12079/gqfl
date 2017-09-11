@@ -344,7 +344,7 @@ function toggle_dtrange(){
 
           </form> 
           <table align="center">
-            <col width="10%"> <col width="10%"><col width="25%"><col width="15%"><col width="8%"><col width="8%"><col width="8%"><col width="8%"><col width="8%"><col width="10%">
+            <col width="8%"> <col width="8%"><col width="24%"><col width="10%"><col width="8%"><col width="8%"><col width="5%"><col width="8%"><col width="8%"><col width="10%">
             <tr>
               <td  class="top" >Date</td><td  class="top">Receiver</td><td  class="top">Product Name</td><td  class="top">Supplier</td><td  class="top">Product Type</td><td  class="top">Subtype</td><td class="top">Qty</td>
               <td  class="top">Amount</td><td  class="top">Invoice No.</td><td  class="top">Ref:</td></tr>
