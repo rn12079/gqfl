@@ -237,7 +237,7 @@ function toggle_dtrange(){
         Add New Products
       </div>
 
-      <div class="mcp" onclick="window.location='add_invent.html'">
+      <div class="mcp" onclick="window.location='add_invent.php'">
         Add Inventory Items
       </div>
 
