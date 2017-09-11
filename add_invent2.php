@@ -1,6 +1,7 @@
   
 <html>
 <head>
+<title> add Inventory Items </title>
   <meta charset="utf-8"> 
   <style type="text/css">
     p.info {
