@@ -437,7 +437,7 @@ function toggle_dtrange(){
                 while($row = $result->fetch_assoc()){
                   echo "<tr class='cells' onclick=\"window.location.href='".$url.$row["id"]."'\"><td>".$row["date"]."</td><td>".$row["receiver"]."</td><td>".$row["product_name"]."</td><td>".$row["supplier"]."</td><td>".$row["product_type"];
                   echo "</td><td>".$row["product_sub_type"]."</td><td class='number'>".number_format($row["cases"])."</td><td class='number'>".number_format($row["amount"],2,'.',',')."</td><td>".$row["invoice_ref"];
-                  echo "</td><td><a target='_blank' href='".$row["invoice_img_ref"]."'>".$row["invoice_img_ref"]."</td></tr>";
+                  echo "</td><td><a target='_blank' href='".$row["invoice_img_ref"]."'>".substr($row["invoice_img_ref"],7,strlen($row["invoice_img_ref"])-7)."</td></tr>";
                   $totalqty=$totalqty+$row["cases"];
                   $totalamount=$totalamount+$row["amount"];
                 }
