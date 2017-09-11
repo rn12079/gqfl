@@ -1,7 +1,5 @@
-  
 <html>
 <head>
-<title> add Inventory Items </title>
   <meta charset="utf-8"> 
   <style type="text/css">
     p.info {
@@ -127,7 +125,7 @@
 
 
     div.lp {
-      width:100%;
+      width:50%;
       //border-style: solid;
       padding: 10px;
       border-color: grey;
@@ -143,10 +141,6 @@
       overflow:hidden;
       text-align:center;
     }
-
-    #slist option{
-      width:100px;
-    }
   </style>
   <script type="text/javascript">
 
@@ -154,9 +148,10 @@
 /*
 Ajax block to get items for search tab
 */
-function ajaxsearch(myitem,filter,subfield){
+function ajaxsearch(myitem,filter){
   //var prod_code = document.getElementById("product1").value;
   var xhr;
+  
   if(window.XMLHttpRequest){
     xhr=new XMLHttpRequest();
   } 
@@ -184,18 +179,6 @@ function ajaxsearch(myitem,filter,subfield){
  if(myitem=="product_sub_type"){
   update="product_sub_type";
   var prod= document.getElementById("product").value;
-    if(subfield!==undefined)
-    {
-      
-        // check row index from <tr> tag .
-      var row = subfield.parentNode.parentNode.rowIndex;
-      //alert(subfield.parentNode.parentNode.nodeName);
-      
-      var table = document.getElementById("rec_items");
-      prod=table.rows[row].cells[1].children[0].value;
-       
-  }
-
   var type= document.getElementById("tlist").value;
   var supplier= document.getElementById("slist").value;
   data = "retrieve="+escape(myitem)+"&filter="+escape(prod)+"&supplier="+escape(supplier)+"&type="+escape(type);
@@ -210,7 +193,7 @@ function ajaxsearch(myitem,filter,subfield){
       if(xhr.status == 200) {
         
         if(myitem=="product_sub_type")
-          subfield.value =  xhr.responseText;
+          document.getElementById(update).value = xhr.responseText;
         else
          document.getElementById(update).innerHTML = xhr.responseText;
        
@@ -299,8 +282,6 @@ function validate_product(){
 
 
 function init(){
-  document.getElementById("count").innerHTML = 1;
-
   document.getElementById("mcp").style.display = 'none';
   ajaxsearch("product_type","");
   ajaxsearch("product_name","Food");
@@ -315,8 +296,7 @@ function pop_products(){
 function pop_subtype(){
   var filter=document.getElementById("tlist").value;
   ajaxsearch("product_name",filter);
-  
-
+  ajaxsearch("product_sub_type","");
 }
 
 
@@ -420,29 +400,6 @@ function ret_inv_items(retfields){
   
 }
 
-function newrow(){
-  var table = document.getElementById("rec_items");
-  var rowcount = table.rows.length;
-  
-  //alert(rowcount);
-
-  var row = table.insertRow(rowcount);
-  var colcount = table.rows[0].cells.length;
-
-  //alert(colcount);
-
-  for(var i =0 ; i < colcount ; i++) {
-    var newcell = row.insertCell(i);
-    if(i===0) 
-      newcell.innerHTML = rowcount;
-    else
-      newcell.innerHTML = table.rows[1].cells[i].innerHTML;
-    
-
-  }
-
-
-}
 
 
 </script>
@@ -473,75 +430,62 @@ function newrow(){
     <br>
 
     New Inventory Record 
-    <form action="add_inventory2.php" method="post" onsubmit="return validate_form()" enctype="multipart/form-data" style="font-size:8pt">
+    <form action="add_inventory.php" method="post" onsubmit="return validate_form()" enctype="multipart/form-data" style="font-size:8pt">
       <table border="1px" >
-       
         <tr>
           <td><label for="Receiving Date">Date </label></td><td>  <input type="date" name="t_date" id ="t_date"></td>
         </tr>
-      <tr>
-        <td><label for="Invoice_ref">Invoice Number </label> </td>
-        <td><input type="text" id="inv_num" name="inv_num" placeholder="e.g. INV-0101" onchange="ret_inv_item()"></td>
-      </tr>
-       <tr>
+        <tr>
           <td>
             <label for="Receiver">Received by </label> </td> 
             <td><select name="receiver" id="receiver">
-              <option value="Warehouse" selected>Warehouse</option>1
+              <option value="Warehouse" selected>Warehouse</option>
               <option value="Shehbaz">Shehbaz</option>
               <option value="Hydri">Hydri</option>
             </select>
           </td>
-        </tr> 
-       
+        </tr>
         <tr>
-          <td><label for="Supplier">Supplier </label> </td>
-          <td><select name="supplier" id="slist" placeholder="Select Supplier" style="width: 200px" onclick="pop_subtype()" >
-          </select>
-        </td>
-      </tr>
-      <tr>
           <td><label for="Product Type">Product Type </label> </td>
           <td><select name="product_type" id="tlist" placeholder="Select Supplier" align="right" style="width: 100px" onchange="pop_products()">
 
           </select> </td>
         </tr>
-        </table>
-        <br>
-      <table border="1px" id="rec_items">
-      <tr>
-          <td> serial no. </td><td>Product Name</td><td>Product Sub type</td><td>Cases</td><td>Net Amount</td><td>Tax Amount</td>
-          <td> Gross Amount </td> </tr>
-
         <tr>
-          <td>
-            <div id="count"></div>
-
-          </td>
-            <td><input list="plist" placeholder="Product" id="product" name="product[]" onchange="validate_product()" autocomplete="off" >
+          <td>    
+            <label for="Product Name">Product Name </label> </td> 
+            <td><input list="plist" placeholder="Product" id="product" name="product" onchange="validate_product()" autocomplete="off" >
              <datalist id="plist">
              </datalist>  <div id ="txt_valid" style="color:red" ></div>
            </td>
-         
-
-        <td><input type="text" id="product_sub_type" name="product_sub_type[]" placeholder="Product sub type" readonly="readonly" onclick="ajaxsearch('product_sub_type','',this)">
+         </tr>
+         <tr>
+          <td><label for="Supplier">Supplier </label> </td>
+          <td><select name="supplier" id="slist" placeholder="Select Supplier" style="width: 100px" onclick="pop_subtype()" >
+          </select>
         </td>
+      </tr>
 
-        <td><input type="number" id="num_cases" name="qty[]" placeholder="e.g. 1" width="20px"></td>
+      <tr>
+        <td><label for="Product Sub Type">Product Sub Type </label> </td>
+        <td><input type="text" id="product_sub_type" name="product_sub_type" placeholder="Product sub type" readonly="readonly" onclick="pop_subtype()">
+        </td>
+      </tr>
+
+      <tr>
+        <td><label for="Cases">Cases </label> </td>
+        <td><input type="number" id="num_cases" name="qty" placeholder="e.g. 1"></td>
+      </tr>
       
-        <td><input type="number" id="namount" name="namount[]" placeholder="e.g. 1000.24" width="20px"></td>
-        <td><input type="number" id="tax" name="tax[]" placeholder="tax 1000.24" width="20px"></td>
-        <td><input type="number" id="amount" name="amount[]" placeholder=" 12-0.24" width="20px"></td>
-        
-        
-        </tr>
-        </table>
+      <tr>      
+        <td><label for="Amount">Amount </label> </td>
+        <td><input type="number" id="amount" name="amount" placeholder="e.g. 1000.24"></td>
+      </tr>
 
-        <input type="button" value="add new row" onclick="newrow()">
-        
-        <br>
-        <br>
-        <table border="1px"> 
+      <tr>
+        <td><label for="Invoice_ref">Invoice Number </label> </td>
+        <td><input type="text" id="inv_num" name="inv_num" placeholder="e.g. INV-0101" onchange="ret_inv_item()"></td>
+      </tr>
       
       <tr>
         <td><label for="Invoice_ref">Account Img ref </label> </td>
