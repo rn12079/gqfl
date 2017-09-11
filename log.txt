@@ -1,0 +1,87 @@
+old=	2017-08-08	Warehouse	Mayonaise	Venus	Food	Sauce	1	2	3	
+new=	2017-08-08	Warehouse	Mayonaise	Venus	Food	Sauce	1	2	3	upload/b2cert2.jpg
+
+old=	2017-08-08	Warehouse	Mayonaise	Venus	Food	Sauce	52	255	3	upload/b2cert2.jpg
+new=	2017-08-08	Warehouse	Mayonaise	Venus	Food	Sauce	52	255	3	
+
+old=	2017-08-08	Warehouse	Mayonaise	Venus	Food	Sauce	52	255	3	
+new=	2017-08-08	Warehouse	Mayonaise	Venus	Food	Sauce	52	255	3	
+
+old=	2017-08-08	Warehouse	Mayonaise	Venus	Food	Sauce	52	255	3	
+del=	2017-08-08	Warehouse	Mayonaise	Venus	Food	Sauce	52	255	3	
+
+old=	2017-08-08	Warehouse	Mayonaise	Venus	Food	Sauce	1	2	3	upload/b2cert2.jpg
+del=	2017-08-08	Warehouse	Mayonaise	Venus	Food	Sauce	1	2	3	
+
+old=	2017-08-10	Warehouse	Mayonaise	Venus	Food	Sauce	25	23	3	abcd	
+new=	2017-08-10	Warehouse	Mayonaise	Venus	Food	Sauce	25	23	3	cdf	
+
+old=	2017-08-08	Warehouse	Mayonaise	Venus	Food	Sauce	22	2	3		upload/b2cert2.jpg
+del=	2017-08-08	Warehouse	Mayonaise	Venus	Food	Sauce	22	2	3		
+
+old=	2017-08-10	Warehouse	Mayonaise	Venus	Food	Sauce	25	23	3	cdf	
+del=	2017-08-10	Warehouse	Mayonaise	Venus	Food	Sauce	25	23	3	cdf	
+
+old=	2017-08-08	Warehouse	Mayonaise	Venus	Food	Sauce	1	2	3		upload/b2cert2.jpg
+del=	2017-08-08	Warehouse	Mayonaise	Venus	Food	Sauce	1	2	3		
+
+old=	2017-08-08	Warehouse	Mayonaise	Venus	Food	Sauce	14	2500	3		upload/b2cert2.jpg
+del=	2017-08-08	Warehouse	Mayonaise	Venus	Food	Sauce	14	2500	3		
+
+old=	2017-07-06	Shehbaz	Sprite BIB	CCBPL	Food	Beverage	1	7000	waitting	7-057	
+new=	2017-07-06	Shehbaz	Sprite BIB	CCBPL	Food	Beverage	1	7000	waiting	7-057	
+
+old=	2017-07-06	Shehbaz	Coke BIB	CCBPL	Food	Beverage	1	7000	waitting	7-057	
+new=	2017-07-06	Shehbaz	Coke BIB	CCBPL	Food	Beverage	1	7000	waiting	7-057	
+
+old=	2017-02-17	Shehbaz	Chicken Fillet	K&N	Food	Chicken	6	27216	46	2-079	
+new=	2017-02-17	Shehbaz	Chicken Fillet	K&N	Food	Chicken	6	27216	46	2-079	
+
+old=	2017-02-17	Shehbaz	Chicken Fillet	K&N	Food	Chicken	6	27216	46	2-079	
+new=	2017-02-17	Hydri	Chicken Fillet	K&N	Food	Chicken	6	27216	46	2-079	
+
+old=	2017-02-21	Shehbaz	Chicken Fillet	K&N	Food	Chicken	6	2721600	48	2-075	
+new=	2017-02-21	Shehbaz	Chicken Fillet	K&N	Food	Chicken	6	27216	48	2-075	
+
+old=	2017-02-08	Hydri	Normal Tender	K&N	Food	Chicken	2	8100	42	02-028	
+del=	2017-02-08	Hydri	Normal Tender	K&N	Food	Chicken	2	8100	42	02-028	
+
+old=	2017-05-20	Shehbaz	Lemon Chicken	K&N	Food	Chicken	3	12852	70	5-028	
+new=	2017-05-20	Hydri	Lemon Chicken	K&N	Food	Chicken	3	12852	70	5-028	
+
+old=	2017-05-20	Shehbaz	Chicken Fillet	K&N	Food	Chicken	3	13608	70	5-028	
+new=	2017-05-20	Hydri	Chicken Fillet	K&N	Food	Chicken	3	13608	70	5-028	
+
+old=	2017-05-11	Hydri	Chicken Fillet	K&N	Food	Chicken	6	27216	67	5-063	
+new=	2017-05-11	Shehbaz	Chicken Fillet	K&N	Food	Chicken	6	27216	67	5-063	
+
+old=	2017-05-11	Hydri	Lemon Chicken	K&N	Food	Chicken	4	17136	67	5-063	
+new=	2017-05-11	Shehbaz	Lemon Chicken	K&N	Food	Chicken	4	17136	67	5-063	
+
+old=	2017-03-10	Hydri	Chicken Fillet	K&N	Food	Chicken	10	45360	53	3-060	
+del=	2017-03-10	Hydri	Chicken Fillet	K&N	Food	Chicken	10	45360	53	3-060	
+
+old=	2017-03-10	Hydri	Spicy Tender	K&N	Food	Chicken	4	16200	53	3-060	
+del=	2017-03-10	Hydri	Spicy Tender	K&N	Food	Chicken	4	16200	53	3-060	
+
+old=	2017-03-10	Hydri	Lemon Chicken	K&N	Food	Chicken	4	19500	53	3-060	
+new=	2017-03-10	Shehbaz	Lemon Chicken	K&N	Food	Chicken	4	17136	53	3-060	
+
+old=	2017-03-10	Hydri	Normal Tender	K&N	Food	Chicken	5	19500	53	3-060	
+new=	2017-03-10	Shehbaz	Normal Tender	K&N	Food	Chicken	5	19500	53	3-060	
+
+old=	2017-03-10	Hydri	Spicy Tender	K&N	Food	Chicken	4	16200	53	3-060	
+new=	2017-03-10	Shehbaz	Spicy Tender	K&N	Food	Chicken	4	16200	53	3-060	
+
+old=	2017-01-04	Hydri	Fanta BIB	CCBPL	Food	Beverage	2	12600	65843		
+new=	2017-01-04	Hydri	Fanta BIB	CCBPL	Food	Beverage	2	12600	65843	1-050	upload/1-050.pdf
+
+old=	2017-01-04	Hydri	Sprite BIB	CCBPL	Food	Beverage	1	7000	65843		
+new=	2017-01-04	Hydri	Sprite BIB	CCBPL	Food	Beverage	1	7000	65843	1-050	upload/1-050.pdf
+
+old=	2017-06-08	Hydri	S12 Fries	ITH	Food	Fries	15	63969	LHE1982/17	0604	
+new=	2017-06-08	Hydri	S12 Fries	ITH	Food	Fries	15	63969	LHE1982/17	06-021	
+
+old=	2017-06-08	Hydri	Twister x0070	ITH	Food	Fries	15	77922	LHE1982/17	0604	
+new=	2017-06-08	Hydri	Twister x0070	ITH	Food	Fries	15	77922	LHE1982/17	06-021	
+
