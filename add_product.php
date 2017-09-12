@@ -147,7 +147,7 @@
   </div>
   <div class="mp">
 
-    <div class="mlp"  onclick="window.location='add_product.html'">
+    <div class="mlp"  onclick="window.location='add_product_main.php'">
       Add New Products
     </div>
 
@@ -219,7 +219,7 @@ if ($conn->connect_error)
 
    ?>
  </div>
- <br> Add another record <input type=button onclick="window.location('add_product.html')" value="Add new Record">
+ <br> Add another record <input type=button onclick="window.location('add_product_main.php')" value="Add new Record">
 </body>
 </html>
 
