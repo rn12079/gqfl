@@ -233,7 +233,7 @@ function toggle_dtrange(){
     </div></div>
     <div class="mp">
 
-      <div class="mlp"  onclick="window.location='add_product.html'">
+      <div class="mlp"  onclick="window.location='add_product_main.php'">
         Add New Products
       </div>
 

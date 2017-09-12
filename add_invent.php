@@ -1,4 +1,19 @@
   
+<?php 
+
+session_start();
+$errmsg = "";
+
+if(!$_SESSION["loggedin"])
+  {
+    echo "not logged in <br>";
+    echo "log in at <a href ='login.php'>log in </a>";
+
+
+   die; }
+?>
+
+
 <html>
 <head>
 <title> add Inventory Items </title>
@@ -448,12 +463,13 @@ function newrow(){
 </script>
 </head>
 <body onload="init()">
+<?php echo "<a style='text-align:right' href='logout.php'>logout </a>"?>
   <div class="tp">
     GQFL Inventory
   </div>
   <div class="mp">
 
-    <div class="mlp" onclick="window.location='add_product.html'">
+    <div class="mlp" onclick="window.location='add_product_main.php'">
       Add New Products
     </div>
 
