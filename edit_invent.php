@@ -1,184 +1,106 @@
 <?php 
+/*
+function err_alert($err_msg){
+echo "<div class='alert alert-danger' role='alert'>".$err_msg."</div>";
+}
+*/
+include('alerts.php');
+include('db_funcs.php');
 
 session_start();
 $errmsg = "";
 
-if(!$_SESSION["loggedin"])
-  {
-    echo "not logged in <br>";
-    echo "log in at <a href ='login.php'>log in </a>";
+if(!$_SESSION["loggedin"]) 
+  $logged = false;
+else
+  $logged = true;
 
-
-   die; }
 ?>
+
+
 <html>
 <head>
-  <meta charset="utf-8"> 
-  <style type="text/css">
-    p.info {
+<link href="select2/select2.min.css" rel="stylesheet" />
+<link href="bootstrap1/css/bootstrap.min.css" rel="stylesheet">
+<title>GQFL - Edit Inventory</title>
+<style>
 
-      color:grey;
-      font-size:10px;
+label {
 
+  padding-top: 4px;
+
+}
+  .navbar{
+    margin-bottom:0;
+    border-radius: 0;
+  }
+  .jumbotron{
+    //margin-bottom: 0;
+    
+  }
+  .form-group {
+
+    margin-bottom:2px;
+
+
+  }
+
+
+</style>
+<script src="jquery/jquery-3.2.1.min.js"></script>
+<script src="bootstrap1/js/bootstrap.min.js"></script>
+<script src="select2/select2.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function() {
+
+  $('.product2').select2();
+  compute_totals();
+
+  document.getElementById("myform").addEventListener("change", function() {
+    console.log("form changed");
+    compute_rows();
+  });
+
+
+});
+
+function pop_products2(){
+  $('.product2').select2({
+    width: '200px',
+    placeholder: "select a product",
+    ajax: {
+      url: 'retrieve_rows_jq.php',
+      dataType: 'json',
+      cache: true,
+      data: function(params) {
+        return {
+          q: params.term,
+          s: $('#supplier2').val()
+        };
+
+
+      },
+
+
+      processResults: function(data){
+
+        return {
+          results: $.map(data, function(obj) {
+            console.log(obj);
+            return {
+              id: obj.id,
+              text: obj.text + " || " + obj.hint
+            };
+
+          })
+        };
+
+
+      }
     }
+  });
 
-    p.err {
-
-      color:red;
-      font-size:10px;
-
-    }
-
-    i {
-      color:red;
-      
-
-    }
-
-
-    tr.cells:nth-child(even){
-      background-color: #EBF4FA;
-    }
-
-    td.number {
-      text-align:right; 
-      padding-right:10px
-    }
-    td.bottom {
-      background-color: #f0f5f5;
-      text-align: right;
-      font-size:12px;
-      font-weight:bold;
-      padding-right: 10px;
-      height: 30px;
-    }
-
-    td.top {
-      background-color: lightgrey;
-      text-align: center;
-      font-size:16px;
-      font-weight:bold;
-      height: 30px;
-    }
-
-    td {
-      text-align: left;
-      padding-left: 10px;
-      font-size:12px;
-      height: 20px;
-    }
-
-    label {
-      text-align: left;
-      padding-left: 10px;
-      font-size:12px;
-      vertical-align: middle;
-    }
-
-    div.tp {
-      width:100%;
-      height:15%;
-      float:left;
-      background-color: #b3d9ff;
-      text-align:center;
-      font-family:Arial;
-      color:white;
-      font-size:40px;
-
-
-    }
-
-    div.mp {
-      float:left;
-      width:100%;
-      height:7%;
-      background-color:#b3d9ff;
-      border-bottom-style:solid;
-      border-color:grey;
-      border-width: 1px;
-      display:flex;
-    }
-
-    div.mlp {
-      border-radius: 15px 15px 1px 1px;
-      cursor:hand;
-      padding:10px;
-      width:20%;
-      float:left;
-      background-color:#e6f2ff;
-      border-style: solid;
-      border-color: grey;
-      border-width: 1px;
-
-
-    }
-
-    div.mcp {
-      border-radius: 15px 15px 1px 1px;
-      width:20%;
-      padding:10px;
-      float:left;
-      background-color:#e6f2ff;
-      border-style: solid;
-      border-color: grey;
-      border-width: 1px;
-      //border-bottom: none;
-
-      //overflow:hidden;
-    }
-
-    div.mcrp {
-      border-radius: 15px 15px 1px 1px;
-      width:20%;
-      padding:10px;
-      height: 30px;
-      float:left;
-      background-color:white;
-      border-style: solid;
-      border-color: grey;
-      border-width: 1px;
-      border-bottom: none;
-
-      overflow:hidden;
-    }
-
-    div.mrp {
-
-
-      border-radius: 15px 15px 1px 1px;
-      width:20%;
-      padding:10px;
-      float:left;
-      background-color:#e6f2ff;
-      border-style: solid;
-      border-width: 1px;
-      border-color: grey;
-      cursor:hand;
-    }
-
-
-    div.lp {
-      width:50%;
-      //border-style: solid;
-      border-color: grey;
-      background-color: white;
-      float:left;
-      padding: 10px;
-      overflow:hidden;
-    }
-
-    div.rp {
-      //width:50%;
-      float:left;
-      //border-style: solid;
-      padding: 10px;
-      overflow:hidden;
-      text-align:center;
-    }
-  </style>
-  <script type="text/javascript">
-
-
+}
 /*
 Ajax block to get items for search tab
 */
@@ -309,10 +231,13 @@ function validate_form(){
   }
 }
 
-function dis_card(){
-  if(document.getElementById("discard").checked)
-    alert("are you sure?");
-
+function del_alert(box){
+  var row = box.parentNode.parentNode;
+  console.log("del_alert")
+  if(box.checked) 
+    row.className = "danger";
+  else
+    row.className = "";
 }
 
 function useexisting(){
@@ -337,170 +262,368 @@ document.onreadystatechange = function(){
   ret_inv_item();  
 }
 }
+
+function compute_rows(){
+  console.log("focus out");
+  var nam = document.getElementsByName("namount[]");
+  var disc = document.getElementsByName("discount[]");
+  var tax = document.getElementsByName("taxrate[]");
+  var tam = document.getElementsByName("tax[]");
+  var am = document.getElementsByName("amount[]");
+  var taf = document.getElementsByName("tad[]");
+
+  console.log(nam.length);
+  //console.log(nam[0].value);
+
+
+  for(i = 0 ; i < nam.length ; i++) {
+    var d = "tad["+i+"]";
+    console.log(d);
+    if(document.getElementById(d).checked == false)
+      tam[i].value = parseInt(nam[i].value*tax[i].value);
+    else
+      tam[i].value = parseInt((nam[i].value-disc[i].value)*tax[i].value);
+
+    am[i].value = parseInt(nam[i].value - disc[i].value) + parseInt(tam[i].value);
+  }
+
+  compute_totals();  
+  
+}
+
+function compute_totals(){
+  var nam = document.getElementsByName("namount[]");
+  var disc = document.getElementsByName("discount[]");
+  var tax = document.getElementsByName("tax[]");
+  var am = document.getElementsByName("amount[]");
+  
+  var nettotal = 0;
+  var netdisc = 0;
+  var nettax = 0;
+  var invtotal = 0;
+
+    for(i = 0 ; i < nam.length ; i++) {
+
+      nettotal = parseInt(nettotal) + parseInt(nam[i].value || 0);
+      netdisc = parseInt(netdisc) + parseInt(disc[i].value || 0);
+      nettax = parseInt(nettax) + parseInt(tax[i].value || 0);
+      invtotal = parseInt(invtotal) + parseInt(am[i].value||0);
+    }
+
+  document.getElementById("sub_total").value = nettotal;
+  document.getElementById("sub_total_disc").value = netdisc;
+  document.getElementById("sub_total_tax").value = nettax;
+  document.getElementById("inv_total").value = invtotal;
+
+}
+
 </script>
 </head>
 <body onload="init()">
-<?php echo "<a style='text-align:right' href='logout.php'>logout </a>"?>
-  <div class="tp">
-    GQFL Inventory
-  </div>
-  <div class="mp">
+<?php include('navbar.html');
+  $bool_upload = false;
+  $bool_succ = false;
 
-    <div class="mlp" onclick="window.location='add_product_main.php'">
-      Add New Products
-    </div>
+  if(!$logged) {
+    echo "<div class='container' style='margin-top:10;'>";
+    err_alert("<strong>Access Denied</strong> Please log in to access");
+    echo "</div>";
+    die;
+  }
 
-    <div class="mcp" onclick="window.location='add_invent.php'">
-      Add Inventory Item
-    </div>
-    <div class="mcrp">
-      Edit Inventory Item
-    </div>
-    <div class="mrp" onclick="window.location='show_inventory.php'">
-      Inventory
-    </div>
+  ?>
+
+    <!-- JUMPOTRON -->
+  <div class="jumbotron">
+    <div class="container">
+      <strong>Edit Inventory Record</strong>
+   </div>
+ </div>
 
 
-  </div>  
-  <!-- end mp div -->
-
-  <div class="lp" id="mlp" >
-    <br>
-
+ <div class="container">
+    <form id="myform" action="update_inventory.php" method="post" enctype="multipart/form-data">
     <?php
 
     $get_id = $_GET['id'];
 
     if($get_id=="")
-      die("no record to edit");
+      die(err_alert("no record to edit"));
 
 
-    $myquery = "select i.id,date,receiver,product_name,supplier,product_type,product_sub_type,cases,amount,acc_ref,invoice_ref,invoice_img_ref from products p ";
-    $myquery = $myquery . "inner join inventory i on i.product_id=p.id ";
-    $myquery = $myquery . "where i.id=".$get_id;
-
+    
 
     $conn = new mysqli("localhost","qasim","","mujju");
     if ($conn->connect_error)
     {
-      die('Could not connect: ' . $conn->connect_error);
+      die(err_alert('Could not connect: ' . $conn->connect_error));
     }
 
-    $result = $conn->query($myquery);
-    $row = $result->fetch_assoc();
+    $subquery = "select date,receiver,supplier,invoice_ref from products p inner join inventory i ";
+    $subquery = $subquery. " on i.product_id=p.id where i.id=".$get_id;
 
+    //echo $subquery;
+
+    if($result = $conn->query($subquery))
+      $row = $result->fetch_assoc();
+    else echo $conn->error;
+     
+
+    $fildate = $row["date"];
+    $filreceiver = $row["receiver"];
+    $filsupplier = $row["supplier"];
+    $filinvoice = $row["invoice_ref"];
+
+    $myquery = "select i.id,date,receiver,product_id,product_name ,coalesce(concat(casesize,units,' | ',maker),'na') as hint,supplier,product_type,product_sub_type,cases,tad,amount,namount,discount,taxrate,tax,acc_ref,invoice_ref,invoice_img_ref from products p ";
+    $myquery = $myquery . "inner join inventory i on i.product_id=p.id ";
+    $myquery = $myquery . "where i.date='".$fildate."' ";
+    $myquery = $myquery . "and i.receiver='".$filreceiver."' ";
+    $myquery = $myquery . "and p.supplier='".$filsupplier."' ";
+    $myquery = $myquery . "and i.invoice_ref='".$filinvoice."' ";
+    $myquery = $myquery . "and i.del!=1 ";
+
+    //echo $myquery."<br>";
+    
+
+
+    $run=0;
+
+    if($result = $conn->query($myquery)) {
+      $row = $result->fetch_assoc();
+    
+    $id=$row["id"];
     $date=$row["date"];
     $receiver=$row["receiver"];
-    $product_name=$row["product_name"];
+    $product_id=$row["product_id"];
     $supplier=$row["supplier"];
-    $product_type=$row["product_type"];
-    $product_sub_type=$row["product_sub_type"];
     $cases=$row["cases"];
     $amount=$row["amount"];
     $invoice_ref=$row["invoice_ref"];
     $acc_ref=$row["acc_ref"];
     $invoice_img_ref=$row["invoice_img_ref"];
-
-
+    
+  
+    }
 
 
 
     ?>
 
+    
 
-    Edit Inventory Record 
-    <form action="update_inventory.php" method="post" onsubmit="return validate_form()" enctype="multipart/form-data" style="font-size:8pt">
-      <table border="1px" >
         <input type="hidden" name="id" id="id" value="<?php echo $get_id;?>">
-        <tr>
-          <td><label for="Receiving Date">Date </label></td><td>  <input type="date" name="t_date" id ="t_date" value="<?php echo $date;?>"></td>
-        </tr>
-        <tr>
-          <td>
-            <label for="Receiver">Received by </label> </td> 
-            <td><select name="receiver" id="receiver" onchange="ret_inv_item()">
-              <option value="Warehouse" <?php if ($receiver=="Warehouse") echo "selected";?> > Warehouse</option>
-              <option value="Shehbaz" <?php if ($receiver=="Shehbaz") echo "selected";?> >Shehbaz</option>
-              <option value="Hydri" <?php if ($receiver=="Hydri") echo "selected";?> >Hydri</option>
-            </select>
-          </td>
-        </tr>
-        <tr>
-          <td><label for="Product Type">Product Type </label> </td>
-          <td><input name="product_type" id="tlist" value="<?php echo $product_type;?>" placeholder="Select Supplier" align="right" style="width: 100px"  onchange="pop_products()" readonly="readonly"> <i> *  <i>
-
-          </td>
-        </tr>
-        <tr>
-          <td>    
-            <label for="Product Name">Product Name </label> </td> 
-            <td><input list="plist" placeholder="Product" id="product" value="<?php echo $product_name;?>" name="product" onchange="validate_product()" autocomplete="off" readonly="readonly"><i> *  <i>
-             <datalist id="plist">
-             </datalist>  <div id ="txt_valid" style="color:red" ></div>
-           </td>
-         </tr>
-         <tr>
-          <td><label for="Supplier">Supplier </label> </td>
-          <td><input name="supplier" id="slist" placeholder="Select Supplier" style="width: 100px" onclick="pop_subtype()" value="<?php echo $supplier;?>" readonly="readonly"><i> *  <i>
-            
-          </td>
-        </tr>
-
-        <tr>
-          <td><label for="Product Sub Type">Product Sub Type </label> </td>
-          <td><input type="text" id="product_sub_type" name="product_sub_type" placeholder="Product sub type" value="<?php echo $product_sub_type;?>" readonly="readonly" onclick="pop_subtype()" readonly="readonly"><i> *  <i>
-          </td>
-        </tr>
-
-        <tr>
-          <td><label for="Cases">Cases </label> </td>
-          <td><input type="number" id="num_cases" name="qty" placeholder="e.g. 1" value="<?php echo $cases;?>"></td>
-        </tr>
         
-        <tr>      
-          <td><label for="Amount">Amount </label> </td>
-          <td><input type="number" id="amount" name="amount" placeholder="e.g. 1000.24" value="<?php echo $amount;?>"></td>
-        </tr>
+        <div class="row">
+          <div class="col-sm-2 form-group form-inline">
+            <label for="Receiving Date">Date </label>  
+          </div>
+      
+          <div class="col-sm-3 form-group">
+            <input class="form-control" type="date" name="t_date" id ="t_date" value="<?php echo $date;?>" readonly="readonly">
+          </div>
+        </div>
 
-        <tr>
-          <td><label for="Invoice_ref">Invoice Number </label> </td>
-          <td><input type="text" id="inv_num" name="inv_num" placeholder="e.g. INV-0101" value="<?php echo $invoice_ref;?>" onchange="ret_inv_items()"></td>
-        </tr>
+        <div class="row">
 
-        <tr>
-          <td><label for="Invoice_ref">Acc Img ref </label> </td>
-          <td><input type="text" id="acc_ref" name="acc_ref" placeholder="5-701" value="<?php echo $acc_ref;?>"></td>
-        </tr>
+        <div class="col-sm-2 form-group form-inline">
+          <label for="Invoice_ref">Invoice #</label>
+        </div>        
+        <div class="col-sm-3 form-group ">
+          <input  class="form-control" type="text" id="inv_num" name="inv_num" value="<?php echo $invoice_ref;?>" readonly="readonly">
+        </div>
+
+      </div>
+       
+      <div class="row">
         
-        <tr>
-          <td><label for="file">Invoice File : </label></td>
-          <td>
-            use existing <input type="checkbox" name="existing" id="existing"  onchange="useexisting()"/> <input list="imglist" name="img_name" value="<?php echo $invoice_img_ref;?>">
-            <datalist id="imglist">
-            </datalist>
-            <?php echo "<a target='_blank' href='".$invoice_img_ref."'> invoice  </a>   ";?>
-            
+        <div class="col-sm-2 form-group form-inline">
+          <label for="Supplier">Supplier </label>
+        </div>
 
-            <input type="file" accept="image/*" name="file"  id="file" onchange="changeimage(this)"></td>
-          </tr>
-          <tr>
-            <td><label for="file">Discard Record </label></td>
-            <td><input type="checkbox" name="discard" id="discard" onclick="dis_card()" ></td>
-          </tr>
+        <div class="col-sm-3 form-group ">
+          <select class="form-control" id="supplier2" name="supplier2" readonly="readonly">
+            <option value="<?php echo $supplier;?>" selected><?php echo $supplier;?></option>
+          </select>
+        </div>
+        
+      </div> 
+        <div class= "row">
+
+        <div class="col-sm-2 form-group form-inline">
+            <label for="Receiver">Received by </label>
+        </div>
+
+        <div class="col-sm-3 form-group">
+          <select class="form-control" name="receiver" id="receiver" readonly="readonly">
+            <?php 
+                 echo "<option value='" . $receiver."' selected>".$receiver."</option>";
+            ?>
+          </select>
+        </div>
+      
+      </div>
+
+      <table class="table table-striped table-bordered table-condensed" id="rec_items" style="margin-bottom: 4px">
+        <tr>
+          <th>Del </th>
+          <th>Product Name</th>
+          <th>Cases</th>
+          <th>Net Amount</th>
+          <th>TAD</th>
+          <th>Discount</th>
+          <th>Tax Rate</th>
+          <th>Tax Amount</th>
+          <th>Gross Amount</th>
+          <th>*</th>
+        </tr>
+        <?php 
+        $cnt=0;
+
+        if($result = $conn->query($myquery)) {
+          if($result->num_rows > 0){
+            while($row = $result->fetch_assoc()){
+    
+    
+        
+            $id=$row["id"];
+            $date=$row["date"];
+            $receiver=$row["receiver"];
+            $product_id=$row["product_id"];
+            $supplier=$row["supplier"];
+            $cases=$row["cases"];
+            $namount=$row["namount"];
+            $discount=$row["discount"];
+            $tad=$row["tad"];
+            $taxrate=$row["taxrate"];
+            $tax=$row["tax"];
+            $amount=$row["amount"];
+            $invoice_ref=$row["invoice_ref"];
+            $acc_ref=$row["acc_ref"];
+            $invoice_img_ref=$row["invoice_img_ref"];
+        
+    ?>
+        <tr>
+
+            <td>
+              <input type="hidden" name="i_id[]" value="<?php echo $id;?>">
+              <input type="checkbox" name="discard[<?php echo $cnt; ?>]" onchange="del_alert(this)" >
+            </td>
+            <td>
+             
+                <select name="product2[]" class="product2" required> 
+                  <option value="<?php echo getprods($product_id); ?>" selected> <?php echo getprods($product_id); ?> </option>
+                </select>
+            </td>
+
+            <td>
+              <input class="col-xs-1 form-control" type="number" id="num_cases" name="qty[]" value="<?php echo $cases; ?>" >
+            </td>
+
+            <td>
+              <input class="col-xs-1 form-control" type="number" id="namount" step=".01" name="namount[]" value="<?php echo $namount; ?>">
+            </td>
+
+            <td>
+              <input type="checkbox" name="tad[<?php echo $cnt; ?>]" id="tad[<?php echo $cnt; ?>]" <?php if ($tad==1) echo "checked" ?>>
+            </td>
+
+            <td>
+              <input class="col-xs-1 form-control" type="number" id="discount" step=".01" name="discount[]" value="<?php echo $discount; ?>">
+            </td>
+
+            <td><input class="col-xs-1 form-control" type="number" id="taxrate" step=".01" name="taxrate[]"  value="<?php echo $taxrate; ?>"onblur="compute_rows()"></td>
+
+            <td><input class="col-xs-1 form-control" type="number" id="tax" name="tax[]" value="<?php echo $tax ?>" onclick="compute_val(this)" readonly="readonly"></td>
+
+            <td><input class="col-xs-1 form-control" type="number" id="amount" name="amount[]" value="<?php echo $amount ?>" onclick="compute_val(this)" readonly="readonly"></td>
           
-          <tr>
-            <td colspan="2"><input type="submit" name="submit" id="submit" value="Modify Product"></td>
-          </tr>
+          <td></td>
 
+        </tr>
+
+          <?php $cnt++; } ?>
         </table>
+
+        <br>
+        
+          
+          <div class="col-xs-2 form-inline">
+            <label for="Invoice_ref">Account Img ref </label>
+          </div>
+          <div class="col-xs-3 form-group">
+            <input class="form-control" type="text" id="acc_ref" name="acc_ref" value="<?php echo $acc_ref ?>">
+          </div>
+            
+        
+          <div class="col-xs-4 form-inline text-right"> 
+            <label for="Invoice_ref">Sub Net Total: </label>
+          </div>
+          <div class="col-xs-3 form-group text-right"> 
+            <input class="form-control" type="number" id="sub_total" name="sub_total" placeholder="auto" onclick="compute_totals()" readonly="readonly">
+          </div>
+          
+          <div class="col-xs-2 form-group form-inline">
+            <label for="file">Invoice File : </label>
+          </div>
+
+          <div class="col-xs-3 form-group ">
+            <input type="checkbox" name="existing" id="existing"  onchange="useexisting()"
+             <?php if ($invoice_img_ref!='') echo "checked"; ?> /> use existing 
+            <input class="form-control" type="file" accept="image/*" name="file" id="file">
+            <input class="form-control" list="imglist" name="img_name" value="<?php echo $invoice_img_ref;?>">
+              <datalist id="imglist">
+              </datalist>
+          </div>
+
+          <div class="col-xs-4 form-group text-right"> 
+            <label for="Invoice_ref">Sub Total Disc: </label>
+          </div>
+
+          <div class="col-xs-3 form-group text-right"> 
+            <input class="form-control" type="number" id="sub_total_disc" name="sub_total_disc" placeholder="auto" onclick="compute_totals()" readonly="readonly"></td>
+          </div>
+          <div class="col-xs-4 form-group text-right"> 
+            <label for="Invoice_ref">Sub Total Tax: </label>
+          </div>
+          <div class="col-xs-3 form-group text-right"> 
+            <input class="form-control" type="number" id="sub_total_tax" name="sub_total_tax" placeholder="auto" onclick="compute_totals()" readonly="readonly"></td>
+          </div>
+
+          <div class="col-xs-4 form-group text-right"> 
+            <label for="Invoice_ref">Invoice Total: </label>
+          </div>
+          <div class="col-xs-3 form-group text-right"> 
+            <input class="form-control" type="number" id="inv_total" name="inv_total" placeholder="auto" onclick="compute_totals()" readonly="readonly"></td>
+          </div>
+        
+          
+          <div class="row">
+          <div class="col-sm-3">
+            <input class="btn btn-warning" type="submit" name="submit" id="submit" value="Modify Records" >
+            <a href='show_inventory.php' class="btn btn-primary" role="button">Cancel</a>
+          </div>
+
+          
+
+        </div>
+
+        
       </form>
-      <p id="show_status" class="error"></p>
+    
       
-      <i> * : can't be modified  </i>
       
+      
+    <?php 
+
+  }
+
+    }
+    else
+      err_alert($conn->error);
+
+ ?>
       
     </div>
-    <div id="rp" class="rp"></div>
-
+  
   </body>
   </html>

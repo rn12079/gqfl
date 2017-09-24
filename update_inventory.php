@@ -1,171 +1,84 @@
+<?php 
+/*
+function err_alert($err_msg){
+echo "<div class='alert alert-danger' role='alert'>".$err_msg."</div>";
+}
+*/
+include('alerts.php');
+include('db_funcs.php');
+
+session_start();
+$errmsg = "";
+
+if(!$_SESSION["loggedin"]) 
+  $logged = false;
+else
+  $logged = true;
+
+?>
+
+
 <html>
 <head>
-  <style type="text/css">
-    p.info {
+<link href="select2/select2.min.css" rel="stylesheet" />
+<link href="bootstrap1/css/bootstrap.min.css" rel="stylesheet">
+<title>GQFL - Update Inventory</title>
+<style>
 
-      color:grey;
-      font-size:10px;
+label {
 
-    }
+  padding-top: 4px;
 
-    p.err {
+}
+  .navbar{
+    margin-bottom:0;
+    border-radius: 0;
+  }
+  .jumbotron{
+    //margin-bottom: 0;
+    
+  }
+  .form-group {
 
-      color:red;
-      font-size:10px;
-
-    }
-
-    tr.cells:nth-child(even){
-      background-color: #EBF4FA;
-    }
-
-    td.number {
-      text-align:right; 
-      padding-right:10px
-    }
-    td.bottom {
-      background-color: #f0f5f5;
-      text-align: right;
-      font-size:12px;
-      font-weight:bold;
-      padding-right: 10px;
-      height: 30px;
-    }
-
-    td.top {
-      background-color: lightgrey;
-      text-align: center;
-      font-size:16px;
-      font-weight:bold;
-      height: 30px;
-    }
-
-    td {
-      text-align: left;
-      padding-left: 10px;
-      font-size:12px;
-      height: 20px;
-    }
-
-    label {
-      text-align: left;
-      padding-left: 10px;
-      font-size:12px;
-      vertical-align: middle;
-    }
-
-    div.tp {
-      width:100%;
-      height:15%;
-      float:left;
-      background-color: #b3d9ff;
-      text-align:center;
-      font-family:Arial;
-      color:white;
-      font-size:40px;
+    margin-bottom:2px;
 
 
-    }
+  }
 
 
-    div.mp {
-      float:left;
-      width:100%;
-      height:7%;
-      background-color:#b3d9ff;
-      border-bottom-style:solid;
-      border-color:grey;
-      border-width: 1px;
-      display:flex;
-    }
+</style>
+<script src="jquery/jquery-3.2.1.min.js"></script>
+<script src="bootstrap1/js/bootstrap.min.js"></script>
+<script src="select2/select2.min.js"></script>
+<script type="text/javascript">
+  
+</script>
 
-    div.mlp {
-      border-radius: 15px 15px 1px 1px;
-      cursor:hand;
-      padding:10px;
-      width:20%;
-      float:left;
-      background-color:#e6f2ff;
-      border-style: solid;
-      border-color: grey;
-      border-width: 1px;
-
-
-    }
-
-    div.mcp {
-      border-radius: 15px 15px 1px 1px;
-      width:20%;
-      padding:10px;
-      height: 30px;
-      float:left;
-      background-color:white;
-      border-style: solid;
-      border-color: grey;
-      border-width: 1px;
-      border-bottom: none;
-
-      overflow:hidden;
-    }
-
-    div.mrp {
-
-
-      border-radius: 15px 15px 1px 1px;
-      width:20%;
-      padding:10px;
-      float:left;
-      background-color:#e6f2ff;
-      border-style: solid;
-      border-width: 1px;
-      border-color: grey;
-      cursor:hand;
-    }
-
-
-    div.lp {
-      width:100%;
-      //border-style: solid;
-      border-color: grey;
-      background-color: white;
-      float:left;
-      overflow:hidden;
-    }
-
-    div.rp {
-      width:50%;
-      float:left;
-
-      overflow:hidden;
-      text-align:center;
-    }
-
-  </style>
 </head>
 <body onload="init()">
-  <div class="tp">
-    GQFL Inventory
-  </div>
-  <div class="mp">
+  <?php include('navbar.html');
+  $bool_upload = false;
+  $bool_succ = false;
 
-    <div class="mlp"  onclick="window.location='add_product_main.php'">
-      Add New Products
-    </div>
+  if(!$logged) {
+    echo "<div class='container' style='margin-top:10;'>";
+    err_alert("<strong>Access Denied</strong> Please log in to access");
+    echo "</div>";
+    die;
+  }
 
-    <div class="mcp" onclick="window.location='add_invent.html'">
-      Add Inventory Items
-    </div>
+  ?>
 
-    <div class="mrp" onclick="window.location='show_inventory.php'">
-      Inventory
-    </div>
+    <!-- JUMPOTRON -->
+  <div class="jumbotron">
+    <div class="container">
+      <strong>Update Inventory Record</strong>
+   </div>
+ </div>
 
 
-  </div>  
-  <!-- end mp div -->
+ <div class="container">
 
-  <div class="lp" id="mlp">
-    <br>
     <?php
 
     if(!isset( $_POST['existing']) )
@@ -176,7 +89,7 @@
       if ($upload_filename!="") {
 //echo $upload_filename;
         if($_FILES['file']['error']!== UPLOAD_ERR_OK) {
-          die("<p class='err'>Upload failed with error". $_FILES['file']['error']."</p>");
+          die(err_alert("Upload failed with error". $_FILES['file']['error']));
         }
 
         $filetemp = $_FILES["file"]["name"];
@@ -195,7 +108,7 @@
 
 
         if(! (in_array($mime,$allowedmimes)))
-          die ("Unknown file type");
+          die (err_alert("Unknown file type"));
 
         
         $ofile = "upload/".$filename;
@@ -217,15 +130,16 @@
        }
 
        move_uploaded_file($_FILES["file"]["tmp_name"],"upload/" . $filename);
+       succ_alert("Image file uploaded successfully: <strong>". $filename ."</strong>");
      }
      else 
-      echo "<p class='err'>no image uploaded</p>";
+      warn_alert("Warning! No image uploaded");
 
   }
   else 
   {
     $ofile = $_POST["img_name"];
-    echo "existing image file used: " . $ofile;
+    succ_alert("Existing image file used: <strong>" . $ofile . "</strong>");
   }
 
 //echo "Stored in: " . "upload/" . $filename."<br>";
@@ -236,83 +150,110 @@
 
   
 //if($check==1)
-$id = $_POST["id"]; // date
-$t_date = $_POST["t_date"]; // date
-$receiver = $_POST["receiver"]; // receiver 
-$qty = $_POST["qty"];
-$amount = $_POST["amount"];
-$inv_num = $_POST["inv_num"];
-$acc_ref = $_POST["acc_ref"];
-
-$retquery = "select i.id,date,receiver,product_name,supplier,product_type,product_sub_type,cases,amount,invoice_ref,acc_ref,invoice_img_ref from products p ";
-$retquery = $retquery . "inner join inventory i on i.product_id=p.id where i.id='".$id."'";
-
-$conn = new mysqli("localhost","qasim","","mujju");
-if ($conn->connect_error)
-{
-  die('Could not connect: ' . $conn->connect_error);
-}
-
-// updating log file , putting old data
-$result = $conn->query($retquery);
-$row = $result->fetch_assoc();
-$logfile = 'log.txt';
-
-$current = file_get_contents($logfile);
-
-$current = $current. "old="."\t".$row["date"]."\t".$row["receiver"]."\t".$row["product_name"]."\t".$row["supplier"]."\t".$row["product_type"];
-$current = $current."\t".$row["product_sub_type"]."\t".$row["cases"]."\t".$row["amount"]."\t".$row["invoice_ref"]."\t".$row["acc_ref"]."\t".$row["invoice_img_ref"];
-$current = $current."\n";
-
-//echo $current;
 
 
+    $id=$_POST["i_id"];
+    //$date=$_POST["date"];
+    //$receiver=$_POST["receiver"];
+    //$product_id=$_POST["product_id"];
+    //$supplier=$_POST["supplier"];
+    $del=$_POST["discard"];
+    $cases=$_POST["qty"];
+    $namount=$_POST["namount"];
+    $discount=$_POST["discount"];
+    $tad=$_POST["tad"];
+    $taxrate=$_POST["taxrate"];
+    $tax=$_POST["tax"];
+    $amount=$_POST["amount"];
+    $invoice_ref=$_POST["inv_num"];
+    $acc_ref=$_POST["acc_ref"];
+    $invoice_img_ref=$_POST["invoice_img_ref"];
 
-$myquery = "update inventory set date='";
-$myquery = $myquery . $t_date . "', receiver='" . $receiver . "', cases='" . $qty . "', amount='" . $amount;
-$myquery = $myquery . "', invoice_ref='" . $inv_num;
-$myquery = $myquery . "', acc_ref='" . $acc_ref;
-$myquery = $myquery . "',  invoice_img_ref='" . $ofile . "'";
-if (isset($_POST["discard"]))
-  $myquery = $myquery . ", del=1 ";
-$myquery = $myquery . " where id='".$id."'";
+$upd_cnt = 0;
 
-//lecho "<p>" . $myquery." </p><br>";
+while($upd_cnt < count($id)) {
+  $b_taf=0;
 
+  $retquery = "select i.id,date,receiver,product_name,supplier,cases,amount,invoice_ref,acc_ref,invoice_img_ref from products p ";
+  $retquery = $retquery . "inner join inventory i on i.product_id=p.id where i.id='".$id."'";
 
+  $conn = new mysqli("localhost","qasim","","mujju");
+  if ($conn->connect_error)
+  {
+    die('Could not connect: ' . $conn->connect_error);
+  }
 
-if ($conn->query($myquery) === TRUE) {
-  if (isset($_POST["discard"]))
-    echo "Record deleted successfully<br>";
-  echo "Record updated successfully";
+  // updating log file , putting old data
   $result = $conn->query($retquery);
   $row = $result->fetch_assoc();
-  
-  if (isset($_POST["discard"]))
-    $current=$current."del=";
-  else 
-    $current=$current."new=";
+  $logfile = 'log.txt';
 
-  
-  $current = $current."\t".$row["date"]."\t".$row["receiver"]."\t".$row["product_name"]."\t".$row["supplier"]."\t".$row["product_type"];
+  $current = file_get_contents($logfile);
+
+  $current = $current. "old="."\t".$row["date"]."\t".$row["receiver"]."\t".$row["product_name"]."\t".$row["supplier"]."\t".$row["product_type"];
   $current = $current."\t".$row["product_sub_type"]."\t".$row["cases"]."\t".$row["amount"]."\t".$row["invoice_ref"]."\t".$row["acc_ref"]."\t".$row["invoice_img_ref"];
-  $current = $current."\n\n";
-  file_put_contents($logfile, $current);
+  $current = $current."\n";
+
+
+    
+
+    if(isset($tad[$upd_cnt]))
+      $b_taf=1;
+
+  $myquery = "update inventory set cases='" .$cases[$upd_cnt]. "', namount='".$namount[$upd_cnt]."'";
+  $myquery = $myquery . ", discount='" . $discount[$upd_cnt] . "', tad='" . $b_taf . "', taxrate='" . $taxrate[$upd_cnt] . "', tax='" . $tax[$upd_cnt]. "', amount='".$amount[$upd_cnt];
+  $myquery = $myquery . "', invoice_ref='" . $invoice_ref;
+  $myquery = $myquery . "', acc_ref='" . $acc_ref;
+  $myquery = $myquery . "',  invoice_img_ref='" . $ofile . "'";
+  if (isset($del[$upd_cnt]))
+    $myquery = $myquery . ", del=1 ";
+  $myquery = $myquery . " where id='".$id[$upd_cnt]."'";
+
+  echo $myquery;
   
+
+
+  if ($conn->query($myquery) === TRUE) {
+    if (isset($del[$upd_cnt]))
+      warn_alert("1 Record deleted successfully");
+    else
+      succ_alert("1 Record updated successfully");
+    $result = $conn->query($retquery);
+    $row = $result->fetch_assoc();
+    
+    if (isset($_POST["discard"]))
+      $current=$current."del=";
+    else 
+      $current=$current."new=";
+
+    
+    $current = $current."\t".$row["date"]."\t".$row["receiver"]."\t".$row["product_name"]."\t".$row["supplier"]."\t".$row["product_type"];
+    $current = $current."\t".$row["product_sub_type"]."\t".$row["cases"]."\t".$row["amount"]."\t".$row["invoice_ref"]."\t".$row["acc_ref"]."\t".$row["invoice_img_ref"];
+    $current = $current."\n\n";
+    file_put_contents($logfile, $current);
+    
+
+
 } else {
-  echo "Error updating record: " . $conn->error;
+  err_alert("Error updating record: " . $conn->error);
 }
 
-
+  
 
 
 
 
 $conn->close();
 //}/= */
+$upd_cnt++;
+}
+
 ?>
 
-<br> Add another record <input type=button onclick="window.location('add_invent.html')" value="Add new Record">
+<a href='show_inventory.php' class="btn btn-primary" role="button">Inventory</a>
+</div>
+
+
 </body>
 </html>
 

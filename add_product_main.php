@@ -1,302 +1,128 @@
 <?php 
-
+include('alerts.php');
 session_start();
 $errmsg = "";
 
-if(!$_SESSION["loggedin"])
-  {
-    echo "not logged in <br>";
-    echo "log in at <a href ='login.php'>log in </a>";
+if(!$_SESSION["loggedin"]) 
+  $logged = false;
+else
+  $logged = true;
+
+?>
+
+<html>
 
 
-   die; }
-?><html>
 <head>
-  <meta charset="utf-8"> 
-  <style type="text/css">
-    p.info {
-
-      color:grey;
-      font-size:10px;
-
-    }
-    tr.cells:nth-child(even){
-      background-color: #EBF4FA;
-    }
-
-    td.number {
-      text-align:right; 
-      padding-right:10px
-    }
-    td.bottom {
-      background-color: #f0f5f5;
-      text-align: right;
-      font-size:12px;
-      font-weight:bold;
-      padding-right: 10px;
-      height: 30px;
-    }
-
-    td.top {
-      background-color: lightgrey;
-      text-align: center;
-      font-size:16px;
-      font-weight:bold;
-      height: 30px;
-    }
-
-    td {
-      text-align: left;
-      padding-left: 10px;
-      font-size:12px;
-      height: 20px;
-    }
-
-    label {
-      text-align: left;
-      padding-left: 10px;
-      font-size:12px;
-      vertical-align: middle;
-    }
-
-    div.tp {
-      width:100%;
-      height:15%;
-      float:left;
-      background-color: #b3d9ff;
-      text-align:center;
-      font-family:Arial;
-      color:white;
-      font-size:40px;
-
-
-    }
-
-    div.mp {
-      float:left;
-      width:100%;
-      height:7%;
-      background-color:#b3d9ff;
-      border-bottom-style:solid;
-      border-color:grey;
-      border-width: 1px;
-      display:flex;
-    }
-
-    div.mlp {
-
-
-      border-radius: 15px 15px 1px 1px;
-      width:20%;
-      padding:10px;
-      height: 30px;
-      float:left;
-      background-color:white;
-      border-style: solid;
-      border-color: grey;
-      border-width: 1px;
-      border-bottom: none;
-
-      overflow:hidden;
-
-    }
-
-    div.mcp {
-      border-radius: 15px 15px 1px 1px;
-      cursor:hand;
-      padding:10px;
-      width:20%;
-      float:left;
-      background-color:#e6f2ff;
-      border-style: solid;
-      border-color: grey;
-      border-width: 1px;
-
-    }
-
-    div.mrp {
-
-
-      border-radius: 15px 15px 1px 1px;
-      width:20%;
-      padding:10px;
-      float:left;
-      background-color:#e6f2ff;
-      border-style: solid;
-      border-width: 1px;
-      border-color: grey;
-      cursor:hand;
-    }
-
-
-    div.lp {
-      width:100%;
-      //border-style: solid;
-      border-color: grey;
-      background-color: white;
-      float:left;
-      overflow:hidden;
-    }
-
-    div.rp {
-      width:50%;
-      float:left;
-
-      overflow:hidden;
-      text-align:center;
-    }
-  </style>
-  <script type="text/javascript">
-    function updateqty(){
-      
-      var newval = document.getElementById("new_XL").value;
-      alert("run update query"+newval);
-    }
-
-/*
-Ajax block to get items for search tab
-*/
-function ajaxsearch(){
-  var prod_code = document.getElementById("search_code").value;
-  var xhr;
-  if(window.XMLHttpRequest){
-    xhr=new XMLHttpRequest();
-  } 
-  else if (window.ActiveXObject) { // IE 8 and older  
-    xhr = new ActiveXObject("Microsoft.XMLHTTP");  
-  } 
-
-  var data="product_code="+prod_code;
-  xhr.open("POST","retrieve_item.php",true);
-  xhr.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
-  xhr.send(data);
-  xhr.onreadystatechange = display_data;
-  
-  function display_data(){
-    if(xhr.readyState==4){
-      if(xhr.status == 200) {
-        
-        document.getElementById("results").innerHTML = xhr.responseText;
-        
-        
-      }
-      else
-      {
-        alert('There was a problem with the request');
-      }
-      
-    }
+  <script   src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <link href="bootstrap1/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+  .navbar{
+    margin-bottom:0;
+    border-radius: 0;
+  }
+  .jumbotron{
+    //margin-bottom: 0;
     
   }
-  /*end Ajax block*/
-  
-}
 
 
-function init(){
-  document.getElementById("mcp").style.display = 'none';
-  
-}
+</style>
+<script src="bootstrap1/js/bootstrap.min.js"></script>
 
-function changeimage(fileInput) {
-  var files = fileInput.files;
-  for (var i = 0; i < files.length; i++) {           
-    var file = files[i];
-    var imageType = /image.*/;     
-    if (!file.type.match(imageType)) {
-      continue;
-    }           
-    var img=document.getElementById("img_path");            
-    img.file = file;    
-    var reader = new FileReader();
-    reader.onload = (function(aImg) { 
-      return function(e) { 
-        aImg.src = e.target.result; 
-      }; 
-    })(img);
-    reader.readAsDataURL(file);
-  }    
-}
+<title>
+  GQFL
+</title>
 
-
-function dispmcp(){
- document.getElementById("mcp").style.display = '';
- document.getElementById("mlp").style.display = 'none';
- document.getElementById("mrp").style.display = 'none';
- 
-}
-
-function dispmlp(){
- document.getElementById("mlp").style.display = '';
- document.getElementById("mcp").style.display = 'none';
- document.getElementById("mrp").style.display = 'none';
-}
-
-
+<script type="text/javascript">
 </script>
 </head>
-<body onload="init()">
-  <div class="tp">
-    GQFL Inventory
-  </div>
-  <div class="mp">
+<body>
 
-    <div class="mlp">
-      Add New Products
+
+  <!-- NAVBAR + ERROR MSG IF NOT LOGGED IN-->
+
+  <?php include('navbar.html');
+
+   if(!$logged) {
+    echo "<div class='container' style='margin-top:10;'>";
+    err_alert("<strong>Access Denied</strong> Please log in to access");
+    echo "</div>";
+    die;
+  }
+
+
+
+  ?>
+
+  <!-- JUMPOTRON -->
+  <div class="jumbotron text-center">
+    <div class="container">
+     <h1><SMALL> New Product </SMALL></h1>
+   </div>
+ </div>
+
+ <div class="container">
+  
+  <form action="add_product.php" method="post" enctype="multipart/form-data">
+    
+    <div class="form-group">
+      <label for="Product Name">Product Name </label>
+      <input type="text" class="form-control" name="txt_name" placeholder="Coke BIB" id ="t_name">
     </div>
 
-    <div class="mcp" onclick="window.location='add_invent.html'" >
-      Add Inventory Items
-    </div>
-
-    <div class="mrp" onclick="window.location='show_inventory.php'">
-      Inventory
-    </div>
-
-
-  </div>  
-  <!-- end mp div -->
-
-  <div class="lp" id="mlp">
-    <br>
-    New Products
-
-    <form action="add_product.php" method="post" enctype="multipart/form-data" style="font-size:8pt">
+    <div class="form-group">
+      <label for="Product Supplier">Product Supplier </label><input type="text" class="form-control" name="txt_supplier" placeholder="CCBPL" id ="t_supplier">
       
-      <table border="1px">
-        <tr>
-          <td>
-            <label for="Product Name">Product Name </label> </td><td> <input type="text" name="txt_name" placeholder="Coke BIB" id ="t_name">
-          </td></tr>
-          <tr><td>
-            <label for="Product Type">Product Type </label></td><td>  <input type="text" name="txt_type" placeholder="Food" id ="t_type">
-          </td></tr>
-          <tr><td>
-            <label for="Product Sub Type">Product Subtype </label></td><td>  <input type="text" name="txt_sub_type" placeholder="Beverage" id ="t_sub_type">
-          </td></tr>
-          <tr>
-            <td>
-              <label for="Product Supplier">Product Supplier </label></td><td>  <input type="text" name="txt_supplier" placeholder="CCBPL" id ="t_supplier">
-            </td></tr>
-            <tr>
-              <td colspan=2 style="text-align: center">
+    </div> 
 
-                <input type="submit" name="submit" value="Add Product"></td>
-              </tr>
-              <table>
-              </form></div>
-              
-              <div class="mcp" id="mcp" onclick="dispmcp()">
-                
-                <label for="Product Code">Product Code </label>  <input type="text" name="search_code"  id ="search_code" onKeyUp="ajaxsearch()">
-                <input type="button" value="Search" onclick="ajaxsearch()"><br><br>
-                <div id="results"></div>
-                
-                <br>
-                
-              </div> 
+    <div class="form-group">
+      <label for="Product Maker">Product Source</label><input type="text" class="form-control" name="txt_source" placeholder="Source/Make" id ="t_source">
+      
+    </div> 
 
-              
-              <div class="rp" id="rp"><br><img src="" id="img_path"></div>
-            </body>
-            </html>
+    <div class="row">
+
+      <div class="col-sm-3 form-group">
+        <label for="Product Type">Product Type </label><input type="text" class="form-control" name="txt_type" placeholder="Food" id ="t_type">
+      </div>
+
+      <div class="col-sm-3 form-group">
+        <label for="Product Sub Type">Product Subtype </label>
+        <input type="text" class="form-control" name="txt_sub_type" placeholder="Beverage" id ="t_sub_type">
+      </div>
+
+    </div>
+    
+    <div class="row">
+
+      <div class="col-sm-3 form-group">
+        <label for="Case Size">Case Size</label>
+        <input type="number" class="form-control" name="txt_case_size" placeholder="20" id ="t_cases">
+      </div>
+
+      <div class="col-sm-3 form-group">
+        <label for="Units">Case Size</label>
+        <select class="form-control" name="txt_unit" id ="t_units" >
+          <option value=""></option>
+          <option value="ltrs">Ltrs</option>
+          <option value="pcs">Pcs / Packets</option>
+          <option value="kgs">Kgs</option>
+          <option value="btls">Bottles</option>
+          <option value="carton">Cartons</option>
+          <option value="gal">Gallons</option>
+        </select>
+      </div>
+
+    </div>
+
+            
+
+            <input type="submit" name="submit" value="Add Product">
+          
+    </div>
+  </form>
+</div>
+<div style="height:400px"></div>
+</body>
+</html>

@@ -1,174 +1,121 @@
-  
 <?php 
+/*
+function err_alert($err_msg){
+echo "<div class='alert alert-danger' role='alert'>".$err_msg."</div>";
+}
+*/
+include('alerts.php');
+include('db_funcs.php');
 
 session_start();
 $errmsg = "";
 
-if(!$_SESSION["loggedin"])
-  {
-    echo "not logged in <br>";
-    echo "log in at <a href ='login.php'>log in </a>";
+if(!$_SESSION["loggedin"]) 
+  $logged = false;
+else
+  $logged = true;
 
-
-   die; }
 ?>
 
 
 <html>
 <head>
-<title> add Inventory Items </title>
-  <meta charset="utf-8"> 
-  <style type="text/css">
-    p.info {
+<link href="select2/select2.min.css" rel="stylesheet" />
+<link href="bootstrap1/css/bootstrap.min.css" rel="stylesheet">
+<title>GQFL - Add Inventory</title>
+<style>
 
-      color:grey;
-      font-size:10px;
+label {
 
-    }
+  padding-top: 4px;
 
-    p.err {
+}
+  .navbar{
+    margin-bottom:0;
+    border-radius: 0;
+  }
+  .jumbotron{
+    //margin-bottom: 0;
+    
+  }
+  .form-group {
 
-      color:red;
-      font-size:10px;
-
-    }
-
-
-    tr.cells:nth-child(even){
-      background-color: #EBF4FA;
-    }
-
-    td.number {
-      text-align:right; 
-      padding-right:10px
-    }
-    td.bottom {
-      background-color: #f0f5f5;
-      text-align: right;
-      font-size:12px;
-      font-weight:bold;
-      padding-right: 10px;
-      height: 30px;
-    }
-
-    td.top {
-      background-color: lightgrey;
-      text-align: center;
-      font-size:16px;
-      font-weight:bold;
-      height: 30px;
-    }
-
-    td {
-      text-align: left;
-      padding-left: 10px;
-      font-size:12px;
-      height: 20px;
-    }
-
-    label {
-      text-align: left;
-      padding-left: 10px;
-      font-size:12px;
-      vertical-align: middle;
-    }
-
-    div.tp {
-      width:100%;
-      height:15%;
-      float:left;
-      background-color: #b3d9ff;
-      text-align:center;
-      font-family:Arial;
-      color:white;
-      font-size:40px;
+    margin-bottom:2px;
 
 
-    }
-
-    div.mp {
-      float:left;
-      width:100%;
-      height:7%;
-      background-color:#b3d9ff;
-      border-bottom-style:solid;
-      border-color:grey;
-      border-width: 1px;
-      display:flex;
-    }
-
-    div.mlp {
-      border-radius: 15px 15px 1px 1px;
-      cursor:hand;
-      padding:10px;
-      width:20%;
-      float:left;
-      background-color:#e6f2ff;
-      border-style: solid;
-      border-color: grey;
-      border-width: 1px;
+  }
 
 
-    }
-
-    div.mcp {
-      border-radius: 15px 15px 1px 1px;
-      width:20%;
-      padding:10px;
-      height: 30px;
-      float:left;
-      background-color:white;
-      border-style: solid;
-      border-color: grey;
-      border-width: 1px;
-      border-bottom: none;
-
-      overflow:hidden;
-    }
-
-    div.mrp {
+</style>
+<script src="jquery/jquery-3.2.1.min.js"></script>
+<script src="bootstrap1/js/bootstrap.min.js"></script>
+<script src="select2/select2.min.js"></script>
 
 
-      border-radius: 15px 15px 1px 1px;
-      width:20%;
-      padding:10px;
-      float:left;
-      background-color:#e6f2ff;
-      border-style: solid;
-      border-width: 1px;
-      border-color: grey;
-      cursor:hand;
-    }
 
 
-    div.lp {
-      width:100%;
-      //border-style: solid;
-      padding: 10px;
-      border-color: grey;
-      background-color: white;
-      float:left;
-      overflow:hidden;
-    }
+ <script type="text/javascript">
 
-    div.rp {
-      //width:50%;
-      padding:10px;
+  $(document).ready(function() {
+   
+    $("#supplier2").select2({
+      data: <?php echo getsups();  ?>
+    })
 
-      overflow:hidden;
-      text-align:center;
-    }
+   
 
-    #slist option{
-      width:100px;
-    }
-  </style>
-  <script type="text/javascript">
+document.getElementById("myform").addEventListener("change", function() {
+  console.log("form changed");
+  compute_rows();
 
+});
+
+})
+ 
 
 /*
 Ajax block to get items for search tab
 */
+function pop_products2(){
+  $('.product2').select2({
+    width: '200px',
+    placeholder: "select a product",
+    ajax: {
+      url: 'retrieve_rows_jq.php',
+      dataType: 'json',
+      cache: true,
+      data: function(params) {
+        return {
+          q: params.term,
+          s: $('#supplier2').val()
+        };
+
+
+      },
+
+
+      processResults: function(data){
+
+        return {
+          results: $.map(data, function(obj) {
+            console.log(obj);
+            return {
+              id: obj.id,
+              text: obj.text + " || " + obj.hint
+            };
+
+          })
+        };
+
+
+      }
+    }
+  });
+
+}
+  
+
+
 function ajaxsearch(myitem,filter,subfield){
   //var prod_code = document.getElementById("product1").value;
   var xhr;
@@ -286,79 +233,17 @@ function ret_inv_items(){
   
 }
 
-
-
-function validate_product(){
-  var options = document.getElementById("plist").options;
-  var result = false;
-  var value = document.getElementById("product").value;
-  for(var i = 0 ; i < options.length ; i++ )
-   if(document.getElementById("product").value == options[i].value) 
-    result = true;
-
-  if(!result){
-   document.getElementById("txt_valid").innerHTML = "Product Name not Valid, Enter a Valid Product or Create a new product";
-   document.getElementById("submit").disabled = true;
- } else
- {
-   document.getElementById("txt_valid").innerHTML = "";
-   document.getElementById("submit").disabled = false;
-   ajaxsearch("supplier",value);
-   
- }
-
-
-
-
-}
-
-
-function init(){
+function inits(){
+  console.log("init initiated");
+  pop_products2();
   document.getElementById("count").innerHTML = 1;
-
-  document.getElementById("mcp").style.display = 'none';
-  ajaxsearch("product_type","");
-  ajaxsearch("product_name","Food");
-  ajaxsearch("supplier","");
 }
-
-function pop_products(){
-  var filter=document.getElementById("tlist").value;
-  ajaxsearch("product_name",filter);
-}
-
-function pop_subtype(){
-  var filter=document.getElementById("tlist").value;
-  ajaxsearch("product_name",filter);
-  
-
-}
-
-
-function changeimage(fileInput) {
-  var files = fileInput.files;
-  for (var i = 0; i < files.length; i++) {           
-    var file = files[i];
-    var imageType = /image.*/;     
-    if (!file.type.match(imageType)) {
-      continue;
-    }           
-    var img=document.getElementById("img_path");            
-    img.file = file;    
-    var reader = new FileReader();
-    reader.onload = (function(aImg) { 
-      return function(e) { 
-        aImg.src = e.target.result; 
-      }; 
-    })(img);
-    reader.readAsDataURL(file);
-  }    
-}
-
 
 function validate_form(){
   var t_date = document.getElementById("t_date").value;
-  var t_prod = document.getElementById("product").value;
+  var t_prod = $(product2).val();
+  console.log(t_prod);
+  return false;
   var t_cases = document.getElementById("num_cases").value;
   var t_amount = document.getElementById("amount").value;
   var t_inv_num = document.getElementById("inv_num").value;
@@ -387,13 +272,14 @@ function ret_inv_item(){
 }
 
 function ret_inv_items(retfields){
-  var supplier = document.getElementById("slist").value;
+  var supplier = document.getElementById("supplier2").value;
+  var d_date = document.getElementById("t_date").value;
   var receiver = document.getElementById("receiver").value;
   var invoice_ref = document.getElementById("inv_num").value;
   var id = "";
 
 
-  var myjson = {"retfield":escape(retfields), "supplier":escape(supplier),"receiver":escape(receiver),"invoice_ref":escape(invoice_ref),"id":escape(id)};
+  var myjson = {"retfield":escape(retfields), "supplier":escape(supplier),"receiver":escape(receiver),"invoice_ref":escape(invoice_ref),"id":escape(id),"d_date":escape(d_date)};
   data_params = JSON.stringify(myjson);
 
  // document.getElementById("stats").innerHTML = "ret_field"+ myjson.ret_field+" ptype: " + myjson.ptype + " pname: " + myjson.pname + " supp: " + myjson.supplier + " stype: " + myjson.stype;
@@ -450,147 +336,331 @@ function newrow(){
     var newcell = row.insertCell(i);
     if(i===0) 
       newcell.innerHTML = rowcount;
+    else if (i===1)
+      newcell.innerHTML = "<select name='product2[]' class='product2'></select>";
+    else if (i===9)
+        newcell.innerHTML = "<span class='glyphicon glyphicon-remove text-danger' onclick='remove_row(this)'></span>";
+    else if (i===4) 
+        newcell.innerHTML = "<input type='checkbox' name='taf[]' id='taf["+(rowcount-1)+"]'>"; 
+
     else
+
       newcell.innerHTML = table.rows[1].cells[i].innerHTML;
     
 
   }
+  pop_products2();
+  compute_totals();
+
+}
+
+function remove_row(field){
+  var x = field.parentNode.parentNode.remove();
+  compute_totals();
 
 
 }
 
+function compute_val(t_field){
+  var row = t_field.parentNode.parentNode.rowIndex;
+  var res;
+  var fld = ($(t_field).attr("name"));
+  console.log(row);
+      
+var table = document.getElementById("rec_items");
+
+var chk=table.rows[row].cells[4].children[0].checked;
+var nam=table.rows[row].cells[3].children[0].value;
+var disc=table.rows[row].cells[5].children[0].value;
+var tr=table.rows[row].cells[6].children[0].value;
+var tam=table.rows[row].cells[7].children[0].value;
+
+if (fld=="tax[]") {
+  if(chk==true)
+    res=parseInt((nam-disc)*tr);
+  else
+    res=parseInt((nam)*tr);
+}
+else {
+  res = parseInt(nam-disc+parseInt(tam));
+}
+
+console.log(res);
+
+t_field.value=res;
+}
+
+function compute_rows(){
+  console.log("focus out");
+  var nam = document.getElementsByName("namount[]");
+  var disc = document.getElementsByName("discount[]");
+  var tax = document.getElementsByName("taxrate[]");
+  var tam = document.getElementsByName("tax[]");
+  var am = document.getElementsByName("amount[]");
+  var taf = document.getElementsByName("taf[]");
+
+  console.log(nam.length);
+  //console.log(nam[0].value);
+
+
+  for(i = 0 ; i < nam.length ; i++) {
+    var d = "taf["+i+"]";
+    console.log(d);
+    if(document.getElementById(d).checked == false)
+      tam[i].value = parseInt(nam[i].value*tax[i].value);
+    else
+      tam[i].value = parseInt((nam[i].value-disc[i].value)*tax[i].value);
+
+    am[i].value = parseInt(nam[i].value - disc[i].value) + parseInt(tam[i].value);
+  }
+
+  compute_totals();  
+  
+}
+
+function compute_totals(){
+  var nam = document.getElementsByName("namount[]");
+  var disc = document.getElementsByName("discount[]");
+  var tax = document.getElementsByName("tax[]");
+  var am = document.getElementsByName("amount[]");
+  
+  var nettotal = 0;
+  var netdisc = 0;
+  var nettax = 0;
+  var invtotal = 0;
+
+    for(i = 0 ; i < nam.length ; i++) {
+
+      nettotal = parseInt(nettotal) + parseInt(nam[i].value || 0);
+      netdisc = parseInt(netdisc) + parseInt(disc[i].value || 0);
+      nettax = parseInt(nettax) + parseInt(tax[i].value || 0);
+      invtotal = parseInt(invtotal) + parseInt(am[i].value||0);
+    }
+
+  document.getElementById("sub_total").value = nettotal;
+  document.getElementById("sub_total_disc").value = netdisc;
+  document.getElementById("sub_total_tax").value = nettax;
+  document.getElementById("inv_total").value = invtotal;
+
+}
+
+
 
 </script>
 </head>
-<body onload="init()">
-<?php echo "<a style='text-align:right' href='logout.php'>logout </a>"?>
-  <div class="tp">
-    GQFL Inventory
-  </div>
-  <div class="mp">
+<body onload="inits()">
+ <?php include('navbar.html');
 
-    <div class="mlp" onclick="window.location='add_product_main.php'">
-      Add New Products
-    </div>
+  if(!$logged) {
+    echo "<div class='container' style='margin-top:10;'>";
+    err_alert("<strong>Access Denied</strong> Please log in to access");
+    echo "</div>";
+    die;
+  }
 
-    <div class="mcp" >
-      Add Inventory Item
-    </div>
+  ?>
 
-    <div class="mrp" onclick="window.location='show_inventory.php'">
-      Inventory
-    </div>
+    <!-- JUMPOTRON -->
+  <div class="jumbotron">
+    <div class="container">
+      <strong>New Inventory Record</strong>
+   </div>
+ </div>
 
 
-  </div>  
-  <!-- end mp div -->
+ <div class="container">
 
-  <div class="lp" id="mlp" >
-    <br>
 
-    New Inventory Record 
-    <form action="add_inventory2.php" method="post" onsubmit="return validate_form()" enctype="multipart/form-data" style="font-size:8pt">
-      <table border="1px" >
-       
-        <tr>
-          <td><label for="Receiving Date">Date </label></td><td>  <input type="date" name="t_date" id ="t_date"></td>
-        </tr>
-      <tr>
-        <td><label for="Invoice_ref">Invoice Number </label> </td>
-        <td><input type="text" id="inv_num" name="inv_num" placeholder="e.g. INV-0101" onchange="ret_inv_item()"></td>
-      </tr>
-       <tr>
-          <td>
-            <label for="Receiver">Received by </label> </td> 
-            <td><select name="receiver" id="receiver">
-              <option value="Warehouse" selected>Warehouse</option>1
-              <option value="Shehbaz">Shehbaz</option>
-              <option value="Hydri">Hydri</option>
-            </select>
-          </td>
-        </tr> 
-       
-        <tr>
-          <td><label for="Supplier">Supplier </label> </td>
-          <td><select name="supplier" id="slist" placeholder="Select Supplier" style="width: 200px" onclick="pop_subtype()" >
+    <form id="myform" action="add_inventory2.php" method="post" enctype="multipart/form-data">
+      
+      <div class="row">
+        <div class="col-sm-2 form-group form-inline">
+          <label for="Receiving Date">Date </label>  
+        </div>
+      
+        <div class="col-sm-3 form-group">
+          <input class="form-control" type="date" name="t_date" id ="t_date" required>
+        </div>
+
+      </div>
+
+      <div class="row">
+
+        <div class="col-sm-2 form-group form-inline">
+          <label for="Invoice_ref">Invoice #</label>
+        </div>        
+        <div class="col-sm-3 form-group ">
+          <input  class="form-control" type="text" id="inv_num" name="inv_num" placeholder="e.g. INV-0101" onchange="ret_inv_item()" required>
+        </div>
+
+      </div>
+
+      <div class="row">
+        
+        <div class="col-sm-2 form-group form-inline">
+          <label for="Supplier">Supplier </label>
+        </div>
+
+        <div class="col-sm-3 form-group ">
+          <select class="form-control" id="supplier2" name="supplier2"   onchange="pop_products2()">
           </select>
-        </td>
-      </tr>
-      <tr>
-          <td><label for="Product Type">Product Type </label> </td>
-          <td><select name="product_type" id="tlist" placeholder="Select Supplier" align="right" style="width: 100px" onchange="pop_products()">
-
-          </select> </td>
-        </tr>
-        </table>
-        <br>
-      <table border="1px" id="rec_items">
-      <tr>
-          <td> serial no. </td><td>Product Name</td><td>Product Sub type</td><td>Cases</td><td>Net Amount</td><td>Tax Amount</td>
-          <td> Gross Amount </td> </tr>
-
-        <tr>
-          <td>
-            <div id="count"></div>
-
-          </td>
-            <td><input list="plist" placeholder="Product" id="product" name="product[]" onchange="validate_product()" autocomplete="off" >
-             <datalist id="plist">
-             </datalist>  <div id ="txt_valid" style="color:red" ></div>
-           </td>
-         
-
-        <td><input type="text" id="product_sub_type" name="product_sub_type[]" placeholder="Product sub type" readonly="readonly" onclick="ajaxsearch('product_sub_type','',this)">
-        </td>
-
-        <td><input type="number" id="num_cases" name="qty[]" placeholder="e.g. 1" width="20px"></td>
+        </div>
+        
+      </div>
       
-        <td><input type="number" id="namount" name="namount[]" placeholder="e.g. 1000.24" width="20px"></td>
-        <td><input type="number" id="tax" name="tax[]" placeholder="tax 1000.24" width="20px"></td>
-        <td><input type="number" id="amount" name="amount[]" placeholder=" 12-0.24" width="20px"></td>
-        
-        
-        </tr>
-        </table>
+      <div class= "row">
 
-        <input type="button" value="add new row" onclick="newrow()">
-        
-        <br>
-        <br>
-        <table border="1px"> 
+        <div class="col-sm-2 form-group form-inline">
+            <label for="Receiver">Received by </label>
+        </div>
+
+        <div class="col-sm-3 form-group">
+          <select class="form-control" name="receiver" id="receiver">
+            <?php 
+              $locs = getlocs();
+              //print_r($locs);
+              foreach($locs as $x => $y)
+                 echo "<option value='".($y['name'])."'>".($y['name'])."</option>";
+            ?>
+          </select>
+        </div>
       
-      <tr>
-        <td><label for="Invoice_ref">Account Img ref </label> </td>
-        <td><input type="text" id="acc_ref" name="acc_ref" placeholder="5-701"></td>
-      </tr>
-
-      <tr>
-        <td><label for="file">Invoice File : </label></td>
-        <td>
-          use existing <input type="checkbox" name="existing" id="existing"  onchange="useexisting()"/> <input list="imglist" name="img_name" value="">
-          <datalist id="imglist">
-          </datalist>
-          <input type="file" accept="image/*" name="file" id="file" onchange="changeimage(this)">
+      </div>
+    
+      <table class="table table-striped table-bordered table-condensed" id="rec_items" style="margin-bottom: 4px">
+        <tr>
+          <th> # </th>
+          <th>Product Name</th>
+          <th>Cases</th>
+          <th>Net Amount</th>
+          <th>TAD</th>
+          <th>Discount</th>
+          <th>Tax Rate</th>
+          <th>Tax Amount</th>
+          <th>Gross Amount</th>
+          <th>*</th>
         </tr>
         
-        <tr>
-          <td colspan="2"><input type="Reset" onclick="init()" ><input type="submit" name="submit" id="submit" value="Add Product"></td>
-        </tr>
 
-      </table>
+          <tr>
+
+            <td>
+              <div id="count"></div>
+            </td>
+
+            <td>
+             
+                <select name="product2[]" class="product2" required> </select>
+             
+            </td>
+            
+            <td>
+              <input class="col-xs-1 form-control" type="number" id="num_cases" name="qty[]" placeholder="1" required="" >
+            </td>
+           
+
+          
+
+            <td>
+              <input class="col-xs-1 form-control" type="number" id="namount" step=".01" name="namount[]" placeholder="1000.24" required>
+            </td>
+        
+            <td>
+              <input type="checkbox" name="taf[]" id="taf[0]">
+            </td>
+            <td>
+              <input class="col-xs-1 form-control" type="number" id="discount" step=".01" name="discount[]" placeholder="1000.24">
+            </td>
+
+            <td><input class="col-xs-1 form-control" type="number" id="taxrate" step=".01" name="taxrate[]" placeholder=".17" onfocusout="compute_rows()"></td>
+
+          <td><input class="col-xs-1 form-control" type="number" id="tax" name="tax[]" placeholder="auto" onclick="compute_val(this)" readonly="readonly"></td>
+          <td><input class="col-xs-1 form-control" type="number" id="amount" name="amount[]" placeholder="auto" onclick="compute_val(this)" readonly="readonly"></td>
+          <td></td>
+          
+          
+          </tr>
+          
+            
+      
+        </table>
+        <span class="glyphicon glyphicon-plus text-success" onclick="newrow()"></span>
+        
+        <br><br>
+        
+          
+          <div class="col-xs-2 form-inline">
+            <label for="Invoice_ref">Account Img ref </label>
+          </div>
+          <div class="col-xs-3 form-group">
+            <input class="form-control" type="text" id="acc_ref" name="acc_ref" placeholder="5-701">
+          </div>
+            
+        
+        
+          
+          <div class="col-xs-4 form-inline text-right"> 
+            <label for="Invoice_ref">Sub Net Total: </label>
+          </div>
+          <div class="col-xs-3 form-group text-right"> 
+            <input class="form-control" type="number" id="sub_total" name="sub_total" placeholder="auto" onclick="compute_totals()" readonly="readonly">
+          </div>
+                  
+          <div class="col-xs-2 form-group form-inline">
+            <label for="file">Invoice File : </label>
+          </div>
+
+          <div class="col-xs-3 form-group ">
+            <input type="checkbox" name="existing" id="existing"  onchange="useexisting()"/> use existing 
+            <input class="form-control" type="file" accept="image/*" name="file" id="file">
+            <input class="form-control" list="imglist" name="img_name" value="">
+              <datalist id="imglist">
+              </datalist>
+          </div>
+
+          <div class="col-xs-4 form-group text-right"> 
+            <label for="Invoice_ref">Sub Total Disc: </label>
+          </div>
+
+          <div class="col-xs-3 form-group text-right"> 
+            <input class="form-control" type="number" id="sub_total_disc" name="sub_total_disc" placeholder="auto" onclick="compute_totals()" readonly="readonly"></td>
+          </div>
+          <div class="col-xs-4 form-group text-right"> 
+            <label for="Invoice_ref">Sub Total Tax: </label>
+          </div>
+          <div class="col-xs-3 form-group text-right"> 
+            <input class="form-control" type="number" id="sub_total_tax" name="sub_total_tax" placeholder="auto" onclick="compute_totals()" readonly="readonly"></td>
+          </div>
+
+          <div class="col-xs-4 form-group text-right"> 
+            <label for="Invoice_ref">Invoice Total: </label>
+          </div>
+          <div class="col-xs-3 form-group text-right"> 
+            <input class="form-control" type="number" id="inv_total" name="inv_total" placeholder="auto" onclick="compute_totals()" readonly="readonly"></td>
+          </div>
+
+          
+        
+
+        <div class="row">
+          <div class="col-sm-3">
+            <input class="btn btn-info" type="Reset" onclick="init()" >
+            <input class="btn btn-default" type="submit" name="submit" id="submit" value="Add Record" >
+          </div>
+
+          
+
+        </div>
+
+
+        
+
+      
     </form>
-    <p id="show_status" class="error"></p></div>
     
-    <div class="mcp" id="mcp" onclick="dispmcp()">
-      
-      <input type="button" value="Search" onclick="ajaxsearch()"><br><br>
-      <div id="results"></div>
-      
-      <br>
-      
-    </div> 
-
-    
-    <div class="rp" id="rp"><br><img src="" id="img_path"></div>
+    </div>
+    <div style="height:400px"></div>
   </body>
+  
+
   </html>

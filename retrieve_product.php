@@ -33,7 +33,7 @@ if($filter=="")
 if($product_code=="product_name"&&$filter!="")
 	$myquery="select distinct ".$product_code." from products where product_type='".$filter."'";
 if($product_code=="product_name"&&$supplier!="")
-	$myquery="select distinct ".$product_code." from products where supplier='".$supplier."'";
+	$myquery="select concat(casesize,' ',units,' || ',maker) maker,".$product_code." from products where supplier='".$supplier."'";
 if($product_code=="supplier"&&$filter!="")
 	$myquery="select distinct ".$product_code." from products where product_name='".$filter."'";
 if($product_code=="product_sub_type")
@@ -46,7 +46,7 @@ $result = $conn->query($myquery);
 while($row = $result->fetch_assoc()) 
 {
 	if($field=='product_name')
-		echo "<option value='".$row[$field]."'>";
+		echo "<option value='".$row[$field]."'>".$row['maker']."</option>";
 	else if($field=='product_sub_type')
 		echo $row[$field];
 	else

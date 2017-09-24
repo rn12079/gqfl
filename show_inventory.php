@@ -1,6 +1,24 @@
+<?php 
+/*
+function err_alert($err_msg){
+echo "<div class='alert alert-danger' role='alert'>".$err_msg."</div>";
+}
+*/
+include('alerts.php');
+
+session_start();
+$errmsg = "";
+
+if(!$_SESSION["loggedin"]) 
+  $logged = false;
+else
+  $logged = true;
+
+?>
 <html>
 <head>
   <meta charset="utf-8"> 
+  <link href="select2/select2.min.css" rel="stylesheet" />
   <style type="text/css">
     p.info {
 
@@ -131,8 +149,57 @@
       text-align:center;
     }
   </style>
-  <script type="text/javascript">
+  <script src="jquery/jquery-3.2.1.min.js"></script>  
+  <script src="select2/select2.min.js"></script>
 
+
+</script>
+  <script type="text/javascript">
+ $(document).ready(function() {
+  
+  //var sup = $('#supplier').val();
+
+  $('#test').select2({
+    placeholder: "select a product",
+    width:'300px',
+  ajax: {
+    url: 'retrieve_rows_jq.php',
+    dataType: 'json',
+    cache: true,
+    data: function(params) {
+      return {
+        q: params.term,
+        s: $('#supplier').val(),
+        r: $('#receiver').val(),
+        pt: $('#ptype').val(),
+        st: $('#stype').val()
+      };
+
+
+    },
+
+
+    processResults: function(data){
+
+      return {
+        results: $.map(data, function(obj) {
+          console.log(obj);
+          return {
+            id: obj.text,
+            text: obj.text ,
+          };
+
+        })
+      };
+
+
+    }
+    }
+});
+
+});
+/*
+Ajax block to get items for search tab
 /*
 Ajax block to get items for search tab
 */
@@ -186,7 +253,7 @@ function ajaxsearch(ret_field,upd_field){
 
 
 function init(){
-  ajaxsearch("product_name","plist");
+  //ajaxsearch("product_name","plist");
   ajaxsearch("product_type","tlist");
   ajaxsearch("receiver","rlist");
   ajaxsearch("supplier","slist");
@@ -196,7 +263,6 @@ function init(){
 
 function emptyall(){
   document.getElementById("ptype").value = "";
-  document.getElementById("product_name").value = "";
   document.getElementById("supplier").value = "";
   document.getElementById("stype").value = "";
   document.getElementById("receiver").value = "";
@@ -204,6 +270,7 @@ function emptyall(){
   document.getElementById("sdate").value = "";
   document.getElementById("edate").value = "";
   document.getElementById("inv_ref").value = "";
+  $('#test').val('').trigger('change');
   
 }
 
@@ -282,17 +349,28 @@ function toggle_dtrange(){
 
           </tr>
           <tr>
-            <td>
+             <td>
               <label for="Product Name">Product Name </label>  </td>
-              <td><input list="plist" placeholder="Product" id="product_name" name="product_name"  autocomplete="off" 
-                value="<?php echo isset($_POST['product_name']) ? htmlentities($_POST['product_name']) : '' ?>">
-                <datalist id="plist">
-                </datalist>          
+              <td>
+              <select id="test" multiple="multiple" name="test[]" width="100px">
+              <?php
+              $arr = $_POST['test'];
+              if (count($arr)>0){
+                
+                foreach($arr as $x => $y){
+                  
+                  echo "<option value='".$arr[$x]."' selected>".$arr[$x]."</option>";
+                  
+                } 
+              }
+                ?>
+                </select>
+
               </td>
               <td>
                 <label for="Supplier">Supplier </label>  </td>
                 <td>
-                  <input list="slist" type="text" name="supplier"  id ="supplier" autocomplete="off"
+                  <input list="slist" type="text" name="supplier" id="supplier" autocomplete="off"
                   value="<?php echo isset($_POST['supplier']) ? htmlentities($_POST['supplier']) : '' ?>">
                   <datalist id="slist">
                   </datalist> 
@@ -350,12 +428,20 @@ function toggle_dtrange(){
               <td  class="top">Amount</td><td  class="top">Invoice No.</td><td  class="top">Ref:</td></tr>
 
               <?php
-
+              $arr = $_POST['test'];
               $filters=array();
               $n_filters=0;
 
-              if (isset($_POST['product_name'])&&$_POST['product_name']!=""){
-                $st_name=" product_name='" .$_POST['product_name'] ."'";
+              if (count($arr)>0){
+                $c=0;
+                $st_name=" p.product_name in (";
+                foreach($arr as $x => $y){
+                  if ($c>0) $st_name = $st_name . ",";
+                  $st_name = $st_name."'".$arr[$x]."'";
+                  $c++;
+                }
+
+                $st_name = $st_name . ")";
 
                 $n_filters = $n_filters+1;
                 array_push($filters, $st_name);
@@ -435,7 +521,10 @@ function toggle_dtrange(){
 
               if($result->num_rows > 0) {
                 while($row = $result->fetch_assoc()){
-                  echo "<tr class='cells' onclick=\"window.location.href='".$url.$row["id"]."'\"><td>".$row["date"]."</td><td>".$row["receiver"]."</td><td>".$row["product_name"]."</td><td>".$row["supplier"]."</td><td>".$row["product_type"];
+                  echo "<tr class='cells' ";
+                  if ($logged) 
+                  echo "ondblclick=\"window.location.href='".$url.$row["id"]."'\"";
+                  echo"><td>".$row["date"]."</td><td>".$row["receiver"]."</td><td>".$row["product_name"]."</td><td>".$row["supplier"]."</td><td>".$row["product_type"];
                   echo "</td><td>".$row["product_sub_type"]."</td><td class='number'>".number_format($row["cases"])."</td><td class='number'>".number_format($row["amount"],2,'.',',')."</td><td>".$row["invoice_ref"];
                   echo "</td><td><a target='_blank' href='".$row["invoice_img_ref"]."'>".substr($row["invoice_img_ref"],7,strlen($row["invoice_img_ref"])-7)."</td></tr>";
                   $totalqty=$totalqty+$row["cases"];
