@@ -141,22 +141,23 @@
  $(document).ready(function() {
   
   $('.test').select2({
+    width:'300px',
   ajax: {
     url: 'retrieve_rows_jq.php',
     dataType: 'json',
-    processResults: function (data) {
-            return {
-                results: $.map(data, function (item) {
-                    return {
-                        text: item.completeName,
-                        slug: item.slug,
-                        id: item.id
-                    }
-                })
-            };
-        }
-    
-  }
+
+    processResults: function(data){
+
+      return {
+        results: $.map(data, function(obj) {
+          return {id: obj.text, text:obj.text};
+
+        })
+      };
+
+
+    }
+    }
 });
 
 });
@@ -320,7 +321,17 @@ function toggle_dtrange(){
                 </datalist>   
               
                 <select class="test" id="test" multiple="multiple" name="test[]" width="100px">
-<option>a</option>
+              <?php
+              $arr = $_POST['test'];
+              if (count($arr)>0){
+                
+                foreach($arr as $x => $y){
+                  
+                  echo "<option value='".$arr[$x]."' selected>".$arr[$x]."</option>";
+                  
+                } 
+              }
+                ?>
                 </select>
 
               </td>
@@ -378,6 +389,7 @@ function toggle_dtrange(){
             </tr>
 
           </form> 
+          
           <table align="center">
             <col width="10%"> <col width="10%"><col width="25%"><col width="15%"><col width="8%"><col width="8%"><col width="8%"><col width="8%"><col width="8%"><col width="10%">
             <tr>
@@ -385,12 +397,20 @@ function toggle_dtrange(){
               <td  class="top">Amount</td><td  class="top">Invoice No.</td><td  class="top">Ref:</td></tr>
 
               <?php
-
+              $arr = $_POST['test'];
               $filters=array();
               $n_filters=0;
 
-              if (isset($_POST['product_name'])&&$_POST['product_name']!=""){
-                $st_name=" product_name='" .$_POST['product_name'] ."'";
+              if (count($arr)>0){
+                $c=0;
+                $st_name=" p.product_name in (";
+                foreach($arr as $x => $y){
+                  if ($c>0) $st_name = $st_name . ",";
+                  $st_name = $st_name."'".$arr[$x]."'";
+                  $c++;
+                }
+
+                $st_name = $st_name . ")";
 
                 $n_filters = $n_filters+1;
                 array_push($filters, $st_name);
@@ -455,7 +475,7 @@ function toggle_dtrange(){
               }
               $myquery = $myquery . " order by date"; 
 
-//echo $myquery;
+echo $myquery;
 
               $conn = new mysqli("localhost","qasim","","mujju");
               if ($conn->connect_error)

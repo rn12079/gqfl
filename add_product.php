@@ -1,180 +1,97 @@
+<?php 
+/*
+function err_alert($err_msg){
+echo "<div class='alert alert-danger' role='alert'>".$err_msg."</div>";
+}
+*/
+include('alerts.php');
+
+session_start();
+$errmsg = "";
+
+if(!$_SESSION["loggedin"]) 
+  $logged = false;
+else
+  $logged = true;
+
+?>
+
 <html>
+
+
 <head>
-  <style type="text/css">
-    p.info {
-
-      color:grey;
-      font-size:10px;
-
-    }
-
-    p.err {
-
-      color:red;
-      font-size:10px;
-
-    }
-
-    tr.cells:nth-child(even){
-      background-color: #EBF4FA;
-    }
-
-    td.number {
-      text-align:right; 
-      padding-right:10px
-    }
-    td.bottom {
-      background-color: #f0f5f5;
-      text-align: right;
-      font-size:12px;
-      font-weight:bold;
-      padding-right: 10px;
-      height: 30px;
-    }
-
-    td.top {
-      background-color: lightgrey;
-      text-align: center;
-      font-size:16px;
-      font-weight:bold;
-      height: 30px;
-    }
-
-    td {
-      text-align: left;
-      padding-left: 10px;
-      font-size:12px;
-      height: 20px;
-    }
-
-    label {
-      text-align: left;
-      padding-left: 10px;
-      font-size:12px;
-      vertical-align: middle;
-    }
-
-    div.tp {
-      width:100%;
-      height:15%;
-      float:left;
-      background-color: #b3d9ff;
-      text-align:center;
-      font-family:Arial;
-      color:white;
-      font-size:40px;
+  <script   src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <link href="bootstrap1/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+  .navbar{
+    margin-bottom:0;
+    border-radius: 0;
+  }
+  .jumbotron{
+    //margin-bottom: 0;
+    
+  }
 
 
-    }
+</style>
+<script src="bootstrap1/js/bootstrap.min.js"></script>
 
-    div.mp {
-      float:left;
-      width:100%;
-      height:7%;
-      background-color:#b3d9ff;
-      border-bottom-style:solid;
-      border-color:grey;
-      border-width: 1px;
-      display:flex;
-    }
+<title>
+  GQFL
+</title>
 
-    div.mlp {
-
-      border-radius: 15px 15px 1px 1px;
-      width:20%;
-      padding:10px;
-      height: 30px;
-      float:left;
-      background-color:white;
-      border-style: solid;
-      border-color: grey;
-      border-width: 1px;
-      border-bottom: none;
-
-      overflow:hidden;
-
-    }
-
-    div.mcp {
-      border-radius: 15px 15px 1px 1px;
-      width:20%;
-      padding:10px;
-      float:left;
-      background-color:#e6f2ff;
-      border-style: solid;
-      border-width: 1px;
-      border-color: grey;
-      cursor:hand;
-    }
-
-    div.mrp {
-
-      border-radius: 15px 15px 1px 1px;
-      cursor:hand;
-      padding:10px;
-      width:20%;
-      float:left;
-      background-color:#e6f2ff;
-      border-style: solid;
-      border-color: grey;
-      border-width: 1px;
-
-    }
-
-
-    div.lp {
-      width:100%;
-      //border-style: solid;
-      border-color: grey;
-      background-color: white;
-      float:left;
-      overflow:hidden;
-    }
-
-    div.rp {
-      width:50%;
-      float:left;
-
-      overflow:hidden;
-      text-align:center;
-    }
-  </style>
+<script type="text/javascript">
+</script>
 </head>
-
-<body onload="init()">
-  <div class="tp">
-    GQFL Inventory
-  </div>
-  <div class="mp">
-
-    <div class="mlp"  onclick="window.location='add_product_main.php'">
-      Add New Products
-    </div>
-
-    <div class="mcp" onclick="window.location='add_invent.html'">
-      Add Inventory Items
-    </div>
-
-    <div class="mrp" onclick="window.location='show_inventory.php'">
-      Inventory
-    </div>
+<body>
 
 
-  </div>  
-  <!-- end mp div -->
+  <!-- NAVBAR + ERROR MSG IF NOT LOGGED IN-->
 
-  <div class="lp" id="mlp">
-    <br>
-    <?php
+  <?php include('navbar.html');
+
+  if(!$logged) {
+    echo "<div class='container' style='margin-top:10;'>";
+    err_alert("<strong>Access Denied</strong> Please log in to access");
+    echo "</div>";
+    die;
+  }
+
+  ?>
+
+    <!-- JUMPOTRON -->
+  <div class="jumbotron text-center">
+    <div class="container">
+     <h1><SMALL> New Product </SMALL></h1>
+   </div>
+ </div>
+
+ <div class="container">
+ 
+
+ <?php
+ 
     $txt_name = $_POST["txt_name"]; 
     $txt_type = $_POST["txt_type"];
     $txt_sub_type = $_POST["txt_sub_type"]; 
     $txt_supplier = $_POST["txt_supplier"];
+    $txt_source = $_POST["txt_source"];
+    $txt_cases = $_POST["txt_case_size"];
+    $txt_unit = $_POST["txt_unit"];
+
+
+
+
 //echo "txt ".$txt_name;
-    if ($txt_name=="") die("error, no product name");
+    if ($txt_name=="") die(err_alert("<strong> !No Product Name </strong> Please enter valid Product name"));
+    if ($txt_supplier=="") die(err_alert("<strong> !No Supplier </strong> Please enter valid Supplier name"));
+    if ($txt_type=="") die(err_alert("<strong> !No Product Type</strong> Please enter valid Product Type"));
     /* add supplier already exist check */
     $chkquery = "select count(*) as cnt from products where";
     $chkquery = $chkquery. " product_name='".$txt_name."' and product_sub_type='".$txt_sub_type."' and supplier='".$txt_supplier."'";
+    $chkquery = $chkquery. " and product_type='".$txt_type."' and maker='".$txt_source."' and casesize='".$txt_cases."'";
+    $chkquery = $chkquery. " and units='".$txt_unit."'";
+
 
 //echo "<p>" . $chkquery." </p><br>";
 
@@ -182,8 +99,9 @@
 
     /* query for adding supplier */
 
-    $myquery="insert into products(product_name,product_type,product_sub_type,supplier) values('";
-    $myquery = $myquery . $txt_name . "','" . $txt_type . "','" . $txt_sub_type . "','" . $txt_supplier . "');";
+    $myquery="insert into products(product_name,product_type,product_sub_type,supplier,maker,casesize,units) values('";
+    $myquery = $myquery . $txt_name . "','" . $txt_type . "','" . $txt_sub_type . "','" . $txt_supplier . "','";
+    $myquery = $myquery . $txt_source . "','".$txt_cases."','".$txt_unit."');";
 //echo "<p>" . $myquery." </p><br>";
 
 $conn = new mysqli("localhost","qasim","","mujju");
@@ -193,7 +111,10 @@ if ($conn->connect_error)
 }
 
     /* check and stop if product already exists */
-    $check = $conn->query($chkquery);
+    if(!$check = $conn->query($chkquery)){
+      err_alert($conn->error);
+      die;
+    }
     $check1 = $check->fetch_assoc();
     $check2 = $check1['cnt'];
 //echo "check == $check2";
@@ -201,25 +122,35 @@ if ($conn->connect_error)
     /* if product is not added continue to add else block */
     if($check2==0){
       if (!$conn->query($myquery))  {
-        echo "<br><p class='err'> Insert query failed.</br>";
+        err_alert("Insert query failed");
         die('Error: ' . $conn->error);
         
       }
+
+      echo "<div class='panel panel-success'>";
+      echo "<div class='panel-heading'>Product Successfully Added</div>";
+      echo "<div class='panel-body'>";
       echo "Product Name :  ". $txt_name . "<br>";
+      echo "Supplier :  ". $txt_supplier . "<br>";
+      echo "Source/Maker :  ". $txt_source . "<br>";
       echo "Product Type :  ". $txt_type . "<br>";
       echo "Product Sub Type :  ". $txt_sub_type . "<br>";
-      echo "Supplier :  ". $txt_supplier . "<br>";
-      echo "<br><br>Successful :  1 record added ";
+      echo "Case Size : ".$txt_cases." "."$txt_unit";
+      
+      echo "</div>";
+      echo "</div>";
     }
     else {
-     echo "<p class='err'>Product already added</p>";
-     echo "<p class='err'>".$myquery."</p>";
+     err_alert("Product already added");
+     err_alert($myquery);
    }
    mysqli_close ($conn);
 
    ?>
+
+    <br><a href="add_product_main.php" class="btn btn-primary" role="button"> Add another record </a>
+
  </div>
- <br> Add another record <input type=button onclick="window.location('add_product_main.php')" value="Add new Record">
 </body>
 </html>
 

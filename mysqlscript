@@ -1,0 +1,29 @@
+mysql for adding invoice tax and other details;
+
+alter table inventory  add column created_date date  , add column modified_date date;
+
+alter table inventory change inners tax double;
+
+alter table inventory  add column discount double;
+
+alter table inventory add column tad int;
+
+alter table products add column maker varchar(255);
+
+alter table products add column casesize int;
+
+alter table products add column units varchar(20);
+
+create table locations (id int not null auto_increment, name varchar(255), type varchar(255), primary key (id));
+
+insert into locations(name,type) values ('P Block','dry');
+insert into locations(name,type) values ('Sana','cold');
+insert into locations(name,type) values ('Hydri','store');
+insert into locations(name,type) values ('Shehbaz','store');
+
+
+
+
+
+
+

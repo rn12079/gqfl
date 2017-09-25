@@ -1,172 +1,85 @@
+<?php 
+/*
+function err_alert($err_msg){
+echo "<div class='alert alert-danger' role='alert'>".$err_msg."</div>";
+}
+*/
+include('alerts.php');
+include('db_funcs.php');
+
+session_start();
+$errmsg = "";
+
+if(!$_SESSION["loggedin"]) 
+  $logged = false;
+else
+  $logged = true;
+
+?>
+
+
 <html>
 <head>
-  <style type="text/css">
-    p.info {
+<link href="select2/select2.min.css" rel="stylesheet" />
+<link href="bootstrap1/css/bootstrap.min.css" rel="stylesheet">
+<title>GQFL - Add Inventory</title>
+<style>
 
-      color:grey;
-      font-size:10px;
+label {
 
-    }
+  padding-top: 4px;
 
-    p.err {
+}
+  .navbar{
+    margin-bottom:0;
+    border-radius: 0;
+  }
+  .jumbotron{
+    //margin-bottom: 0;
+    
+  }
+  .form-group {
 
-      color:red;
-      font-size:10px;
-
-    }
-
-    tr.cells:nth-child(even){
-      background-color: #EBF4FA;
-    }
-
-    td.number {
-      text-align:right; 
-      padding-right:10px
-    }
-    td.bottom {
-      background-color: #f0f5f5;
-      text-align: right;
-      font-size:12px;
-      font-weight:bold;
-      padding-right: 10px;
-      height: 30px;
-    }
-
-    td.top {
-      background-color: lightgrey;
-      text-align: center;
-      font-size:16px;
-      font-weight:bold;
-      height: 30px;
-    }
-
-    td {
-      text-align: left;
-      padding-left: 10px;
-      font-size:12px;
-      height: 20px;
-    }
-
-    label {
-      text-align: left;
-      padding-left: 10px;
-      font-size:12px;
-      vertical-align: middle;
-    }
-
-    div.tp {
-      width:100%;
-      height:15%;
-      float:left;
-      background-color: #b3d9ff;
-      text-align:center;
-      font-family:Arial;
-      color:white;
-      font-size:40px;
+    margin-bottom:2px;
 
 
-    }
+  }
 
 
-    div.mp {
-      float:left;
-      width:100%;
-      height:7%;
-      background-color:#b3d9ff;
-      border-bottom-style:solid;
-      border-color:grey;
-      border-width: 1px;
-      display:flex;
-    }
-
-    div.mlp {
-      border-radius: 15px 15px 1px 1px;
-      cursor:hand;
-      padding:10px;
-      width:20%;
-      float:left;
-      background-color:#e6f2ff;
-      border-style: solid;
-      border-color: grey;
-      border-width: 1px;
+</style>
+<script src="jquery/jquery-3.2.1.min.js"></script>
+<script src="bootstrap1/js/bootstrap.min.js"></script>
+<script src="select2/select2.min.js"></script>
 
 
-    }
-
-    div.mcp {
-      border-radius: 15px 15px 1px 1px;
-      width:20%;
-      padding:10px;
-      height: 30px;
-      float:left;
-      background-color:white;
-      border-style: solid;
-      border-color: grey;
-      border-width: 1px;
-      border-bottom: none;
-
-      overflow:hidden;
-    }
-
-    div.mrp {
 
 
-      border-radius: 15px 15px 1px 1px;
-      width:20%;
-      padding:10px;
-      float:left;
-      background-color:#e6f2ff;
-      border-style: solid;
-      border-width: 1px;
-      border-color: grey;
-      cursor:hand;
-    }
+ <script type="text/javascript"></script>
 
-
-    div.lp {
-      width:100%;
-      //border-style: solid;
-      border-color: grey;
-      background-color: white;
-      float:left;
-      overflow:hidden;
-    }
-
-    div.rp {
-      width:50%;
-      float:left;
-
-      overflow:hidden;
-      text-align:center;
-    }
-
-  </style>
-</head>
 <body onload="init()">
-  <div class="tp">
-    GQFL Inventory
-  </div>
-  <div class="mp">
+  <?php include('navbar.html');
+  $bool_upload = false;
+  $bool_succ = false;
 
-    <div class="mlp"  onclick="window.location='add_product_main.php'">
-      Add New Products
-    </div>
+  if(!$logged) {
+    echo "<div class='container' style='margin-top:10;'>";
+    err_alert("<strong>Access Denied</strong> Please log in to access");
+    echo "</div>";
+    die;
+  }
 
-    <div class="mcp" onclick="window.location='add_invent.php'">
-      Add Inventory Items
-    </div>
+  ?>
 
-    <div class="mrp" onclick="window.location='show_inventory.php'">
-      Inventory
-    </div>
+    <!-- JUMPOTRON -->
+  <div class="jumbotron">
+    <div class="container">
+      <strong>New Inventory Record</strong>
+   </div>
+ </div>
 
 
-  </div>  
-  <!-- end mp div -->
-
-  <div class="lp" id="mlp">
-    <br>
-    <?php
+ <div class="container">
+   <?php
 
     if(!isset( $_POST['existing']) )
     {
@@ -176,7 +89,7 @@
       if ($upload_filename!="") {
 //echo $upload_filename;
         if($_FILES['file']['error']!== UPLOAD_ERR_OK) {
-          die("<p class='err'>Upload failed with error". $_FILES['file']['error']."</p>");
+          die(err_alert("Upload failed with error". $_FILES['file']['error']));
         }
 
         $filetemp = $_FILES["file"]["name"];
@@ -195,7 +108,7 @@
 
 
         if(! (in_array($mime,$allowedmimes)))
-          die ("Unknown file type");
+          die (err_alert("Unknown file type"));
 
         
         $ofile = "upload/".$filename;
@@ -217,14 +130,17 @@
        }
 
        move_uploaded_file($_FILES["file"]["tmp_name"],"upload/" . $filename);
+       $bool_upload = true;
      }
      else 
-      echo "<p class='err'>no image uploaded</p>";
+      err_alert("No Image Uploaded");
   }
   else 
-    {$ofile = $_POST["img_name"];
-  echo "existing image file used: " . $ofile;
-}
+    {
+      $ofile = $_POST["img_name"];
+      $bool_upload = true;
+      
+    }
 
 
 //echo "Stored in: " . "upload/" . $filename."<br>";
@@ -242,16 +158,18 @@ $supplier = $_POST["supplier"];
 $product_type = $_POST["product_type"]; // product_type
 $inv_num = $_POST["inv_num"];
 
-$product = $_POST["product"];
-$product_sub_type = $_POST["product_sub_type"];
+$product = $_POST["product2"];
 $qty = $_POST["qty"];
 $namount = $_POST["namount"];
+$taf = $_POST["taf"];
+$discount = $_POST["discount"];
+$tax_rate = $_POST["taxrate"];
 $tax = $_POST["tax"];
 $amount = $_POST["amount"];
 
 $acc_ref = $_POST["acc_ref"];
 
-
+print_r($taf);
 $conn = new mysqli("localhost","qasim","","mujju");
 if ($conn->connect_error)
 {
@@ -261,46 +179,60 @@ $cnt=1;
 
 foreach($product as $x => $y) {
 
+/*
+    echo "product " . $product[$x] . "<br>";
+    echo "qty " . $qty[$x] . "<br>";
+    echo "namount " . $namount[$x] . "<br>";
+    echo "taf " .$taf[$x] . "<br>";
+    echo "discount " . $discount[$x] . "<br>";
+    echo "tax_rate " . $tax_rate[$x] . "<br>";
+    echo "tax " . $tax[$x] . "<br>";
+    echo "amount " . $amount[$x] . "<br>";
+  
+*/
 
-  /*  echo "product" . $product[$x] . "<br>";
-    echo "sub" . $sub[$x] . "<br>";
-    echo "qty" . $qty[$x] . "<br>";
-    echo "namount" . $namount[$x] . "<br>";
-    echo "tax" . $tax[$x] . "<br>";
-    echo "amount" . $amount[$x] . "<br>";
-  */
-
-
-
-
+$b_taf = 0;
   if($product[$x]!="") {
 
+    if (isset($taf[$x])){
+      $b_taf = 1;
+      $taf_cnt++;
+    }
 
     $subquery = "select distinct id from products where product_name='".$product[$x]."' and product_type='".$product_type. "'";
     $subquery = $subquery . " and product_sub_type='".$product_sub_type[$x]."' and supplier='".$supplier."'";
 
-    $myquery="insert into inventory(date,receiver,product_id,cases,amount,invoice_ref,acc_ref,invoice_img_ref) values('";
-    $myquery = $myquery . $t_date . "','" . $receiver . "',(" . $subquery . ")," . $qty[$x] . "," . $amount[$x];
+    $myquery="insert into inventory(date,created_date,receiver,product_id,cases,namount,tad,discount,taxrate,tax,amount,invoice_ref,acc_ref,invoice_img_ref) values('";
+    $myquery = $myquery . $t_date . "','" . date("Y-m-d") ."','" . $receiver . "',";
+    $myquery = $myquery . $product[$x]."," . $qty[$x] . "," . $namount[$x] . "," .$b_taf. ",'";
+    $myquery = $myquery . $discount[$x] . "','" . $tax_rate[$x] . "'," . $tax[$x] . "," . $amount[$x] ;
     $myquery= $myquery . ",'" . $inv_num . "','" . $acc_ref . "','" . $ofile . "')";
-    //echo "<p>" . $myquery." </p><br>";
+    echo "<p>" . $myquery  ." </p><br>";
 
 
-
+    
     if (!$conn->query($myquery))  {
       unlink($ofile);
-      echo "<br><p class='err'> Insert query failed. Image also deleted </p></br>";
+      err_alert( "<strong>Insert query failed.</strong> Image also deleted ");
       die('Could not connect: ' . $conn->error);
       
     }
-    echo "Successful :  ".$cnt++." record added<br>";
+    succ_alert("<strong>Successful</strong> :  ".$cnt++." record added");
+    $bool_succ = true;
   }
+
 }
 
+if ($bool_upload==true)
+    succ_alert("existing image file used: <strong>" . $ofile . "</strong>");
 mysqli_close ($conn);
 //}*/
+
+
 ?>
 
-<br> Add another record <input type=button onclick="window.location('add_invent.html')" value="Add new Record">
+  <br><a href='add_invent.php' class="btn btn-primary" role="button">Add Another Record</a>
+</div>
 </body>
 </html>
 

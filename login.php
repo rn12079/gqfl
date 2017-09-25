@@ -5,7 +5,7 @@ if(isset($_POST['sub']))
 	if($_POST['pass'] == "hello"){
 		$_SESSION['loggedin'] = true;
 		echo "successfully logged in <br> ";
-		echo "add inventory item <a href='add_invent.php'> here </a>";
+		echo "add inventory item <a href='add_invent.php'> here </a>";	
 
 	}
 	else
