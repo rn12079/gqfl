@@ -528,10 +528,10 @@ function compute_totals(){
             </td>
 
             <td>
-              <input class="col-xs-1 form-control" type="number" id="discount" step=".01" name="discount[]" value="<?php echo $discount; ?>">
+              <input class="col-xs-1 form-control" type="number" id="discount" step=".01" name="discount[]" value="<?php if ($discount=="") echo 0; else echo $discount; ?>">
             </td>
 
-            <td><input class="col-xs-1 form-control" type="number" id="taxrate" step=".01" name="taxrate[]"  value="<?php echo $taxrate; ?>"onblur="compute_rows()"></td>
+            <td><input class="col-xs-1 form-control" type="number" id="taxrate" step=".01" name="taxrate[]"  value="<?php if ($taxrate=="") echo 0; else echo $taxrate; ?>"onblur="compute_rows()"></td>
 
             <td><input class="col-xs-1 form-control" type="number" id="tax" name="tax[]" value="<?php echo $tax ?>" onclick="compute_val(this)" readonly="readonly"></td>
 
