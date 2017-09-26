@@ -569,10 +569,10 @@ function compute_totals(){
               <input type="checkbox" name="taf[]" id="taf[0]">
             </td>
             <td>
-              <input class="col-xs-1 form-control" type="number" id="discount" step=".01" name="discount[]" placeholder="1000.24">
+              <input class="col-xs-1 form-control" type="number" id="discount" step=".01" name="discount[]" value="0">
             </td>
 
-            <td><input class="col-xs-1 form-control" type="number" id="taxrate" step=".01" name="taxrate[]" placeholder=".17" onfocusout="compute_rows()"></td>
+            <td><input class="col-xs-1 form-control" type="number" id="taxrate" step=".01" name="taxrate[]" value="0.0" onfocusout="compute_rows()"></td>
 
           <td><input class="col-xs-1 form-control" type="number" id="tax" name="tax[]" placeholder="auto" onclick="compute_val(this)" readonly="readonly"></td>
           <td><input class="col-xs-1 form-control" type="number" id="amount" name="amount[]" placeholder="auto" onclick="compute_val(this)" readonly="readonly"></td>
