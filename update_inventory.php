@@ -169,6 +169,8 @@ label {
     $acc_ref=$_POST["acc_ref"];
     $invoice_img_ref=$_POST["invoice_img_ref"];
 
+    print_r($tad);
+
 $upd_cnt = 0;
 
 while($upd_cnt < count($id)) {
