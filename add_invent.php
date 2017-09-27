@@ -341,7 +341,7 @@ function newrow(){
     else if (i===9)
         newcell.innerHTML = "<span class='glyphicon glyphicon-remove text-danger' onclick='remove_row(this)'></span>";
     else if (i===4) 
-        newcell.innerHTML = "<input type='checkbox' name='taf[]' id='taf["+(rowcount-1)+"]'>"; 
+        newcell.innerHTML = "<input type='checkbox' name='taf["+(rowcount-1)+"]' id='taf["+(rowcount-1)+"]'>"; 
 
     else
 
@@ -457,7 +457,7 @@ function compute_totals(){
     echo "</div>";
     die;
   }
-
+  $cnt = 0;
   ?>
 
     <!-- JUMPOTRON -->

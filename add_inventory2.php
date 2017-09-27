@@ -170,6 +170,7 @@ $amount = $_POST["amount"];
 $acc_ref = $_POST["acc_ref"];
 
 print_r($taf);
+print_r($discount);
 $conn = new mysqli("localhost","qasim","","mujju");
 if ($conn->connect_error)
 {
