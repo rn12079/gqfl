@@ -199,6 +199,8 @@ $b_taf = 0;
       $taf_cnt++;
     }
 
+    if ($discount[$x]=="") 
+	$discount[$x]=0;
     $subquery = "select distinct id from products where product_name='".$product[$x]."' and product_type='".$product_type. "'";
     $subquery = $subquery . " and product_sub_type='".$product_sub_type[$x]."' and supplier='".$supplier."'";
 
