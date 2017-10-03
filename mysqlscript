@@ -6,11 +6,9 @@ alter table inventory change inners tax double;
 
 alter table inventory  add column discount double;
 
-alter table inventory  add column taxrate double;
-
-alter table inventory  add column namount double;
-
 alter table inventory add column tad int;
+
+alter table inventory change loose namount double;
 
 alter table products add column maker varchar(255);
 

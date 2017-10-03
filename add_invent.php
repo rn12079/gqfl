@@ -392,12 +392,14 @@ t_field.value=res;
 
 function compute_rows(){
   console.log("focus out");
+  var qty = document.getElementsByName("qty[]");
   var nam = document.getElementsByName("namount[]");
   var disc = document.getElementsByName("discount[]");
   var tax = document.getElementsByName("taxrate[]");
   var tam = document.getElementsByName("tax[]");
   var am = document.getElementsByName("amount[]");
   var taf = document.getElementsByName("taf[]");
+  var up = document.getElementsByName("unitprice[]");
 
   console.log(nam.length);
   //console.log(nam[0].value);
@@ -407,11 +409,12 @@ function compute_rows(){
     var d = "taf["+i+"]";
     console.log(d);
     if(document.getElementById(d).checked == false)
-      tam[i].value = parseInt(nam[i].value*tax[i].value);
+      tam[i].value = Math.round(parseFloat(nam[i].value*tax[i].value) * 100) / 100;
     else
-      tam[i].value = parseInt((nam[i].value-disc[i].value)*tax[i].value);
+      tam[i].value = Math.round(parseFloat((nam[i].value-disc[i].value)*tax[i].value) * 100) / 100;
 
-    am[i].value = parseInt(nam[i].value - disc[i].value) + parseInt(tam[i].value);
+    am[i].value = Math.round((parseFloat(nam[i].value - disc[i].value) + parseFloat(tam[i].value)) * 100) / 100;
+    up[i].value = Math.round(parseFloat(nam[i].value - disc[i].value) / parseFloat(qty[i].value) * 100) / 100;
   }
 
   compute_totals();  
@@ -536,6 +539,7 @@ function compute_totals(){
           <th>TAD</th>
           <th>Discount</th>
           <th>Tax Rate</th>
+          <th>Unit Price</th>
           <th>Tax Amount</th>
           <th>Gross Amount</th>
           <th>*</th>
@@ -572,10 +576,13 @@ function compute_totals(){
               <input class="col-xs-1 form-control" type="number" id="discount" step=".01" name="discount[]" value="0">
             </td>
 
-            <td><input class="col-xs-1 form-control" type="number" id="taxrate" step=".01" name="taxrate[]" value="0.0" onfocusout="compute_rows()"></td>
+            <td><input class="col-xs-1 form-control" type="number" id="taxrate" step=".01" name="taxrate[]" value="0.0"></td>
+            <td>
+                <input class="col-xs-1 form-control" type="number" id="unitprice" step=".01" name="unitprice[]" readonly="readonly">
+            </td>
 
-          <td><input class="col-xs-1 form-control" type="number" id="tax" name="tax[]" placeholder="auto" onclick="compute_val(this)" readonly="readonly"></td>
-          <td><input class="col-xs-1 form-control" type="number" id="amount" name="amount[]" placeholder="auto" onclick="compute_val(this)" readonly="readonly"></td>
+          <td><input class="col-xs-1 form-control" type="number" id="tax" name="tax[]" placeholder="auto" readonly="readonly"></td>
+          <td><input class="col-xs-1 form-control" type="number" id="amount" name="amount[]" placeholder="auto" readonly="readonly"></td>
           <td></td>
           
           

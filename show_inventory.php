@@ -17,7 +17,11 @@ else
 ?>
 <html>
 <head>
+
+
+
   <meta charset="utf-8"> 
+  <link href="bootstrap1/css/bootstrap.min.css" rel="stylesheet">
   <link href="select2/select2.min.css" rel="stylesheet" />
   <style type="text/css">
     p.info {
@@ -120,7 +124,7 @@ else
       border-radius: 15px 15px 1px 1px;
       width:20%;
       padding:10px;
-      height: 30px;
+      height: 130px;
       float:left;
       background-color:white;
       border-style: solid;
@@ -149,7 +153,8 @@ else
       text-align:center;
     }
   </style>
-  <script src="jquery/jquery-3.2.1.min.js"></script>  
+  <script src="jquery/jquery-3.2.1.min.js"></script> 
+  <script src="bootstrap1/js/bootstrap.min.js"></script> 
   <script src="select2/select2.min.js"></script>
 
 
@@ -321,7 +326,7 @@ function toggle_dtrange(){
       <br>
 
       <form  action="show_inventory.php" method="post" enctype="multipart/form-data">
-        <table border="1px">
+        <table border="1px" style="padding: 5px">
           <tr><td>
             <label for="Product Type">Product Type </label></td><td>  
             <input list="tlist" id="ptype" name="ptype" placeholder="Product Type" align="right" autocomplete="off"
@@ -422,10 +427,10 @@ function toggle_dtrange(){
 
           </form> 
           <table align="center">
-            <col width="8%"> <col width="8%"><col width="24%"><col width="10%"><col width="8%"><col width="8%"><col width="5%"><col width="8%"><col width="8%"><col width="10%">
+            <col width="8%"> <col width="8%"><col width="16%"><col width="10%"><col width="6%"><col width="7%"><col width="5%"><col width="10%"><col width="10%"><col width="10%"><col width="10%">
             <tr>
-              <td  class="top" >Date</td><td  class="top">Receiver</td><td  class="top">Product Name</td><td  class="top">Supplier</td><td  class="top">Product Type</td><td  class="top">Subtype</td><td class="top">Qty</td>
-              <td  class="top">Amount</td><td  class="top">Invoice No.</td><td  class="top">Ref:</td></tr>
+              <td  class="top" >Date</td><td  class="top">Receiver</td><td  class="top">Product Name</td><td  class="top">Supplier</td><td  class="top">Type</td><td  class="top">Subtype</td><td class="top">Qty</td><td class="top">U. price</td>
+              <td  class="top">Amount</td><td  class="top">Inv #</td><td  class="top">Ref:</td></tr>
 
               <?php
               $arr = $_POST['test'];
@@ -491,7 +496,7 @@ function toggle_dtrange(){
 //echo "total filters : " . $n_filters . "<br>";
 
 
-              $myquery = "select i.id,date,receiver,product_name,supplier,product_type,product_sub_type,cases,amount,invoice_ref,invoice_img_ref from products p ";
+              $myquery = "select i.id,date,receiver,product_name,supplier,product_type,product_sub_type,cases,amount,truncate((namount-discount)/cases,2) as unitprice,invoice_ref,invoice_img_ref from products p ";
               $myquery = $myquery . "inner join inventory i on i.product_id=p.id where del=0 ";
 
               //if($n_filters>0)
@@ -518,15 +523,47 @@ function toggle_dtrange(){
               $totalqty =0;
               $totalamount=0;
               $url = "edit_invent.php?id=";
+              $myarray = array();
+              $p_cnt = 0; 
+              $up = 0;
 
               if($result->num_rows > 0) {
                 while($row = $result->fetch_assoc()){
                   echo "<tr class='cells' ";
+                  $up = $row["unitprice"];
+
+                  
+
                   if ($logged) 
                   echo "ondblclick=\"window.location.href='".$url.$row["id"]."'\"";
                   echo"><td>".$row["date"]."</td><td>".$row["receiver"]."</td><td>".$row["product_name"]."</td><td>".$row["supplier"]."</td><td>".$row["product_type"];
-                  echo "</td><td>".$row["product_sub_type"]."</td><td class='number'>".number_format($row["cases"])."</td><td class='number'>".number_format($row["amount"],2,'.',',')."</td><td>".$row["invoice_ref"];
-                  echo "</td><td><a target='_blank' href='".$row["invoice_img_ref"]."'>".substr($row["invoice_img_ref"],7,strlen($row["invoice_img_ref"])-7)."</td></tr>";
+                  echo "</td><td>".$row["product_sub_type"]."</td><td class='number'>".number_format($row["cases"])."</td><td class='number'>";
+
+                  if(isset($myarray[$row["product_name"]])){
+                    $pval = $myarray[$row["product_name"]];
+                    if ($up > $pval && ($up/$pval-1.0)>0.03) {
+                      echo /*$up. " / ".$pval. " = ". */bcadd(bcdiv($up,$pval,3),-1,2)*100 . "%";
+                      $myarray[$row["product_name"]] = $up;
+                      echo "<span class='glyphicon glyphicon-arrow-up text-danger'></span>";
+                      
+                    }
+                    if ($up < $myarray[$row["product_name"]] && ($pval/$up-1.0>0.03)) {
+                      echo /*$up. " / ".$pval. " = ". */bcadd(bcdiv($up,$pval,3),-1,2)*100 . "%";
+                      $myarray[$row["product_name"]] = $up;
+                      echo "  <span class='glyphicon glyphicon-arrow-down text-success'></span>";
+                    }
+                  } else
+                  $myarray[$row["product_name"]] = $up;
+
+
+                  echo number_format($row["unitprice"],2,'.',',');
+
+                  ;
+                  echo "</td><td class='number'>".number_format($row["amount"],2,'.',',')."</td><td>".$row["invoice_ref"];
+                  echo "</td><td><a target='_blank' href='".$row["invoice_img_ref"]."'>".substr($row["invoice_img_ref"],7,strlen($row["invoice_img_ref"])-11)."</td></tr>";
+                  
+                  
+                  
                   $totalqty=$totalqty+$row["cases"];
                   $totalamount=$totalamount+$row["amount"];
                 }
@@ -537,6 +574,9 @@ function toggle_dtrange(){
               echo "</table>";
               echo "<br><p class='info'>  total number of records : ".$result->num_rows ."</p>" ;
               mysqli_close ($conn);
+              
+              ;
+              
               ?>
 
             </div> 

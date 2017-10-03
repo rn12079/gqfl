@@ -49,7 +49,7 @@ $conn->close();
 
 function getprods($prod_id) {
 
-  $myquery = "select distinct p.id,product_name ,coalesce(concat(casesize,units,' | ',maker),'na') as hint from products p ";
+  $myquery = "select distinct p.id,product_name,coalesce(concat(casesize,units,' | ',maker),'na') as hint from products p ";
   $myquery = $myquery . "inner join inventory i on i.product_id=p.id where p.id = '".$prod_id."'";
 
   $conn = new mysqli("localhost","qasim","","mujju");
