@@ -341,7 +341,7 @@ function newrow(){
     else if (i===10)
         newcell.innerHTML = "<span class='glyphicon glyphicon-remove text-danger' onclick='remove_row(this)'></span>";
     else if (i===4) 
-        newcell.innerHTML = "<input type='checkbox' name='taf["+(rowcount-1)+"]' id='taf["+(rowcount-1)+"]'>"; 
+        newcell.innerHTML = "<input type='checkbox' name='tad["+(rowcount-1)+"]' id='tad["+(rowcount-1)+"]'>"; 
 
     else
 
@@ -398,7 +398,7 @@ function compute_rows(){
   var tax = document.getElementsByName("taxrate[]");
   var tam = document.getElementsByName("tax[]");
   var am = document.getElementsByName("amount[]");
-  var taf = document.getElementsByName("taf[]");
+  var tad = document.getElementsByName("tad[]");
   var up = document.getElementsByName("unitprice[]");
 
   console.log(nam.length);
@@ -406,7 +406,7 @@ function compute_rows(){
 
 
   for(i = 0 ; i < nam.length ; i++) {
-    var d = "taf["+i+"]";
+    var d = "tad["+i+"]";
     console.log(d);
     if(document.getElementById(d).checked == false)
       tam[i].value = Math.round(parseFloat(nam[i].value*tax[i].value) * 100) / 100;
@@ -570,7 +570,7 @@ function compute_totals(){
             </td>
         
             <td>
-              <input type="checkbox" name="taf[]" id="taf[0]">
+              <input type="checkbox" name="tad[]" id="tad[0]">
             </td>
             <td>
               <input class="col-xs-1 form-control" type="number" id="discount" step=".01" name="discount[]" value="0">

@@ -174,7 +174,7 @@ label {
 $upd_cnt = 0;
 
 while($upd_cnt < count($id)) {
-  $b_taf=0;
+  $b_tad=0;
 
   $retquery = "select i.id,date,receiver,product_name,supplier,cases,amount,invoice_ref,acc_ref,invoice_img_ref from products p ";
   $retquery = $retquery . "inner join inventory i on i.product_id=p.id where i.id='".$id."'";
@@ -200,10 +200,10 @@ while($upd_cnt < count($id)) {
     
 
     if(isset($tad[$upd_cnt]))
-      $b_taf=1;
+      $b_tad=1;
 
   $myquery = "update inventory set cases='" .$cases[$upd_cnt]. "', namount='".$namount[$upd_cnt]."'";
-  $myquery = $myquery . ", discount='" . $discount[$upd_cnt] . "', tad='" . $b_taf . "', taxrate='" . $taxrate[$upd_cnt] . "', tax='" . $tax[$upd_cnt]. "', amount='".$amount[$upd_cnt];
+  $myquery = $myquery . ", discount='" . $discount[$upd_cnt] . "', tad='" . $b_tad . "', taxrate='" . $taxrate[$upd_cnt] . "', tax='" . $tax[$upd_cnt]. "', amount='".$amount[$upd_cnt];
   $myquery = $myquery . "', invoice_ref='" . $invoice_ref;
   $myquery = $myquery . "', acc_ref='" . $acc_ref;
   $myquery = $myquery . "',  invoice_img_ref='" . $ofile . "'";

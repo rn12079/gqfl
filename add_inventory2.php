@@ -161,7 +161,7 @@ $inv_num = $_POST["inv_num"];
 $product = $_POST["product2"];
 $qty = $_POST["qty"];
 $namount = $_POST["namount"];
-$taf = $_POST["taf"];
+$tad = $_POST["tad"];
 $discount = $_POST["discount"];
 $tax_rate = $_POST["taxrate"];
 $tax = $_POST["tax"];
@@ -169,7 +169,7 @@ $amount = $_POST["amount"];
 
 $acc_ref = $_POST["acc_ref"];
 
-print_r($taf);
+print_r($tad);
 print_r($discount);
 $conn = new mysqli("localhost","qasim","","mujju");
 if ($conn->connect_error)
@@ -184,7 +184,7 @@ foreach($product as $x => $y) {
     echo "product " . $product[$x] . "<br>";
     echo "qty " . $qty[$x] . "<br>";
     echo "namount " . $namount[$x] . "<br>";
-    echo "taf " .$taf[$x] . "<br>";
+    echo "tad " .$tad[$x] . "<br>";
     echo "discount " . $discount[$x] . "<br>";
     echo "tax_rate " . $tax_rate[$x] . "<br>";
     echo "tax " . $tax[$x] . "<br>";
@@ -192,12 +192,12 @@ foreach($product as $x => $y) {
   
 */
 
-$b_taf = 0;
+$b_tad = 0;
   if($product[$x]!="") {
 
-    if (isset($taf[$x])){
-      $b_taf = 1;
-      $taf_cnt++;
+    if (isset($tad[$x])){
+      $b_tad = 1;
+      $tad_cnt++;
     }
 
     if ($discount[$x]=="") 
@@ -207,7 +207,7 @@ $b_taf = 0;
 
     $myquery="insert into inventory(date,created_date,receiver,product_id,cases,namount,tad,discount,taxrate,tax,amount,invoice_ref,acc_ref,invoice_img_ref) values('";
     $myquery = $myquery . $t_date . "','" . date("Y-m-d") ."','" . $receiver . "',";
-    $myquery = $myquery . $product[$x]."," . $qty[$x] . "," . $namount[$x] . "," .$b_taf. ",'";
+    $myquery = $myquery . $product[$x]."," . $qty[$x] . "," . $namount[$x] . "," .$b_tad. ",'";
     $myquery = $myquery . $discount[$x] . "','" . $tax_rate[$x] . "'," . $tax[$x] . "," . $amount[$x] ;
     $myquery= $myquery . ",'" . $inv_num . "','" . $acc_ref . "','" . $ofile . "')";
     echo "<p>" . $myquery  ." </p><br>";

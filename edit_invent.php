@@ -265,12 +265,14 @@ document.onreadystatechange = function(){
 
 function compute_rows(){
   console.log("focus out");
+  var qty = document.getElementsByName("qty[]");
   var nam = document.getElementsByName("namount[]");
   var disc = document.getElementsByName("discount[]");
   var tax = document.getElementsByName("taxrate[]");
   var tam = document.getElementsByName("tax[]");
   var am = document.getElementsByName("amount[]");
-  var taf = document.getElementsByName("tad[]");
+  var tad = document.getElementsByName("tad[]");
+  var up = document.getElementsByName("unitprice[]");
 
   console.log(nam.length);
   //console.log(nam[0].value);
@@ -280,11 +282,12 @@ function compute_rows(){
     var d = "tad["+i+"]";
     console.log(d);
     if(document.getElementById(d).checked == false)
-      tam[i].value = parseInt(nam[i].value*tax[i].value);
+      tam[i].value = Math.round(parseFloat(nam[i].value*tax[i].value) * 100) / 100;
     else
-      tam[i].value = parseInt((nam[i].value-disc[i].value)*tax[i].value);
+      tam[i].value = Math.round(parseFloat((nam[i].value-disc[i].value)*tax[i].value) * 100) / 100;
 
-    am[i].value = parseInt(nam[i].value - disc[i].value) + parseInt(tam[i].value);
+    am[i].value = Math.round((parseFloat(nam[i].value - disc[i].value) + parseFloat(tam[i].value)) * 100) / 100;
+    up[i].value = Math.round(parseFloat(nam[i].value - disc[i].value) / parseFloat(qty[i].value) * 100) / 100;
   }
 
   compute_totals();  
@@ -374,7 +377,7 @@ function compute_totals(){
     $filsupplier = $row["supplier"];
     $filinvoice = $row["invoice_ref"];
 
-    $myquery = "select i.id,date,receiver,product_id,product_name ,coalesce(concat(casesize,units,' | ',maker),'na') as hint,supplier,product_type,product_sub_type,cases,tad,amount,namount,discount,taxrate,tax,acc_ref,invoice_ref,invoice_img_ref from products p ";
+    $myquery = "select i.id,date,receiver,product_id,product_name ,coalesce(concat(casesize,units,' | ',maker),'na') as hint,supplier,product_type,product_sub_type,cases,tad,amount,truncate((namount-discount)/cases,2) as unitprice, namount,discount,taxrate,tax,acc_ref,invoice_ref,invoice_img_ref from products p ";
     $myquery = $myquery . "inner join inventory i on i.product_id=p.id ";
     $myquery = $myquery . "where i.date='".$fildate."' ";
     $myquery = $myquery . "and i.receiver='".$filreceiver."' ";
@@ -472,6 +475,7 @@ function compute_totals(){
           <th>TAD</th>
           <th>Discount</th>
           <th>Tax Rate</th>
+          <th>Unit Price</th>
           <th>Tax Amount</th>
           <th>Gross Amount</th>
           <th>*</th>
@@ -492,6 +496,7 @@ function compute_totals(){
             $supplier=$row["supplier"];
             $cases=$row["cases"];
             $namount=$row["namount"];
+            $up=$row["unitprice"];
             $discount=$row["discount"];
             $tad=$row["tad"];
             $taxrate=$row["taxrate"];
@@ -532,6 +537,10 @@ function compute_totals(){
             </td>
 
             <td><input class="col-xs-1 form-control" type="number" id="taxrate" step=".01" name="taxrate[]"  value="<?php if ($taxrate=="") echo 0; else echo $taxrate; ?>"onblur="compute_rows()"></td>
+
+            <td>
+                <input class="col-xs-1 form-control" type="number" id="unitprice" step=".01" name="unitprice[]" value="<?php echo $up; ?>" readonly="readonly">
+            </td>
 
             <td><input class="col-xs-1 form-control" type="number" id="tax" name="tax[]" value="<?php echo $tax ?>" onclick="compute_val(this)" readonly="readonly"></td>
 
