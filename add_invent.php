@@ -338,7 +338,7 @@ function newrow(){
       newcell.innerHTML = rowcount;
     else if (i===1)
       newcell.innerHTML = "<select name='product2[]' class='product2'></select>";
-    else if (i===9)
+    else if (i===10)
         newcell.innerHTML = "<span class='glyphicon glyphicon-remove text-danger' onclick='remove_row(this)'></span>";
     else if (i===4) 
         newcell.innerHTML = "<input type='checkbox' name='taf["+(rowcount-1)+"]' id='taf["+(rowcount-1)+"]'>"; 
