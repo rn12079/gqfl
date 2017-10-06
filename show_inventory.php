@@ -329,14 +329,14 @@ function toggle_dtrange(){
         <table border="1px" style="padding: 5px">
           <tr><td>
             <label for="Product Type">Product Type </label></td><td>  
-            <input list="tlist" id="ptype" name="ptype" placeholder="Product Type" align="right" autocomplete="off"
+            <input list="tlist" id="ptype" name="ptype" placeholder="Product Type" align="right" 
             value="<?php echo isset($_POST['ptype']) ? htmlentities($_POST['ptype']) : '' ?>">
             <datalist id="tlist">
             </datalist>           
           </td>
           <td><label for="Receiver">Received by </label></td>
           <td>
-            <input list="rlist" name="receiver"  id ="receiver" autocomplete="off"
+            <input list="rlist" name="receiver"  id ="receiver"
             value="<?php echo isset($_POST['receiver']) ? htmlentities($_POST['receiver']) : '' ?>">
             <datalist id="rlist">
             </datalist> 
@@ -345,7 +345,7 @@ function toggle_dtrange(){
             <label for="Product sub type">Sub type </label>  </td>
 
             <td>
-              <input list="stlist" type="text" name="stype"  id ="stype" autocomplete="off"
+              <input list="stlist" type="text" name="stype"  id ="stype" 
               value="<?php echo isset($_POST['stype']) ? htmlentities($_POST['stype']) : '' ?>">
               <datalist id="stlist">
               </datalist> 
@@ -375,7 +375,7 @@ function toggle_dtrange(){
               <td>
                 <label for="Supplier">Supplier </label>  </td>
                 <td>
-                  <input list="slist" type="text" name="supplier" id="supplier" autocomplete="off"
+                  <input list="slist" type="text" name="supplier" id="supplier" 
                   value="<?php echo isset($_POST['supplier']) ? htmlentities($_POST['supplier']) : '' ?>">
                   <datalist id="slist">
                   </datalist> 
