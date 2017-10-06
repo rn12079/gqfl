@@ -652,7 +652,7 @@ function compute_totals(){
         <div class="row">
           <div class="col-sm-3">
             <input class="btn btn-info" type="Reset" onclick="init()" >
-            <input class="btn btn-default" type="submit" name="submit" id="submit" value="Add Record" >
+            <input class="btn btn-default" type="submit" name="btnSubmit" id="btnSubmit" value="Add Record" onclick="this.disabled=true;this.value='submitting.....';this.form.submit();" >
           </div>
 
           
