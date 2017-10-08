@@ -72,4 +72,26 @@ return $ans;
 $conn->close();
 
 }
+
+function get_current_prices() {
+
+  $myquery = "select * from current_prices order by supplier,product_name";
+  
+  $conn = new mysqli("localhost","qasim","","mujju");
+  if ($conn->connect_error)
+  {
+    die('Could not connect: ' . $conn->connect_error);
+  }
+
+  if($result = $conn->query($myquery)){
+  //  print_r($result);
+  return $result;
+
+  $conn->close();
+  }
+  echo $conn->error;
+
+}
+
+
 ?>
