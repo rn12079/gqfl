@@ -23,7 +23,7 @@ insert into locations(name,type) values ('Sana','cold');
 insert into locations(name,type) values ('Hydri','store');
 insert into locations(name,type) values ('Shehbaz','store');
 
-
+create view current_prices as (select product_name,supplier,current_rate,count(*) cnt from (select max(date) md ,product_id from inventory where del!=1 group by product_id) a inner join (select product_name, supplier, truncate((namount-discount)/cases,2) as current_rate,date,product_id from inventory i join products p on i.product_id=p.id where del!=1) b on a.md=b.date and a.product_id=b.product_id group by 1,2,3 order by 2);
 
 
 
