@@ -521,7 +521,7 @@ function compute_totals(){
             </td>
 
             <td>
-              <input class="col-xs-1 form-control" type="number" id="num_cases" name="qty[]" value="<?php echo $cases; ?>" >
+              <input class="col-xs-1 form-control" type="number" id="num_cases" step=".1" name="qty[]" value="<?php echo $cases; ?>" >
             </td>
 
             <td>
