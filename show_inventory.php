@@ -414,7 +414,7 @@ label {
                   if ($logged) 
                   echo "ondblclick=\"window.location.href='".$url.$row["id"]."'\"";
                   echo"><td>".$row["date"]."</td><td>".$row["receiver"]."</td><td>".$row["product_name"]."</td><td>".$row["supplier"]."</td><td>".$row["product_type"];
-                  echo "</td><td>".$row["product_sub_type"]."</td><td class='number'>".number_format($row["cases"])."</td><td class='number'>";
+                  echo "</td><td>".$row["product_sub_type"]."</td><td class='number'>".number_format($row["cases"],2)."</td><td class='number'>";
 
                   if(isset($myarray[$row["product_name"]])){
                     $pval = $myarray[$row["product_name"]];
@@ -446,7 +446,7 @@ label {
                 }
               }
 
-              echo "<tr><td colspan=6  class='bottom'>Total</td><td class='bottom'>".number_format($totalqty)."</td><td></td>";
+              echo "<tr><td colspan=6  class='bottom'>Total</td><td class='bottom'>".number_format($totalqty,2)."</td><td></td>";
               echo "<td class='bottom'>".number_format($totalamount,2,'.',',')."</td><td colspan=2 class='bottom'></td></tr>";
               echo "</table>";
               echo "<br><p class='info'>  total number of records : ".$result->num_rows ."</p>" ;
