@@ -559,7 +559,7 @@ function compute_totals(){
             </td>
             
             <td>
-              <input class="col-xs-1 form-control" type="number" id="num_cases" name="qty[]" step=".1" placeholder="1" required="" >
+              <input class="col-xs-1 form-control" type="number" id="num_cases" name="qty[]" step=".01" placeholder="1" required="" >
             </td>
            
 
