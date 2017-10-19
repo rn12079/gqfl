@@ -72,6 +72,7 @@ label {
         <tr>
           <th>Supplier </th>
           <th>Product Name</th>
+	  <th>Case Size</th>
           <th>Price</th>
         </tr>
 
@@ -84,7 +85,7 @@ label {
       $curr_supp = $row['supplier'];
     }
 
-    echo "<tr><td></td><td>".$row['product_name']."</td><td>".$row['current_rate']."</td></tr>";
+    echo "<tr><td></td><td>".$row['product_name']."</td><td>".$row['casesize']." ".$row['units']."</td><td>".$row['current_rate']."</td></tr>";
 
 
   }

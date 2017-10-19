@@ -446,7 +446,7 @@ label {
                 }
               }
 
-              echo "<tr><td colspan=6  class='bottom'>Total</td><td class='bottom'>".number_format($totalqty,2)."</td><td></td>";
+              echo "<tr><td colspan=6  class='bottom'>Total</td><td class='bottom'>".number_format($totalqty,2)."</td><td class='bottom'></td>";
               echo "<td class='bottom'>".number_format($totalamount,2,'.',',')."</td><td colspan=2 class='bottom'></td></tr>";
               echo "</table>";
               echo "<br><p class='info'>  total number of records : ".$result->num_rows ."</p>" ;
