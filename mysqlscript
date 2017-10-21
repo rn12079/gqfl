@@ -27,6 +27,18 @@ create view current_prices as (select product_name,supplier,current_rate,count(*
 
 create view current_prices as (select product_name,casesize,units,supplier,current_rate,count(*) cnt from (select max(date) md ,product_id from inventory where del!=1 group by product_id) a inner join (select product_name, supplier,casesize,units, truncate((namount-discount)/cases,2) as current_rate,date,product_id from inventory i join products p on i.product_id=p.id where del!=1) b on a.md=b.date and a.product_id=b.product_id group by 1,2,3,4,5 order by 4);
 
+// import images to local system
+sudo scp serv-ho@192.168.0.20:public_html/project/upload/* ../public_html/project/upload/
+
+// create mysql database backup on remote server
+mysqldump --add-drop-table -u qasim mujju > mujju21-10.sql
+
+// import mysql database from remote server
+scp serv-ho@192.168.0.20:sqldump/mujju21-10.sql
+
+// replace existing mysql database
+mysql -u qasim mujju < mujju21-10.sql
+
 
 
 
