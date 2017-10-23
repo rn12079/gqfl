@@ -34,7 +34,7 @@ sudo scp serv-ho@192.168.0.20:public_html/project/upload/* ../public_html/projec
 mysqldump --add-drop-table -u qasim mujju > mujju21-10.sql
 
 // import mysql database from remote server
-scp serv-ho@192.168.0.20:sqldump/mujju21-10.sql
+scp serv-ho@192.168.0.20:sqldump/mujju21-10.sql ./
 
 // replace existing mysql database
 mysql -u qasim mujju < mujju21-10.sql
