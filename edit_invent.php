@@ -7,6 +7,7 @@ echo "<div class='alert alert-danger' role='alert'>".$err_msg."</div>";
 include('alerts.php');
 include('db_funcs.php');
 
+
 session_start();
 $errmsg = "";
 
@@ -357,8 +358,8 @@ function compute_totals(){
 
     
 
-    $conn = new mysqli("localhost","qasim","","mujju");
-    if ($conn->connect_error)
+    $conn = new mysqli($GLOBALS['host'],$GLOBALS['dbuser'],$GLOBALS['dbpass'],$GLOBALS['db']);
+  if ($conn->connect_error)
     {
       die(err_alert('Could not connect: ' . $conn->connect_error));
     }

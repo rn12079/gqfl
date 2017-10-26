@@ -1,9 +1,11 @@
 <?php 
 
-function getlocs() {
+include('db_conn.php');
 
+function getlocs() {
+  
   $myquery = "select name,type from locations";
-  $conn = new mysqli("localhost","qasim","","mujju");
+  $conn = new mysqli($GLOBALS['host'],$GLOBALS['dbuser'],$GLOBALS['dbpass'],$GLOBALS['db']);
   if ($conn->connect_error)
   {
     die('Could not connect: ' . $con->connect_error);
@@ -25,7 +27,7 @@ $conn->close();
 function getsups() {
 
   $myquery = "select distinct supplier id,supplier text from products";
-  $conn = new mysqli("localhost","qasim","","mujju");
+  $conn = new mysqli($GLOBALS['host'],$GLOBALS['dbuser'],$GLOBALS['dbpass'],$GLOBALS['db']);
   if ($conn->connect_error)
   {
     die('Could not connect: ' . $con->connect_error);
@@ -52,7 +54,7 @@ function getprods($prod_id) {
   $myquery = "select distinct p.id,product_name,coalesce(concat(casesize,units,' | ',maker),'na') as hint from products p ";
   $myquery = $myquery . "inner join inventory i on i.product_id=p.id where p.id = '".$prod_id."'";
 
-  $conn = new mysqli("localhost","qasim","","mujju");
+  $conn = new mysqli($GLOBALS['host'],$GLOBALS['dbuser'],$GLOBALS['dbpass'],$GLOBALS['db']);
   if ($conn->connect_error)
   {
     die('Could not connect: ' . $con->connect_error);
@@ -77,7 +79,7 @@ function get_current_prices() {
 
   $myquery = "select * from current_prices order by supplier,product_name";
   
-  $conn = new mysqli("localhost","qasim","","mujju");
+  $conn = new mysqli($GLOBALS['host'],$GLOBALS['dbuser'],$GLOBALS['dbpass'],$GLOBALS['db']);
   if ($conn->connect_error)
   {
     die('Could not connect: ' . $conn->connect_error);

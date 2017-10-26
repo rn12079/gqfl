@@ -1,6 +1,7 @@
 
 
 <?php
+include_once('db_conn.php');
 header("Content-Type: application/json; charset=UTF-8");
 
 $myjson = json_decode($_POST["x"], false);
@@ -16,8 +17,8 @@ $myquery = $myquery . "i.id!='".$myjson->id."' ";
 $myquery = $myquery . "and del=0 ";
 
 
-$conn = new mysqli("localhost","qasim","","mujju");
-if ($conn->connect_error)
+$conn = new mysqli($GLOBALS['host'],$GLOBALS['dbuser'],$GLOBALS['dbpass'],$GLOBALS['db']);
+  if ($conn->connect_error)
 {
 	die('Could not connect: ' . $conn->connect_error);
 }

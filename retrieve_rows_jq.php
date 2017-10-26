@@ -1,4 +1,6 @@
 <?php
+include('db_conn.php');
+
 header("Content-Type: application/json; charset=UTF-8");
 
 $myquery = "select distinct p.id,product_name text,coalesce(concat(casesize,units,' | ',maker),'na') as hint from products p ";
@@ -13,8 +15,8 @@ if ($_GET['st']!="")
 	$myquery = $myquery . "and product_sub_type = '".$_GET['st']."'";
 
 
-$conn = new mysqli("localhost","qasim","","mujju");
-if ($conn->connect_error)
+$conn = new mysqli($GLOBALS['host'],$GLOBALS['dbuser'],$GLOBALS['dbpass'],$GLOBALS['db']);
+  if ($conn->connect_error)
 {
   die('Could not connect: ' . $con->connect_error);
 }

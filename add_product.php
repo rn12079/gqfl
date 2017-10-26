@@ -5,6 +5,8 @@ echo "<div class='alert alert-danger' role='alert'>".$err_msg."</div>";
 }
 */
 include('alerts.php');
+include_once('db_conn.php');
+
 
 session_start();
 $errmsg = "";
@@ -104,8 +106,8 @@ else
     $myquery = $myquery . $txt_source . "','".$txt_cases."','".$txt_unit."');";
 //echo "<p>" . $myquery." </p><br>";
 
-$conn = new mysqli("localhost","qasim","","mujju");
-if ($conn->connect_error)
+$conn = new mysqli($GLOBALS['host'],$GLOBALS['dbuser'],$GLOBALS['dbpass'],$GLOBALS['db']);
+  if ($conn->connect_error)
 {
   die('Could not connect: ' . $conn->connect_error);
 }

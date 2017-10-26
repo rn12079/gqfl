@@ -179,7 +179,7 @@ while($upd_cnt < count($id)) {
   $retquery = "select i.id,date,receiver,product_name,supplier,cases,amount,invoice_ref,acc_ref,invoice_img_ref from products p ";
   $retquery = $retquery . "inner join inventory i on i.product_id=p.id where i.id='".$id."'";
 
-  $conn = new mysqli("localhost","qasim","","mujju");
+  $conn = new mysqli($GLOBALS['host'],$GLOBALS['dbuser'],$GLOBALS['dbpass'],$GLOBALS['db']);
   if ($conn->connect_error)
   {
     die('Could not connect: ' . $conn->connect_error);

@@ -390,8 +390,8 @@ label {
 
 //echo $myquery;
 
-              $conn = new mysqli("localhost","qasim","","mujju");
-              if ($conn->connect_error)
+              $conn = new mysqli($GLOBALS['host'],$GLOBALS['dbuser'],$GLOBALS['dbpass'],$GLOBALS['db']);
+  if ($conn->connect_error)
               {
                 die('Could not connect: ' . $con->connect_error);
               }

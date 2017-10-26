@@ -1,9 +1,9 @@
 
 
 <?php
-
-$conn = new mysqli("localhost","qasim","","mujju");
-if ($conn->connect_error)
+include_once('db_conn.php');
+$conn = new mysqli($GLOBALS['host'],$GLOBALS['dbuser'],$GLOBALS['dbpass'],$GLOBALS['db']);
+  if ($conn->connect_error)
 {
 	die('Could not connect: ' . $conn->connect_error);
 }
