@@ -98,7 +98,7 @@ else
 
       <div class="col-sm-3 form-group">
         <label for="Case Size">Case Size</label>
-        <input type="number" class="form-control" name="txt_case_size" placeholder="20" id ="t_cases">
+        <input type="number" class="form-control" name="txt_case_size" placeholder="20" step=".01" id ="t_cases">
       </div>
 
       <div class="col-sm-3 form-group">
