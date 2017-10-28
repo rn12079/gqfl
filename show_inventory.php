@@ -179,6 +179,143 @@ label {
 <script src="jquery/jquery-3.2.1.min.js"></script>
 <script src="bootstrap1/js/bootstrap.min.js"></script>
 <script src="select2/select2.min.js"></script>
+<script type="text/javascript">
+ $(document).ready(function() {
+  
+  //var sup = $('#supplier').val();
+
+  $('#test').select2({
+    placeholder: "select a product",
+    width:'300px',
+  ajax: {
+    url: 'retrieve_rows_jq.php',
+    dataType: 'json',
+    cache: true,
+    data: function(params) {
+      return {
+        q: params.term,
+        s: $('#supplier').val(),
+        r: $('#receiver').val(),
+        pt: $('#ptype').val(),
+        st: $('#stype').val()
+      };
+
+
+    },
+
+
+    processResults: function(data){
+
+      return {
+        results: $.map(data, function(obj) {
+          console.log(obj);
+          return {
+            id: obj.text,
+            text: obj.text ,
+          };
+
+        })
+      };
+
+
+    }
+    }
+});
+
+});
+/*
+Ajax block to get items for search tab
+/*
+Ajax block to get items for search tab
+*/
+function ajaxsearch(ret_field,upd_field){
+  var chk = document.getElementById("chk").checked 
+  if (ret_field=="product_type") chk=false;
+  var ptype = chk ? document.getElementById("ptype").value : "";
+  var pname = chk ?document.getElementById("product_name").value : "";
+  var supplier = chk ? document.getElementById("supplier").value : "";
+  var stype = chk ? document.getElementById("stype").value : "";
+  var receiver = chk ?  document.getElementById("receiver").value : "";
+
+  var myjson = {"ret_field":ret_field,"ptype":ptype,"pname":pname,"supplier":supplier,"stype":stype,"receiver":receiver};
+  data_params = JSON.stringify(myjson);
+
+ // document.getElementById("stats").innerHTML = "ret_field"+ myjson.ret_field+" ptype: " + myjson.ptype + " pname: " + myjson.pname + " supp: " + myjson.supplier + " stype: " + myjson.stype;
+
+
+ var xhr;
+ if(window.XMLHttpRequest){
+  xhr=new XMLHttpRequest();
+} 
+  else if (window.ActiveXObject) { // IE 8 and older  
+    xhr = new ActiveXObject("Microsoft.XMLHTTP");  
+  } 
+
+  var data="product_name="+pname;
+  xhr.open("POST","retrieve_rows.php",true);
+  xhr.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+  xhr.send("x="+data_params);
+  xhr.onreadystatechange = display_data;
+  
+  function display_data(){
+    if(xhr.readyState==4){
+      if(xhr.status == 200) {
+
+        document.getElementById(upd_field).innerHTML = xhr.responseText;
+
+      }
+      else
+      {
+        alert('There was a problem with the request');
+      }
+
+    }
+
+  }
+  /*end Ajax block*/
+  
+}
+
+
+function init(){
+  //ajaxsearch("product_name","plist");
+  ajaxsearch("product_type","tlist");
+  ajaxsearch("receiver","rlist");
+  ajaxsearch("supplier","slist");
+  ajaxsearch("product_sub_type","stlist");
+
+}
+
+function emptyall(){
+  document.getElementById("ptype").value = "";
+  document.getElementById("supplier").value = "";
+  document.getElementById("stype").value = "";
+  document.getElementById("receiver").value = "";
+  document.getElementById("chk").checked = false;
+  document.getElementById("sdate").value = "";
+  document.getElementById("edate").value = "";
+  document.getElementById("inv_ref").value = "";
+  $('#test').val('').trigger('change');
+  
+}
+
+
+
+var dtrange=false;
+
+function toggle_dtrange(){
+  if(!dtrange){
+    document.getElementById("dtrange").style.display = 'block';
+    dtrange=true;
+  }
+  else {
+    document.getElementById("dtrange").style.display = 'none';
+    dtrange=false;  
+  }
+}
+
+
+</script>
 
 
 </head>
@@ -460,141 +597,5 @@ label {
             
 
           </body>
-          <script type="text/javascript">
- $(document).ready(function() {
-  
-  //var sup = $('#supplier').val();
-
-  $('#test').select2({
-    placeholder: "select a product",
-    width:'300px',
-  ajax: {
-    url: 'retrieve_rows_jq.php',
-    dataType: 'json',
-    cache: true,
-    data: function(params) {
-      return {
-        q: params.term,
-        s: $('#supplier').val(),
-        r: $('#receiver').val(),
-        pt: $('#ptype').val(),
-        st: $('#stype').val()
-      };
-
-
-    },
-
-
-    processResults: function(data){
-
-      return {
-        results: $.map(data, function(obj) {
-          console.log(obj);
-          return {
-            id: obj.text,
-            text: obj.text ,
-          };
-
-        })
-      };
-
-
-    }
-    }
-});
-
-});
-/*
-Ajax block to get items for search tab
-/*
-Ajax block to get items for search tab
-*/
-function ajaxsearch(ret_field,upd_field){
-  var chk = document.getElementById("chk").checked 
-  if (ret_field=="product_type") chk=false;
-  var ptype = chk ? document.getElementById("ptype").value : "";
-  var pname = chk ?document.getElementById("product_name").value : "";
-  var supplier = chk ? document.getElementById("supplier").value : "";
-  var stype = chk ? document.getElementById("stype").value : "";
-  var receiver = chk ?  document.getElementById("receiver").value : "";
-
-  var myjson = {"ret_field":ret_field,"ptype":ptype,"pname":pname,"supplier":supplier,"stype":stype,"receiver":receiver};
-  data_params = JSON.stringify(myjson);
-
- // document.getElementById("stats").innerHTML = "ret_field"+ myjson.ret_field+" ptype: " + myjson.ptype + " pname: " + myjson.pname + " supp: " + myjson.supplier + " stype: " + myjson.stype;
-
-
- var xhr;
- if(window.XMLHttpRequest){
-  xhr=new XMLHttpRequest();
-} 
-  else if (window.ActiveXObject) { // IE 8 and older  
-    xhr = new ActiveXObject("Microsoft.XMLHTTP");  
-  } 
-
-  var data="product_name="+pname;
-  xhr.open("POST","retrieve_rows.php",true);
-  xhr.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
-  xhr.send("x="+data_params);
-  xhr.onreadystatechange = display_data;
-  
-  function display_data(){
-    if(xhr.readyState==4){
-      if(xhr.status == 200) {
-
-        document.getElementById(upd_field).innerHTML = xhr.responseText;
-
-      }
-      else
-      {
-        alert('There was a problem with the request');
-      }
-
-    }
-
-  }
-  /*end Ajax block*/
-  
-}
-
-
-function init(){
-  //ajaxsearch("product_name","plist");
-  ajaxsearch("product_type","tlist");
-  ajaxsearch("receiver","rlist");
-  ajaxsearch("supplier","slist");
-  ajaxsearch("product_sub_type","stlist");
-
-}
-
-function emptyall(){
-  document.getElementById("ptype").value = "";
-  document.getElementById("supplier").value = "";
-  document.getElementById("stype").value = "";
-  document.getElementById("receiver").value = "";
-  document.getElementById("chk").checked = false;
-  document.getElementById("sdate").value = "";
-  document.getElementById("edate").value = "";
-  document.getElementById("inv_ref").value = "";
-  $('#test').val('').trigger('change');
-  
-}
-
-
-
-var dtrange=false;
-
-function toggle_dtrange(){
-  if(!dtrange){
-    document.getElementById("dtrange").style.display = 'block';
-    dtrange=true;
-  }
-  else {
-    document.getElementById("dtrange").style.display = 'none';
-    dtrange=false;  
-  }
-}
-
-
-</script>
+          
           </html>
