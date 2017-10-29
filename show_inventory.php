@@ -22,7 +22,7 @@ else
 <head>
 <link href="select2/select2.min.css" rel="stylesheet" />
 <link href="bootstrap1/css/bootstrap.min.css" rel="stylesheet">
-<title>GQFL - Price List</title>
+<title>GQFL - Inventory</title>
 <style>
 
 label {
@@ -52,7 +52,7 @@ label {
       font-size:10px;
 
     }
-    tr.cells:nth-child(even){
+    tr.cells:nth-child(4n-2){
       background-color: #EBF4FA;
     }
 
@@ -316,6 +316,16 @@ function toggle_dtrange(){
   }
 }
 
+function toggle_details(t_row){
+  var t_status = t_row.style.display;
+  console.log(t_status);
+  if(t_status=='none')
+    t_row.style.display = 'table-row';
+  else
+    t_row.style.display = 'none';
+
+}
+
 
 </script>
 
@@ -512,7 +522,7 @@ function toggle_dtrange(){
 //echo "total filters : " . $n_filters . "<br>";
 
 
-              $myquery = "select i.id,date,receiver,product_name,supplier,product_type,product_sub_type,cases,amount,discount,truncate((namount-discount)/cases,2) as unitprice,invoice_ref,invoice_img_ref from products p ";
+              $myquery = "select i.id,date,receiver,product_name,supplier,product_type,product_sub_type,cases,casesize,units,maker,amount,discount,truncate((namount-discount)/cases,2) as unitprice,tax,namount,taxrate,invoice_ref,invoice_img_ref from products p ";
               $myquery = $myquery . "inner join inventory i on i.product_id=p.id where del=0 ";
 
               //if($n_filters>0)
@@ -542,10 +552,11 @@ function toggle_dtrange(){
               $myarray = array();
               $p_cnt = 0; 
               $up = 0;
+              $tr_cnt = 0;
 
               if($result->num_rows > 0) {
                 while($row = $result->fetch_assoc()){
-                  echo "<tr class='cells' ";
+                  echo "<tr onclick='toggle_details(tr".$tr_cnt.")' class='cells' ";
                   $up = $row["unitprice"];
 
                   
@@ -590,7 +601,31 @@ function toggle_dtrange(){
                   
                   echo "<td><a target='_blank' href='".$row["invoice_img_ref"]."'>".$row["invoice_ref"]."</td>";
                   echo "<td></td></tr>";
+
+                  /* Collapseable Rows for Additional Details of each Invoice */
+                  echo "<tr style='display:none;border:solid 1px;!important' id='tr".$tr_cnt++."'>";
+                  echo "<td colspan=6 style='text-align:center'>";
+                  echo "<strong> Case Size : </strong>". $row['casesize']." ".$row['units']. "<br> ";
+                  echo "<strong> Brand / Make : </strong>". $row['maker']."<br> ";
                   
+                  echo "</td>";
+                  echo "<td colspan=2 style='text-align:right;'>";
+                  echo "<strong>Net Amount = <br>";
+                  echo "<strong>Discount = <br>";
+                  echo "<strong>Taxrate = <br>";
+                  echo "<strong>Tax = <br>";
+                  echo "<strong>Total Amount = </strong><br>";
+
+                  echo "</td><td colspan=3>";
+                  echo number_format($row['namount'],2,'.',',') . "<br>";
+                  echo $row['discount'] == "" ? 0 : number_format($row['discount'],2,'.',',') ;
+                  echo "<br>".($row['taxrate']*100)."%<br>";
+                  echo $row['tax']=="" ? 0 : number_format($row['tax'],2,'.',',')  ;
+                  echo "<br><strong>".number_format($row['amount'],2,'.',',') . "</strong><br>";
+
+
+                  echo "</td></tr>"; 
+                  /* End of Collapseable Rows */ 
                   
                   
                   $totalqty=$totalqty+$row["cases"];
