@@ -181,6 +181,8 @@ label {
 <script src="select2/select2.min.js"></script>
 <script type="text/javascript">
  $(document).ready(function() {
+
+  $('[data-toggle="tooltip"]').tooltip();  
   
   //var sup = $('#supplier').val();
 
@@ -444,7 +446,7 @@ function toggle_dtrange(){
             <col width="8%"> <col width="8%"><col width="16%"><col width="10%"><col width="6%"><col width="7%"><col width="5%"><col width="10%"><col width="10%"><col width="10%"><col width="10%">
             <tr>
               <td  class="top" >Date</td><td  class="top">Receiver</td><td  class="top">Product Name</td><td  class="top">Supplier</td><td  class="top">Type</td><td  class="top">Subtype</td><td class="top">Qty</td><td class="top">U. price</td>
-              <td  class="top">Amount</td><td  class="top">Inv #</td><td  class="top">Ref:</td></tr>
+              <td  class="top">Amount</td><td  class="top">add</td><td  class="top">Inv</td></tr>
 
               <?php
               $arr = $_POST['test'];
@@ -510,7 +512,7 @@ function toggle_dtrange(){
 //echo "total filters : " . $n_filters . "<br>";
 
 
-              $myquery = "select i.id,date,receiver,product_name,supplier,product_type,product_sub_type,cases,amount,truncate((namount-discount)/cases,2) as unitprice,invoice_ref,invoice_img_ref from products p ";
+              $myquery = "select i.id,date,receiver,product_name,supplier,product_type,product_sub_type,cases,amount,discount,truncate((namount-discount)/cases,2) as unitprice,invoice_ref,invoice_img_ref from products p ";
               $myquery = $myquery . "inner join inventory i on i.product_id=p.id where del=0 ";
 
               //if($n_filters>0)
@@ -549,10 +551,11 @@ function toggle_dtrange(){
                   
 
                   if ($logged) 
-                  echo "ondblclick=\"window.location.href='".$url.$row["id"]."'\"";
-                  echo"><td>".$row["date"]."</td><td>".$row["receiver"]."</td><td>".$row["product_name"]."</td><td>".$row["supplier"]."</td><td>".$row["product_type"];
+                  echo "ondblclick=\"window.location.href='".$url.$row["id"]."'\">";
+                  echo"<td>".$row["date"]."</td><td>".$row["receiver"]."</td><td>".$row["product_name"]."</td><td>".$row["supplier"]."</td><td>".$row["product_type"];
                   echo "</td><td>".$row["product_sub_type"]."</td><td class='number'>".number_format($row["cases"],2)."</td><td class='number'>";
 
+                  // Unit price calculation + arrow sign upon price increase of decrease
                   if(isset($myarray[$row["product_name"]])){
                     $pval = $myarray[$row["product_name"]];
                     if ($up > $pval && ($up/$pval-1.0)>0.03) {
@@ -570,11 +573,23 @@ function toggle_dtrange(){
                   $myarray[$row["product_name"]] = $up;
 
 
-                  echo number_format($row["unitprice"],2,'.',',');
+                  echo number_format($row["unitprice"],2,'.',',')."</td>";
+                  
 
-                  ;
-                  echo "</td><td class='number'>".number_format($row["amount"],2,'.',',')."</td><td>".$row["invoice_ref"];
-                  echo "</td><td><a target='_blank' href='".$row["invoice_img_ref"]."'>".substr($row["invoice_img_ref"],7,strlen($row["invoice_img_ref"])-11)."</td></tr>";
+                  echo "<td class='number'>";
+                  if($row['discount']>0) {
+                    echo "<a href='#' data-toggle='tooltip' title='Discount = ";
+                    echo number_format($row["discount"],2,'.',',');
+                    echo "'>";
+                  }
+                  echo number_format($row["amount"],2,'.',',');
+                  
+                  echo ($row['discount'] > 0) ? "</a>" : "";
+
+                  echo "</td><td class='number'></td>";
+                  
+                  echo "<td><a target='_blank' href='".$row["invoice_img_ref"]."'>".$row["invoice_ref"]."</td>";
+                  echo "<td></td></tr>";
                   
                   
                   
