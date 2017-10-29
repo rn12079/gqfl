@@ -23,25 +23,11 @@ $conn = new mysqli($GLOBALS['host'],$GLOBALS['dbuser'],$GLOBALS['dbpass'],$GLOBA
 	die('Could not connect: ' . $conn->connect_error);
 }
 
+//echo $myquery;
+
 $result = $conn->query($myquery);
 
-if($myjson->retfield=="all_fields"){
-	if($result->num_rows > 0) {
-		echo "<table border='1px' width='500px'><tr><td colspan=5>Existing items on same invoice</td></tr>";
-		echo "<tr><td>date</td><td>product name</td><td>qty</td><td>amount</td><td>Ref</td></tr>";
-		while($row = $result->fetch_assoc()){
 
-			echo "<tr><td>".$row["date"]."</td><td>".$row["product_name"]."</td><td>".number_format($row["cases"])."</td>";
-			echo "<td>".number_format($row["amount"],2,'.',',')."</td><td><a target='_blank' href='".$row["invoice_img_ref"]."'>".$row["invoice_img_ref"]."</td></tr>";
-
-
-
-		}
-		echo "</table>";
-	}
-}
-else
-{
 	if($result->num_rows > 0) {
 		while($row = $result->fetch_assoc()){
 
@@ -51,7 +37,7 @@ else
 
 		}
 	}
-}
+
 mysqli_close ($conn);
 
 ?>

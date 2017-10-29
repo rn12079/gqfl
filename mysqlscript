@@ -41,4 +41,44 @@ mysql -u qasim mujju < mujju21-10.sql
 
 
 
+/********************************
+/*     NEW MACHINE              /*
+
+/********************************/
+
+//on local computer
+ssh-keygen 
+
+//use id_rsa.pub and copy key to the droplet creator
+
+sudo apt-get update
+sudo apt-get install apache2
+sudo apt-get install php7.0 mysql-server libapache2-mod-php7.0
+sudo apt-get install php-bcmath
+
+
+// git pull gqfl project
+git clone https://github.com/rn12079/gqfl.git
+
+//create new user in mysql
+create user qasim@localhost;
+//give rights
+
+create user qasim@localhost ;
+grant all on mujju.* to qasim@localhost
+flush privileges
+
+//send files from local to remote directory
+sudo scp -i ../.ssh/id_rsa ./mujju23-10.sql root@128.199.102.234:/tmp/mujju23-10.sql
+
+sudo scp -i ../../.ssh/id_rsa ./upload/* root@128.199.102.234:/var/www/html/gqfl/upload/
+sudo scp -i ../../.ssh/id_rsa -rp ./bootstrap1/* root@128.199.102.234:/var/www/html/gqfl/bootstrap1/
+sudo scp -i ../../.ssh/id_rsa -rp ./select2/* root@128.199.102.234:/var/www/html/gqfl/select2/
+
+sudo scp -i ../../.ssh/id_rsa -rp ./jquery/* root@128.199.102.234:/var/www/html/gqfl/jquery
+
+mysql -u qasim mujju < mujju21-10.sql
+
+
+
 
