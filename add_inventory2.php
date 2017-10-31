@@ -81,10 +81,10 @@ label {
  <div class="container">
    <?php
 
-    if(!isset( $_POST['existing']) )
+    if(!isset($_POST['existing']) )
     {
 
-
+      
       $upload_filename = $_FILES["file"]["name"];
       if ($upload_filename!="") {
 //echo $upload_filename;
@@ -136,7 +136,7 @@ label {
       err_alert("No Image Uploaded");
   }
   else 
-    {
+    { 
       $ofile = $_POST["img_name"];
       $bool_upload = true;
       
