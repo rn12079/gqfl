@@ -15,6 +15,8 @@ if(!$_SESSION["loggedin"])
 else
   $logged = true;
 
+if (!isset($_POST['sdate']))
+  $_POST['sdate'] = date('2018-01-01');
 ?>
 
 
@@ -430,7 +432,7 @@ function toggle_details(t_row){
                   <tr>
 
                     <td><label for="Start date">from </label></td><td> <input type="date" name="sdate"  id ="sdate" 
-                    value="<?php echo isset($_POST['sdate']) ? htmlentities($_POST['sdate']) : '' ?>"></td>
+                    value="<?php echo isset($_POST['sdate']) ? htmlentities($_POST['sdate']) : ""; ?>"></td>
 
 
                   </tr>
