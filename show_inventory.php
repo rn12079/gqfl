@@ -571,13 +571,13 @@ function toggle_details(t_row){
                   // Unit price calculation + arrow sign upon price increase of decrease
                   if(isset($myarray[$row["product_name"]])){
                     $pval = $myarray[$row["product_name"]];
-                    if ($up > $pval && ($up/$pval-1.0)>0.03) {
+                    if ($up > $pval && ($up/$pval-1.0)>0.015) {
                       echo /*$up. " / ".$pval. " = ". */bcadd(bcdiv($up,$pval,3),-1,2)*100 . "%";
                       $myarray[$row["product_name"]] = $up;
                       echo "<span class='glyphicon glyphicon-arrow-up text-danger'></span>";
                       
                     }
-                    if ($up < $myarray[$row["product_name"]] && ($pval/$up-1.0>0.03)) {
+                    if ($up < $myarray[$row["product_name"]] && ($pval/$up-1.0>0.015)) {
                       echo /*$up. " / ".$pval. " = ". */bcadd(bcdiv($up,$pval,3),-1,2)*100 . "%";
                       $myarray[$row["product_name"]] = $up;
                       echo "  <span class='glyphicon glyphicon-arrow-down text-success'></span>";
