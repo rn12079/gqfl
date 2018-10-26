@@ -32,7 +32,7 @@ if(isset($_POST['sub']))
 	else
 	{
 		$logged = false;
-		echo "wrong password";
+		
 
 	}
 ?>
@@ -92,6 +92,7 @@ if(isset($_POST['sub']))
   }
 
 
+show_inventory.php
 
   ?>
 
