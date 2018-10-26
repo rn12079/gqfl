@@ -16,8 +16,9 @@ else
   $logged = true;
 
 if (!isset($_POST['sdate']))
-  $_POST['sdate'] = date('2018-01-01');
+  $_POST['sdate'] = date('Y-m-d', strtotime("-30 days"));
 ?>
+
 
 
 <html>

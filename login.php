@@ -92,7 +92,7 @@ if(isset($_POST['sub']))
   }
 
 
-show_inventory.php
+
 
   ?>
 
@@ -111,5 +111,8 @@ show_inventory.php
 
 </div>
 
+<?php $ndate = date('Y-m-d', strtotime("-30 days"));
+echo $ndate;
+ ?>
 
 </html>
