@@ -16,9 +16,11 @@
         <ul class="nav navbar-nav">
           
             <?php 
-              if($logged) {
+              if($_SESSION['loggedin'] AND $_SESSION['level'] == 'admin') {
                 echo "<li><a href='add_product_main.php'>Add Products </a></li>";
                 echo "<li><a href='add_invent.php'>Add Inventory Items </a></li>";
+                }
+              if($_SESSION['loggedin'] ){
                 echo "<li><a href='pricelist.php'>Price List </a></li>";
                 echo "<li><a href='show_inventory.php'>Show Inventory</a></li>";
                 } ?>

@@ -571,7 +571,7 @@ function toggle_details(t_row){
 
                   
 
-                  if ($logged) 
+                  if ($logged && $_SESSION['level']=='admin') 
                   echo "ondblclick=\"window.location.href='".$url.$row["id"]."'\"";
                   echo"><td>".$row["date"]."</td><td>".$row["receiver"]."</td><td>".$row["product_name"]."</td><td>".$row["supplier"]."</td><td>".$row["product_type"];
                   echo "</td><td>".$row["product_sub_type"]."</td><td class='number'>".number_format($row["cases"],2)."</td><td class='number'>";
