@@ -111,8 +111,4 @@ if(isset($_POST['sub']))
 
 </div>
 
-<?php $ndate = date('Y-m-d', strtotime("-30 days"));
-echo $ndate;
- ?>
-
 </html>
