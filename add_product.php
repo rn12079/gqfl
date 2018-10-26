@@ -11,10 +11,16 @@ include_once('db_conn.php');
 session_start();
 $errmsg = "";
 
+$logged = false;
+
 if(!$_SESSION["loggedin"]) 
   $logged = false;
-else
-  $logged = true;
+else 
+  {
+    if($_SESSION["level"] == "admin")
+    $logged = true;
+  }
+
 
 ?>
 

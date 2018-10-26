@@ -336,6 +336,14 @@ function toggle_details(t_row){
 <body onload="init()">
  <?php include('navbar.html');
 
+    if(!$logged) {
+    echo "<div class='container' style='margin-top:10;'>";
+    err_alert("<strong>Access Denied</strong> Please log in to access");
+    echo "</div>";
+    die;
+  }
+
+
   $cnt = 0;
   ?>
 

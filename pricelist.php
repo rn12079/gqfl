@@ -12,8 +12,11 @@ $errmsg = "";
 
 if(!$_SESSION["loggedin"]) 
   $logged = false;
-else
-  $logged = true;
+else 
+  {
+    if($_SESSION["level"] == "admin")
+    $logged = true;
+  }
 
 ?>
 
@@ -55,6 +58,14 @@ label {
 </head>
 <body>
  <?php include('navbar.html');
+
+      if(!$logged) {
+    echo "<div class='container' style='margin-top:10;'>";
+    err_alert("<strong>Access Denied</strong> Please log in to access");
+    echo "</div>";
+    die;
+  }
+
 
   $cnt = 0;
   ?>

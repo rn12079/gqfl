@@ -11,11 +11,16 @@ include('db_funcs.php');
 session_start();
 $errmsg = "";
 
-if((!$_SESSION["loggedin"])||($_SESSION['user']!="admin")) 
+$logged = false;
+
+if(!$_SESSION["loggedin"]) 
   $logged = false;
-else
-  $logged = true;
-  echo $_SESSION['user'];
+else 
+  {
+    if($_SESSION["level"] == "admin")
+    $logged = true;
+  }
+
 
 ?>
 
