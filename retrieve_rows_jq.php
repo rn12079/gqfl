@@ -4,7 +4,7 @@ include('db_conn.php');
 header("Content-Type: application/json; charset=UTF-8");
 
 $myquery = "select distinct p.id,product_name text,coalesce(concat(casesize,units,' | ',maker),'na') as hint from products p ";
-$myquery = $myquery . "left join inventory i on i.product_id=p.id where product_name like '".$_GET['q']."%'";
+$myquery = $myquery . "left join inventory i on i.product_id=p.id where product_name like '%".$_GET['q']."%'";
 if ($_GET['s']!="")
 	$myquery = $myquery . "and supplier = '".$_GET['s']."'";
 if ($_GET['r']!="")
