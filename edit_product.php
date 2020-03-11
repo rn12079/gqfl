@@ -108,7 +108,7 @@ else
 
     /* query for adding supplier */
 
-    $myquery="update products set product_name='".$txt_name . "' ,product_type='".$txt_sub_type."' , product_sub_type ='".$txt_sub_type."' ,supplier='".$txt_supplier."' , maker='".$txt_source."' ,casesize='".$txt_cases."', units = '".$txt_unit."' ";
+    $myquery="update products set product_name='".$txt_name . "' ,product_type='".$txt_type."' , product_sub_type ='".$txt_sub_type."' ,supplier='".$txt_supplier."' , maker='".$txt_source."' ,casesize='".$txt_cases."', units = '".$txt_unit."' ";
     $myquery = $myquery .  "where id='".$txt_id."'";
 
     
