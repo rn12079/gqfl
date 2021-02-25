@@ -8,7 +8,7 @@ function getlocs() {
   $conn = new mysqli($GLOBALS['host'],$GLOBALS['dbuser'],$GLOBALS['dbpass'],$GLOBALS['db']);
   if ($conn->connect_error)
   {
-    die('Could not connect: ' . $con->connect_error);
+    die('Could not connect: ' . $conn->connect_error);
   }
 
   $result = $conn->query($myquery);
@@ -30,7 +30,7 @@ function getsups() {
   $conn = new mysqli($GLOBALS['host'],$GLOBALS['dbuser'],$GLOBALS['dbpass'],$GLOBALS['db']);
   if ($conn->connect_error)
   {
-    die('Could not connect: ' . $con->connect_error);
+    die('Could not connect: ' . $conn->connect_error);
   }
 
   $result = $conn->query($myquery);
@@ -57,7 +57,7 @@ function getprods($prod_id) {
   $conn = new mysqli($GLOBALS['host'],$GLOBALS['dbuser'],$GLOBALS['dbpass'],$GLOBALS['db']);
   if ($conn->connect_error)
   {
-    die('Could not connect: ' . $con->connect_error);
+    die('Could not connect: ' . $conn->connect_error);
   }
 
   $result = $conn->query($myquery);
