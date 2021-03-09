@@ -27,7 +27,9 @@ if (!isset($_POST['sdate']))
 <link href="bootstrap1/css/bootstrap.min.css" rel="stylesheet">
 <title>GQFL - Inventory</title>
 <style>
-
+*{
+touch-action: manipulation;
+}
 label {
 
   padding-top: 4px;
