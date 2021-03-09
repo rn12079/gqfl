@@ -39,6 +39,23 @@ Class Prods_assign extends Dbh{
         }
     }
 
+    public function getProductsByCompany($comp_id="0"){
+        $sqlexclude = "select prod_id from comp_prods where comp_id=:id ";
+        $sql = "select id,concat(product_name,' | ',supplier) product_name 
+                from products where id in (".$sqlexclude.") 
+                order by supplier,product_name ";
+
+        try{
+            $stmt = $this->conn()->prepare($sql);
+            $stmt->execute(['id'=>$comp_id]);
+            $row = $stmt->fetchAll();
+        
+            return $row;
+        }catch(PDOException $e){
+            echo $e->getMessage();
+        }
+    }
+
     
 }
 

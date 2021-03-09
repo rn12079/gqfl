@@ -44,9 +44,6 @@ select {
   align-items: center;
 }
 
-.grid-item {
-  border: 1px solid;
-}
 
 label {
 
@@ -56,6 +53,10 @@ label {
   .navbar{
     margin-bottom:0;
     border-radius: 0;
+}
+
+button {
+  margin: 20px;
 }
 
 
@@ -92,7 +93,7 @@ label {
   <div class="container">
   <div class="grid-container">
       <div class="grid-item">
-          <select name="prods_avail" id="pl" size="20" multiple>
+          <select  id="pl" size="20" multiple>
               <?php 
                 
                 $myprods = new Prods_assign();
@@ -106,9 +107,20 @@ label {
         </div>
         <div class="grid-item">
           <button id="fwd"> >>> </button>
+          <button id="bwd"> <<< </button>
         </div>
+        
         <div class="grid-item">
-          <select name="prods_avail" size="20" multiple>
+          <select id="prods_avail" size="20" multiple>
+              <?php 
+                
+                $myprods = new Prods_assign();
+                $prods = $myprods->getProductsByCompany($compid);
+
+                foreach($prods as $prod){
+                echo "<option value=".$prod->id.">".$prod->product_name."</option>";
+                }
+              ?>
 
           </select>
         </div>
@@ -121,23 +133,70 @@ label {
 <script type="text/javascript">
 document.addEventListener("DOMContentLoaded",() => {
   const fwd = document.getElementById("fwd");
+  const bwd = document.getElementById("bwd");
+  
   const selbox = document.getElementById("pl");
-  fwd.addEventListener("click", () => {
+  const assbox = document.getElementById("prods_avail");
 
+  fwd.addEventListener("click", () => {
+    console.log("fwd pressed");
     const sel = document.querySelectorAll("#pl option:checked");
+
     const names = Array.from(sel).map(el => el.text);
     const values= Array.from(sel).map(el => el.value);
     const index = Array.from(sel).map(el => el.index);
     //console.log(values)
     let cnt=0;
+    for(i=0;i<names.length;i++) {
+
+      let myop = document.createElement("option");
+      myop.value = values[i];
+      myop.text = names[i];
+      console.log("fwd",myop);
+      assbox.add(myop);
+    }
+    
     index.forEach(ind =>{ 
       selbox.remove(ind-cnt);
       console.log(ind)
       cnt++;
+      
     })
 
 
   })
+
+
+  bwd.addEventListener("click", () => {
+    console.log("bwd pressed");
+    const sel = document.querySelectorAll("#prods_avail option:checked");
+
+    const names = Array.from(sel).map(el => el.text);
+    const values= Array.from(sel).map(el => el.value);
+    const index = Array.from(sel).map(el => el.index);
+    //console.log(values)
+    let cnt=0;
+    for(i=0;i<names.length;i++) {
+
+      let myop = document.createElement("option");
+      myop.value = values[i];
+      myop.text = names[i];
+      console.log("bwd",myop);
+      selbox.add(myop);
+      
+      
+    }
+
+    index.forEach(ind =>{ 
+    assbox.remove(ind-cnt);
+    console.log(ind)
+    cnt++;
+  
+  })
+
+
+})
+
 })
 </script>
 </html>

@@ -18,7 +18,7 @@ if ($_GET['st']!="")
 $conn = new mysqli($GLOBALS['host'],$GLOBALS['dbuser'],$GLOBALS['dbpass'],$GLOBALS['db']);
   if ($conn->connect_error)
 {
-  die('Could not connect: ' . $con->connect_error);
+  die('Could not connect: ' . $conn->connect_error);
 }
 
 $result = $conn->query($myquery);
