@@ -225,70 +225,58 @@ document.getElementById("myform").addEventListener("change", function() {
         <br><br>
         
           
-          
+          <div class="col-xs-2 form-inline">
+            <label for="Invoice_ref">Account Img ref </label>
+          </div>
+          <div class="col-xs-3 form-group">
+            <input class="form-control" type="text" id="acc_ref" name="acc_ref" placeholder="5-701">
+          </div>
             
         
         
-          <div class="row">
-            <div class="col-xs-4 form-inline"> 
-              <label for="Invoice_ref">Sub Net Total: </label>
-            </div>
-            <div class="col-xs-3 form-group"> 
-              <input class="form-control" type="number" id="sub_total" name="sub_total" placeholder="auto" onclick="compute_totals()" readonly="readonly">
-            </div>
-          </div>
           
-          <div class="row">
-            <div class="col-xs-4 form-group"> 
-              <label for="Invoice_ref">Sub Total Disc: </label>
-            </div>
-
-            <div class="col-xs-3 form-group"> 
-              <input class="form-control" type="number" id="sub_total_disc" name="sub_total_disc" placeholder="auto" onclick="compute_totals()" readonly="readonly"></td>
-            </div>
+          <div class="col-xs-4 form-inline text-right"> 
+            <label for="Invoice_ref">Sub Net Total: </label>
+          </div>
+          <div class="col-xs-3 form-group text-right"> 
+            <input class="form-control" type="number" id="sub_total" name="sub_total" placeholder="auto" onclick="compute_totals()" readonly="readonly">
+          </div>
+                  
+          <div class="col-xs-2 form-group form-inline">
+            <label for="file">Invoice File : </label>
           </div>
 
-          <div class="row">
-            <div class="col-xs-4 form-group"> 
-              <label for="Invoice_ref">Sub Total Tax: </label>
-            </div>
-            <div class="col-xs-3 form-group"> 
-              <input class="form-control" type="number" id="sub_total_tax" name="sub_total_tax" placeholder="auto" onclick="compute_totals()" readonly="readonly"></td>
-            </div>
+          <div class="col-xs-3 form-group ">
+            <input type="checkbox" name="existing" id="existing"  onchange="useexisting()"/> use existing 
+            <input class="form-control" type="file" accept="image/*" name="file" id="file">
+            <select class="form-control" id="imglist" name="img_name" value="">
+              
+            </select>
           </div>
 
-          <div class="row" style="margin-bottom:10px">
-            <div class="col-xs-4 form-group"> 
-              <label for="Invoice_ref">Invoice Total: </label>
-            </div>
-            <div class="col-xs-3 form-group"> 
-              <input class="form-control" type="number" id="inv_total" name="inv_total" placeholder="auto" onclick="compute_totals()" readonly="readonly"></td>
-            </div>
+          <div class="col-xs-4 form-group text-right"> 
+            <label for="Invoice_ref">Sub Total Disc: </label>
+          </div>
+
+          <div class="col-xs-3 form-group text-right"> 
+            <input class="form-control" type="number" id="sub_total_disc" name="sub_total_disc" placeholder="auto" onclick="compute_totals()" readonly="readonly"></td>
+          </div>
+          <div class="col-xs-4 form-group text-right"> 
+            <label for="Invoice_ref">Sub Total Tax: </label>
+          </div>
+          <div class="col-xs-3 form-group text-right"> 
+            <input class="form-control" type="number" id="sub_total_tax" name="sub_total_tax" placeholder="auto" onclick="compute_totals()" readonly="readonly"></td>
+          </div>
+
+          <div class="col-xs-4 form-group text-right"> 
+            <label for="Invoice_ref">Invoice Total: </label>
+          </div>
+          <div class="col-xs-3 form-group text-right"> 
+            <input class="form-control" type="number" id="inv_total" name="inv_total" placeholder="auto" onclick="compute_totals()" readonly="readonly"></td>
           </div>
 
           
-          <div class="row">
-            <div class="col-xs-2 form-inline">
-              <label for="Invoice_ref">Account Img ref </label>
-            </div>
-            <div class="col-xs-3 form-group">
-              <input class="form-control" type="text" id="acc_ref" name="acc_ref" placeholder="5-701">
-            </div>
-          </div>
         
-          <div class="row">
-            <div class="col-xs-2 form-group form-inline">
-              <label for="file">Invoice File : </label>
-            </div>
-
-            <div class="col-xs-3 form-group ">
-              <input type="checkbox" name="existing" id="existing"  onchange="useexisting()"/> use existing 
-              <input class="form-control" type="file" accept="image/*" name="file" id="file">
-              <select class="form-control" id="imglist" name="img_name" value="">
-                
-              </select>
-            </div>
-          </div>
 
         <div class="row">
           <div class="col-sm-3">
