@@ -14,16 +14,40 @@
       <!-- Collect the nav links, forms, and other content for toggling -->
       <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
         <ul class="nav navbar-nav">
-          
             <?php 
-              if($_SESSION['loggedin'] AND $_SESSION['level'] == 'admin') {
-                echo "<li><a href='add_product_main.php'>Add Products </a></li>";
-                echo "<li><a href='add_invent.php'>Add Inventory Items </a></li>";
-                echo "<li><a href='add_location.php'>Add Location</a></li>";
-                }
-              if($_SESSION['loggedin'] ){
+            if($_SESSION['loggedin'] AND $_SESSION['level'] == 'admin') {
+              // Add Navigation
+              echo "<li class='dropdown'>";
+              echo "<a href='#' class='dropdown-toggle' data-toggle='dropdown' 
+                      role='button' aria-haspopup='true' aria-expanded='false'>
+                      Admin<span class='caret'></span></a>";
+                
+              echo "<ul class='dropdown-menu'>";
+              echo "<li><a href='add_product_main.php'>Add Product</a></li>";
+              echo "<li><a href='add_supplier.php'>Add Supplier</a></li>";
+              echo "<li><a href='add_location.php'>Add Location</a></li>";
+              
+              echo "</ul>";
+              echo "</li>";
+
+
+              // Inventory Navigation
+              echo "<li class='dropdown'>";
+              echo "<a href='#' class='dropdown-toggle' data-toggle='dropdown' 
+                      role='button' aria-haspopup='true' aria-expanded='false'>
+                      Inventory<span class='caret'></span></a>";
+                
+              echo "<ul class='dropdown-menu'>";
+              echo "<li><a href='add_invent.php'>Add Inventory item</a></li>";
+              echo "<li><a href='show_inventory.php'>Show Inventory</a></li>";
+              
+              echo "</ul>";
+              echo "</li>";
+            }
+
+            // Price list
+            if($_SESSION['loggedin'] ){
                 echo "<li><a href='pricelist.php'>Price List </a></li>";
-                echo "<li><a href='show_inventory.php'>Show Inventory</a></li>";
                 } ?>
               
               

@@ -41,7 +41,7 @@ label {
     border-radius: 0;
   }
   .jumbotron{
-    //margin-bottom: 0;
+    margin-bottom: 0;
     
   }
   .form-group {
@@ -58,21 +58,31 @@ label {
 <script src="select2/select2.min.js"></script>
 <script src="myjs.js"></script>
 <script>
-   $(document).ready(function() {
    
+  document.addEventListener("DOMContentLoaded", () => {
     $("#supplier2").select2({
       data: <?php echo getsups();  ?>
     })
 
-   
+  const myform = document.getElementById("myform");
 
-document.getElementById("myform").addEventListener("change", function() {
-  console.log("form changed");
-  compute_rows();
+  
+  
+  
+  myform.addEventListener("change", () => {
+      console.log("form changed");
+      compute_rows();
 
-});
+    });
 
-})
+  
+  
+  }
+
+
+
+  
+  
 
 </script>
 
