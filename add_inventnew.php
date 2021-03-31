@@ -214,7 +214,7 @@ const onCompanySelect = () => {
     purpose: "getSuppliersByCompanyId",
     id: comp_id
   };
-  console.log(data);
+  console.log("getsuppliers",data);
   getSelectOptions(data,supplier).then(res=>{
     pop_products2();
   });

@@ -41,9 +41,9 @@ class Prods_assign extends Dbh
     public function getRemaining_Products($id="0")
     {
         $sqlexclude = "select prod_id from prod_sup where sup_id=:id ";
-        $sql = "select id,concat(product_name,' | ',supplier) product_name 
+        $sql = "select id,concat(product_name,' | ',coalesce(maker,'na')) product_name 
                 from products where id not in (".$sqlexclude.") 
-                order by supplier,product_name ";
+                order by product_name ";
 
         try {
             $stmt = $this->conn()->prepare($sql);
