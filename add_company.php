@@ -45,7 +45,6 @@ if (!$_SESSION["loggedin"]) {
 </style>
 <script src="bootstrap1/js/bootstrap.min.js"></script>
 
-
 <title>
   GQFL
 </title>
@@ -72,30 +71,24 @@ if (!$_SESSION["loggedin"]) {
     <!-- JUMPOTRON -->
   <div class="jumbotron text-center">
     <div class="container">
-     <h1><SMALL> Add New location </SMALL></h1>
+     <h1><SMALL> Add New Company </SMALL></h1>
    </div>
  </div>
 
  <div class="container">
-  <div class="row">
-     <label for="location">Company : </label>
-     <select class="form-control" id="company">
-     </select>
-   </div>
-   
    <div class="row">
-     <label for="location">Site Name : </label>
-     <input class="form-control" type="text" placeholder="b-20 v-1" id="locname"/>
+     <label for="location">Company Name : </label>
+     <input class="form-control" type="text" placeholder="Mozz'art" id="company_name"/>
    </div>
 
    <div class="row">
-     <label for="location">Site Type : </label>
-     <input class="form-control" type="text" placeholder="house/showroom" id="loctype"/>
+     <label for="location">Company Type : </label>
+     <input class="form-control" type="text" placeholder="pizza/burger" id="company_type"/>
    </div>
    
    <div class="gap" style="margin-bottom:20px"></div>
    <div class="row">
-     <button class='btn btn-info' id="loc_create">Create Location</button>
+     <button class='btn btn-info' id="company_create">Create Company</button>
    </div>
   <div class="gap" id="gap" style="margin-bottom:20px"></div>
 
@@ -110,13 +103,25 @@ if (!$_SESSION["loggedin"]) {
   
 
   const updres = () => {
+    const results = document.getElementById("results");
     results.innerHTML = "";
-    data = {};
-    postData('getlocs.php',data).then(getlocs=>{
-      results.innerHTML = getlocs;
-      console.log(getlocs);
-    })
-
+    let response = "";
+    data = {purpose: "get_companies"};
+    
+    postData('getdata.php',data).then(companies=>{
+      
+      
+      response = `<table class='table small table-striped table-bordered table-hover table-condensed'>`;
+      response += `<tr><td>company id</td><td>company name</td><tr>`;
+      console.log(response);
+      companies.forEach(company => {
+        response += `<tr><td>${company.id}</td><td>${company.name}</td></tr>`;
+        console.log(response);
+      });
+      response += "</table>";
+      results.innerHTML = response; 
+    });
+    
   };
 
 
@@ -125,29 +130,18 @@ if (!$_SESSION["loggedin"]) {
   document.addEventListener("DOMContentLoaded",() => {
     updres();
 
-    const companies = document.getElementById("company");
-    const ret_comp_data = {
-      purpose: "get_companies"
-    }
-    getSelectOptions(ret_comp_data,companies).then(res => {
-      console.log("options retrieved");
-    })
-
-    const putloc = document.getElementById("loc_create");
+    const putloc = document.getElementById("company_create");
     putloc.addEventListener("click",() =>{
 
       //putloc.disabled= true;
-      const sitename=document.getElementById("locname").value;
-      const sitetype=document.getElementById("loctype").value;
+      const sitename=document.getElementById("company_name").value;
+      const sitetype=document.getElementById("company_type").value;
 
       const sitedata = {
-        purpose: "add_location",
-        company: company.value,
+        purpose: "add_company",
         name: sitename,
         type: sitetype
       };
-
-      console.log(sitedata);
 
       postData('addlocs.php',sitedata).then(res => {
         //console.log(res);

@@ -1,4 +1,4 @@
-<?php 
+<?php
 include('alerts.php');
 include_once('db_conn.php');
 
@@ -7,13 +7,13 @@ $errmsg = "";
 
 $logged = false;
 
-if(!$_SESSION["loggedin"]) 
-  $logged = false;
-else 
-  {
-    if($_SESSION["level"] == "admin")
-    $logged = true;
-  }
+if (!$_SESSION["loggedin"]) {
+    $logged = false;
+} else {
+    if ($_SESSION["level"] == "admin" || $_SESSION["level"] == "superadmin") {
+        $logged = true;
+    }
+}
 
 
 ?>
@@ -52,12 +52,12 @@ else
 
   <?php include('navbar.html');
 
-   if(!$logged) {
-    echo "<div class='container' style='margin-top:10;'>";
-    err_alert("<strong>Access Denied</strong> Please log in to access");
-    echo "</div>";
-    die;
-  }
+   if (!$logged) {
+       echo "<div class='container' style='margin-top:10;'>";
+       err_alert("<strong>Access Denied</strong> Please log in to access");
+       echo "</div>";
+       die;
+   }
 
 
 
@@ -76,53 +76,37 @@ else
     <?php
     $get_id = $_GET['id'];
 
-    if($get_id=="")
-      die(err_alert("no record to edit"));
-
-    // retrieve product details
-    $conn = new mysqli($GLOBALS['host'],$GLOBALS['dbuser'],$GLOBALS['dbpass'],$GLOBALS['db']);
-    if ($conn->connect_error)
-    {
-      die(err_alert('Could not connect: ' . $conn->connect_error));
+    if ($get_id=="") {
+        die(err_alert("no record to edit"));
     }
+    //getting product details
 
-    $subquery = "select product_name,product_type,supplier,product_sub_type,maker,casesize,units from products p";
-    $subquery = $subquery. " where id=".$get_id;
-
-    //echo $subquery;
-
-    if($result = $conn->query($subquery))
-      $row = $result->fetch_assoc();
-    else echo $conn->error;
-     
+    $obj = new Prods_assign();
+    $row = $obj->getProductDetails($get_id);
 
     ?>
 
     <div class="form-group">
       <label for="Product Name">Product Name </label>
-      <input type="text" class="form-control" name="txt_name" value="<?php echo $row['product_name']; ?>" id ="t_name">
+      <input type="text" class="form-control" name="txt_name" value="<?php echo $row->product_name; ?>" id ="t_name">
     </div>
     <input type="hidden" name="txt_id" value="<?php echo $get_id ?>" >
 
-    <div class="form-group">
-      <label for="Product Supplier">Product Supplier </label><input type="text" class="form-control" name="txt_supplier" value="<?php echo $row['supplier']; ?>" id ="t_supplier">
-      
-    </div> 
 
     <div class="form-group">
-      <label for="Product Maker">Product Source</label><input type="text" class="form-control" name="txt_source" value="<?php echo $row['maker']; ?>" id ="t_source">
+      <label for="Product Maker">Product Source</label><input type="text" class="form-control" name="txt_source" value="<?php echo $row->maker; ?>" id ="t_source">
       
     </div> 
 
     <div class="row">
 
       <div class="col-sm-3 form-group">
-        <label for="Product Type">Product Type </label><input type="text" class="form-control" name="txt_type" value="<?php echo $row['product_type']; ?>" id ="t_type">
+        <label for="Product Type">Product Type </label><input type="text" class="form-control" name="txt_type" value="<?php echo $row->product_type; ?>" id ="t_type">
       </div>
 
       <div class="col-sm-3 form-group">
         <label for="Product Sub Type">Product Subtype </label>
-        <input type="text" class="form-control" name="txt_sub_type" value="<?php echo $row['product_sub_type']; ?>" id ="t_sub_type">
+        <input type="text" class="form-control" name="txt_sub_type" value="<?php echo $row->product_sub_type; ?>" id ="t_sub_type">
       </div>
 
     </div>
@@ -131,7 +115,7 @@ else
 
       <div class="col-sm-3 form-group">
         <label for="Case Size">Case Size</label>
-        <input type="number" class="form-control" name="txt_case_size" value="<?php echo $row['casesize']; ?>" step=".01" id ="t_cases">
+        <input type="number" class="form-control" name="txt_case_size" value="<?php echo $row->casesize; ?>" step=".01" id ="t_cases">
       </div>
 
       <div class="col-sm-3 form-group">

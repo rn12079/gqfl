@@ -1,4 +1,4 @@
-<?php 
+<?php
 /*
 function err_alert($err_msg){
 echo "<div class='alert alert-danger' role='alert'>".$err_msg."</div>";
@@ -12,13 +12,13 @@ $errmsg = "";
 
 $logged = false;
 
-if(!$_SESSION["loggedin"]) 
-  $logged = false;
-else 
-  {
-    if($_SESSION["level"] == "admin")
-    $logged = true;
-  }
+if (!$_SESSION["loggedin"]) {
+    $logged = false;
+} else {
+    if ($_SESSION["level"] == "superadmin" || $_SESSION["level"] == "admin") {
+        $logged = true;
+    }
+}
 
   
 ?>
@@ -83,11 +83,11 @@ document.getElementById("myform").addEventListener("change", function() {
 <body onload="inits()">
  <?php include('navbar.html');
 
-  if(!$logged) {
-    echo "<div class='container' style='margin-top:10;'>";
-    err_alert("<strong>Access Denied</strong> Please log in to access");
-    echo "</div>";
-    die;
+  if (!$logged) {
+      echo "<div class='container' style='margin-top:10;'>";
+      err_alert("<strong>Access Denied</strong> Please log in to access");
+      echo "</div>";
+      die;
   }
   $cnt = 0;
   ?>
@@ -148,11 +148,12 @@ document.getElementById("myform").addEventListener("change", function() {
 
         <div class="col-sm-3 form-group">
           <select class="form-control" name="receiver" id="receiver">
-            <?php 
+            <?php
               $locs = getlocs();
               //print_r($locs);
-              foreach($locs as $x => $y)
-                 echo "<option value='".($y['name'])."'>".($y['name'])."</option>";
+              foreach ($locs as $x => $y) {
+                  echo "<option value='".($y['name'])."'>".($y['name'])."</option>";
+              }
             ?>
           </select>
         </div>

@@ -1,4 +1,4 @@
-<?php 
+<?php
 /*
 function err_alert($err_msg){
 echo "<div class='alert alert-danger' role='alert'>".$err_msg."</div>";
@@ -10,10 +10,11 @@ include('db_funcs.php');
 session_start();
 $errmsg = "";
 
-if(!$_SESSION["loggedin"]) 
-  $logged = false;
-else
-  $logged = true;
+if (!$_SESSION["loggedin"]) {
+    $logged = false;
+} else {
+    $logged = true;
+}
 
 ?>
 
@@ -60,11 +61,11 @@ label {
   $bool_upload = false;
   $bool_succ = false;
 
-  if(!$logged) {
-    echo "<div class='container' style='margin-top:10;'>";
-    err_alert("<strong>Access Denied</strong> Please log in to access");
-    echo "</div>";
-    die;
+  if (!$logged) {
+      echo "<div class='container' style='margin-top:10;'>";
+      err_alert("<strong>Access Denied</strong> Please log in to access");
+      echo "</div>";
+      die;
   }
 
   ?>
@@ -81,65 +82,58 @@ label {
 
     <?php
 
-    if(!isset( $_POST['existing']) )
-    {
+    if (!isset($_POST['existing'])) {
+        $upload_filename = $_FILES["file"]["name"];
+        if ($upload_filename!="") {
+            //echo $upload_filename;
+            if ($_FILES['file']['error']!== UPLOAD_ERR_OK) {
+                die(err_alert("Upload failed with error". $_FILES['file']['error']));
+            }
+
+            $filetemp = $_FILES["file"]["name"];
+            $filename = str_replace(" ", "_", $filetemp);
 
 
-      $upload_filename = $_FILES["file"]["name"];
-      if ($upload_filename!="") {
-//echo $upload_filename;
-        if($_FILES['file']['error']!== UPLOAD_ERR_OK) {
-          die(err_alert("Upload failed with error". $_FILES['file']['error']));
-        }
+            $finfo = finfo_open(FILEINFO_MIME_TYPE);
+            $mime = finfo_file($finfo, $_FILES['file']['tmp_name']);
+            $ok = false;
 
-        $filetemp = $_FILES["file"]["name"];
-        $filename = str_replace(" ","_",$filetemp);
-
-
-        $finfo = finfo_open(FILEINFO_MIME_TYPE);
-        $mime = finfo_file($finfo, $_FILES['file']['tmp_name']);
-        $ok = false;
-
-        $allowedmimes = array(
+            $allowedmimes = array(
           'application/pdf',
           'text/pdf',
           'image/png',
           'image/jpeg');
 
 
-        if(! (in_array($mime,$allowedmimes)))
-          die (err_alert("Unknown file type"));
+            if (! (in_array($mime, $allowedmimes))) {
+                die(err_alert("Unknown file type"));
+            }
 
         
-        $ofile = "upload/".$filename;
-        $filen = end(explode(".", $_FILES["file"]["name"]));
-        $filenam = current(explode(".", $_FILES["file"]["name"]));
+            $ofile = "upload/".$filename;
+            $filen = end(explode(".", $_FILES["file"]["name"]));
+            $filenam = current(explode(".", $_FILES["file"]["name"]));
 
 
-        $n= 0;
+            $n= 0;
 
 
         
-        while (file_exists("upload/" . $filename))
-        {
+            while (file_exists("upload/" . $filename)) {
+                $filename = $filenam . $n . "." . $filen;
+                //echo $filename;
+                $n = $n+1;
+                $ofile = "upload/".$filename;
+            }
 
-         $filename = $filenam . $n . "." . $filen;
-       //echo $filename;
-         $n = $n+1;
-         $ofile = "upload/".$filename;
-       }
-
-       move_uploaded_file($_FILES["file"]["tmp_name"],"upload/" . $filename);
-       succ_alert("Image file uploaded successfully: <strong>". $filename ."</strong>");
-     }
-     else 
-      warn_alert("Warning! No image uploaded");
-
-  }
-  else 
-  {
-    $ofile = $_POST["img_name"];
-    succ_alert("Existing image file used: <strong>" . $ofile . "</strong>");
+            move_uploaded_file($_FILES["file"]["tmp_name"], "upload/" . $filename);
+            succ_alert("Image file uploaded successfully: <strong>". $filename ."</strong>");
+        } else {
+            warn_alert("Warning! No image uploaded");
+        }
+    } else {
+      $ofile = $_POST["img_name"];
+      succ_alert("Existing image file used: <strong>" . $ofile . "</strong>");
   }
 
 //echo "Stored in: " . "upload/" . $filename."<br>";
@@ -173,81 +167,81 @@ label {
 
 $upd_cnt = 0;
 
-while($upd_cnt < count($id)) {
-  $b_tad=0;
+while ($upd_cnt < count($id)) {
+    $b_tad=0;
 
-  $retquery = "select i.id,date,receiver,product_name,supplier,cases,amount,invoice_ref,acc_ref,invoice_img_ref from products p ";
-  $retquery = $retquery . "inner join inventory i on i.product_id=p.id where i.id='".$id."'";
+    $retquery = "select i.id,date,receiver,product_name,supplier,cases,amount,invoice_ref,acc_ref,invoice_img_ref from products p ";
+    $retquery = $retquery . "inner join inventory i on i.product_id=p.id where i.id='".$id."'";
 
-  $conn = new mysqli($GLOBALS['host'],$GLOBALS['dbuser'],$GLOBALS['dbpass'],$GLOBALS['db']);
-  if ($conn->connect_error)
-  {
-    die('Could not connect: ' . $conn->connect_error);
-  }
+    $conn = new mysqli($GLOBALS['host'], $GLOBALS['dbuser'], $GLOBALS['dbpass'], $GLOBALS['db']);
+    if ($conn->connect_error) {
+        die('Could not connect: ' . $conn->connect_error);
+    }
 
-  // updating log file , putting old data
-  $result = $conn->query($retquery);
-  $row = $result->fetch_assoc();
-  $logfile = 'log.txt';
-
-  $current = file_get_contents($logfile);
-
-  $current = $current. "old="."\t".$row["date"]."\t".$row["receiver"]."\t".$row["product_name"]."\t".$row["supplier"]."\t".$row["product_type"];
-  $current = $current."\t".$row["product_sub_type"]."\t".$row["cases"]."\t".$row["amount"]."\t".$row["invoice_ref"]."\t".$row["acc_ref"]."\t".$row["invoice_img_ref"];
-  $current = $current."\n";
-
-
-    
-
-    if(isset($tad[$upd_cnt]))
-      $b_tad=1;
-
-  $myquery = "update inventory set cases='" .$cases[$upd_cnt]. "', namount='".$namount[$upd_cnt]."'";
-  $myquery = $myquery . ", discount='" . $discount[$upd_cnt] . "', tad='" . $b_tad . "', taxrate='" . $taxrate[$upd_cnt] . "', tax='" . $tax[$upd_cnt]. "', amount='".$amount[$upd_cnt];
-  $myquery = $myquery . "', invoice_ref='" . $invoice_ref;
-  $myquery = $myquery . "', acc_ref='" . $acc_ref;
-  $myquery = $myquery . "',  invoice_img_ref='" . $ofile . "'";
-  if (isset($del[$upd_cnt]))
-    $myquery = $myquery . ", del=1 ";
-  $myquery = $myquery . " where id='".$id[$upd_cnt]."'";
-
-  echo $myquery;
-  
-
-
-  if ($conn->query($myquery) === TRUE) {
-    if (isset($del[$upd_cnt]))
-      warn_alert("1 Record deleted successfully");
-    else
-      succ_alert("1 Record updated successfully");
+    // updating log file , putting old data
     $result = $conn->query($retquery);
     $row = $result->fetch_assoc();
-    
-    if (isset($_POST["discard"]))
-      $current=$current."del=";
-    else 
-      $current=$current."new=";
+    $logfile = 'log.txt';
 
-    
-    $current = $current."\t".$row["date"]."\t".$row["receiver"]."\t".$row["product_name"]."\t".$row["supplier"]."\t".$row["product_type"];
+    $current = file_get_contents($logfile);
+
+    $current = $current. "old="."\t".$row["date"]."\t".$row["receiver"]."\t".$row["product_name"]."\t".$row["supplier"]."\t".$row["product_type"];
     $current = $current."\t".$row["product_sub_type"]."\t".$row["cases"]."\t".$row["amount"]."\t".$row["invoice_ref"]."\t".$row["acc_ref"]."\t".$row["invoice_img_ref"];
-    $current = $current."\n\n";
-    file_put_contents($logfile, $current);
+    $current = $current."\n";
+
+
     
 
+    if (isset($tad[$upd_cnt])) {
+        $b_tad=1;
+    }
 
-} else {
-  err_alert("Error updating record: " . $conn->error);
-}
+    $myquery = "update inventory set cases='" .$cases[$upd_cnt]. "', namount='".$namount[$upd_cnt]."'";
+    $myquery = $myquery . ", discount='" . $discount[$upd_cnt] . "', tad='" . $b_tad . "', taxrate='" . $taxrate[$upd_cnt] . "', tax='" . $tax[$upd_cnt]. "', amount='".$amount[$upd_cnt];
+    $myquery = $myquery . "', invoice_ref='" . $invoice_ref;
+    $myquery = $myquery . "', acc_ref='" . $acc_ref;
+    $myquery = $myquery . "',  invoice_img_ref='" . $ofile . "'";
+    if (isset($del[$upd_cnt])) {
+        $myquery = $myquery . ", del=1 ";
+    }
+    $myquery = $myquery . " where id='".$id[$upd_cnt]."'";
+
+    echo $myquery;
+  
+
+
+    if ($conn->query($myquery) === true) {
+        if (isset($del[$upd_cnt])) {
+            warn_alert("1 Record deleted successfully");
+        } else {
+            succ_alert("1 Record updated successfully");
+        }
+        $result = $conn->query($retquery);
+        $row = $result->fetch_assoc();
+    
+        if (isset($_POST["discard"])) {
+            $current=$current."del=";
+        } else {
+            $current=$current."new=";
+        }
+
+    
+        $current = $current."\t".$row["date"]."\t".$row["receiver"]."\t".$row["product_name"]."\t".$row["supplier"]."\t".$row["product_type"];
+        $current = $current."\t".$row["product_sub_type"]."\t".$row["cases"]."\t".$row["amount"]."\t".$row["invoice_ref"]."\t".$row["acc_ref"]."\t".$row["invoice_img_ref"];
+        $current = $current."\n\n";
+        file_put_contents($logfile, $current);
+    } else {
+        err_alert("Error updating record: " . $conn->error);
+    }
 
   
 
 
 
 
-$conn->close();
-//}/= */
-$upd_cnt++;
+    $conn->close();
+    //}/= */
+    $upd_cnt++;
 }
 
 ?>

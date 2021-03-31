@@ -20,7 +20,7 @@ if (!$_SESSION["loggedin"]) {
     }
 }
 
-  $supid = $_GET['id'];
+  $comp_id = $_GET['id'];
 ?>
 
 
@@ -93,8 +93,8 @@ button {
     <div class="container">
       Assign Products to <strong>  
         <?php
-          $supname = new Suppliers();
-          $res = $supname->getSupplierById($supid);
+          $supname = new Companies();
+          $res = $supname->getCompanyById($comp_id);
           echo $res->name;
         ?>
       </strong>
@@ -108,7 +108,7 @@ button {
               <?php
                 
                 $myprods = new Prods_assign();
-                $prods = $myprods->getRemaining_Products($supid);
+                $prods = $myprods->getRemaining_ProductsByCompany($comp_id);
 
                 foreach ($prods as $prod) {
                     echo "<option value=".$prod->id.">".$prod->product_name."</option>";
@@ -126,7 +126,7 @@ button {
               <?php
                 
                 $myprods = new Prods_assign();
-                $prods = $myprods->getProductsBySupplier($supid);
+                $prods = $myprods->getProductsByCompany($comp_id);
 
                 foreach ($prods as $prod) {
                     echo "<option value=".$prod->id." disabled>".$prod->product_name."</option>";
@@ -222,7 +222,7 @@ document.addEventListener("DOMContentLoaded",() => {
     console.log(id);
 
     const data = {
-      purpose: "assignprod",
+      purpose: "assignprodtocomp",
       prod_ids,
       id
     }

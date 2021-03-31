@@ -1,4 +1,4 @@
-<?php 
+<?php
 /*
 function err_alert($err_msg){
 echo "<div class='alert alert-danger' role='alert'>".$err_msg."</div>";
@@ -10,13 +10,15 @@ include('db_funcs.php');
 session_start();
 $errmsg = "";
 
-if(!$_SESSION["loggedin"]) 
-  $logged = false;
-else
-  $logged = true;
+if (!$_SESSION["loggedin"]) {
+    $logged = false;
+} else {
+    $logged = true;
+}
 
-if (!isset($_POST['sdate']))
-  $_POST['sdate'] = date('Y-m-d', strtotime("-30 days"));
+if (!isset($_POST['sdate'])) {
+    $_POST['sdate'] = date('Y-m-d', strtotime("-30 days"));
+}
 ?>
 
 
@@ -49,7 +51,8 @@ label {
 
 
   }
-
+  .select2-results__option[aria-selected=true] { display: none;}
+  .select2-results__option--selected { display: none;}
 
     p.info {
 
@@ -63,7 +66,7 @@ label {
 
     td.number {
       text-align:right; 
-      padding-right:10px
+      padding-right:20px
     }
     td.bottom {
       background-color: #f0f5f5;
@@ -75,6 +78,14 @@ label {
     }
 
     td.top {
+      background-color: lightgrey;
+      text-align: left;
+      font-size:16px;
+      font-weight:bold;
+      height: 30px;
+    }
+
+    td.topnum {
       background-color: lightgrey;
       text-align: center;
       font-size:16px;
@@ -184,14 +195,38 @@ label {
 <script src="jquery/jquery-3.2.1.min.js"></script>
 <script src="bootstrap1/js/bootstrap.min.js"></script>
 <script src="select2/select2.min.js"></script>
+<script src="tabledata.js"></script>
 <script type="text/javascript">
  $(document).ready(function() {
 
   $('[data-toggle="tooltip"]').tooltip();  
-  
+  let data = JSON.stringify({purpose: 'get_companies'});
   //var sup = $('#supplier').val();
+  $('#company').select2({
+    width: '200px',
+    ajax: {
+      url: 'getdata.php',
+      type: 'POST',
+      contentType: 'application/json; charset=utf-8',
+      dataType: 'json',
+      cache: true,
+      data,
+      processResults: function(data){
+        return {
+          results:$.map(data,function(obj){
+          return {
+            id: obj.id,
+            text: obj.name
+          }
+        })
+      }
+    }
+
+  }
+})
 
   $('#test').select2({
+    closeOnSelect: false,
     placeholder: "select a product",
     width:'300px',
   ajax: {
@@ -217,7 +252,7 @@ label {
         results: $.map(data, function(obj) {
           console.log(obj);
           return {
-            id: obj.text,
+            id: obj.id,
             text: obj.text ,
           };
 
@@ -229,7 +264,14 @@ label {
     }
 });
 
+const company = document.getElementById("company");
+company.addEventListener("change",e => {
+  console.log(company.id, company.name);
+}) 
+
 });
+
+
 /*
 Ajax block to get items for search tab
 /*
@@ -290,6 +332,7 @@ function init(){
   ajaxsearch("receiver","rlist");
   ajaxsearch("supplier","slist");
   ajaxsearch("product_sub_type","stlist");
+  
 
 }
 
@@ -337,14 +380,15 @@ function toggle_details(t_row){
 
 </head>
 <body onload="init()">
- <?php include('navbar.html');
+ <?php 
+ include('navbar.html');
 
-    if(!$logged) {
-    echo "<div class='container' style='margin-top:10;'>";
-    err_alert("<strong>Access Denied</strong> Please log in to access");
-    echo "</div>";
-    die;
-  }
+    if (!$logged) {
+        echo "<div class='container' style='margin-top:10;'>";
+        err_alert("<strong>Access Denied</strong> Please log in to access");
+        echo "</div>";
+        die;
+    }
 
 
   $cnt = 0;
@@ -394,14 +438,12 @@ function toggle_details(t_row){
               <td>
               <select id="test" multiple="multiple" name="test[]" width="100px">
               <?php
+              $prodobj = new Prods_assign();
               $arr = $_POST['test'];
-              if (count($arr)>0){
-                
-                foreach($arr as $x => $y){
-                  
-                  echo "<option value='".$arr[$x]."' selected>".$arr[$x]."</option>";
-                  
-                } 
+              if (count($arr)>0) {
+                  foreach ($arr as $x => $y) {
+                      echo "<option value='".$arr[$x]."' selected>".$prodobj->getProductName($arr[$x])."</option>";
+                  }
               }
                 ?>
                 </select>
@@ -424,9 +466,10 @@ function toggle_details(t_row){
               </tr>
               <tr>
 
-                <td colspan=3 onclick="toggle_dtrange()" class="<?php 
-                if (isset($_POST['sdate']) || isset($_POST['edate']))
-                  echo "bg-success";
+                <td colspan=3 onclick="toggle_dtrange()" class="<?php
+                if (isset($_POST['sdate']) || isset($_POST['edate'])) {
+                    echo "bg-success";
+                }
                   ?>">
                   <label for="Start date">Date Range: </label></td>
                   <td>
@@ -434,7 +477,24 @@ function toggle_details(t_row){
                     <label for="subfilter">Sub filtering </label>  <input type="checkbox" name="chk"  id ="chk" 
                     <?php echo isset($_POST['chk']) ? "checked='checked'" : '' ?>">
                   </td>
+                  <td>
 
+                    <label for="subfilter">Company </label>  
+                  </td>
+                  <td>
+                  <select name="company[]" id="company" multiple="multiple">
+                  <?php $comp_arr = $_POST['company'];
+                  if (count($comp_arr)>0) {
+                    $compobj = new Companies();
+                    foreach ($comp_arr as $x => $y) {
+                      echo "<option value='".$comp_arr[$x]."' selected>".$compobj->getCompanyName($comp_arr[$x])."</option>";
+                    }
+                  }
+                ?>
+                  </select>
+                  </td>
+                  
+                  
                 </tr>
               </table>
 
@@ -466,191 +526,227 @@ function toggle_details(t_row){
           </form> 
         </div>
           <table align="center" style="margin:20px">
-            <col width="8%"> <col width="8%"><col width="16%"><col width="10%"><col width="6%"><col width="7%"><col width="5%"><col width="10%"><col width="10%"><col width="10%"><col width="10%">
+            <col width="8%"> 
+            <col width="8%">
+            <col width="8%">
+            <col width="16%">
+            <col width="16%">
+            <col width="5%">
+            <col width="5%">
+            <col width="5%">
+            <col width="8%">
+            <col width="10%">
+            <col width="5%">
             <tr>
-              <td  class="top" >Date</td><td  class="top">Receiver</td><td  class="top">Product Name</td><td  class="top">Supplier</td><td  class="top">Type</td><td  class="top">Subtype</td><td class="top">Qty</td><td class="top">U. price</td>
-              <td  class="top">Amount</td><td  class="top">add</td><td  class="top">Inv</td></tr>
+              <td  class="top" >Date</td><td  class="top">Company</td><td  class="top">Receiver</td><td  class="top">Product Name</td><td  class="top">Supplier</td><td  class="top">Type</td><td  class="top">Subtype</td><td class="topnum">Qty</td><td class="topnum">U. price</td>
+              <td  class="topnum">Amount</td><td  class="top">Inv</td></tr>
 
               <?php
               $arr = $_POST['test'];
               $filters=array();
               $n_filters=0;
 
-              if (count($arr)>0){
-                $c=0;
-                $st_name=" p.product_name in (";
-                foreach($arr as $x => $y){
-                  if ($c>0) $st_name = $st_name . ",";
-                  $st_name = $st_name."'".$arr[$x]."'";
-                  $c++;
-                }
+              if (count($arr)>0) {
+                  $c=0;
+                  $st_name=" p.id in (";
+                  foreach ($arr as $x => $y) {
+                      if ($c>0) {
+                          $st_name = $st_name . ",";
+                      }
+                      $st_name = $st_name."'".$arr[$x]."'";
+                      $c++;
+                  }
 
-                $st_name = $st_name . ")";
+                  $st_name = $st_name . ")";
 
-                $n_filters = $n_filters+1;
-                array_push($filters, $st_name);
+                  $n_filters = $n_filters+1;
+                  array_push($filters, $st_name);
               }
-              if (isset($_POST['receiver'])&&$_POST['receiver']!=""){
-                $st_receiver=" receiver='" .$_POST['receiver'] ."'";
-                $n_filters = $n_filters+1;
-                array_push($filters,$st_receiver);
+              if (isset($_POST['receiver'])&&$_POST['receiver']!="") {
+                  $st_receiver=" receiver='" .$_POST['receiver'] ."'";
+                  $n_filters = $n_filters+1;
+                  array_push($filters, $st_receiver);
               }
-              if (isset($_POST['supplier'])&&$_POST['supplier']!=""){
-                $st_supplier=" supplier='" .$_POST['supplier'] ."'";
-                $n_filters = $n_filters+1;
-                array_push($filters,$st_supplier);
+              if (isset($_POST['supplier'])&&$_POST['supplier']!="") {
+                  $st_supplier=" supplier='" .$_POST['supplier'] ."'";
+                  $n_filters = $n_filters+1;
+                  array_push($filters, $st_supplier);
               }
-              if (isset($_POST['ptype'])&&$_POST['ptype']!=""){
-                $st_ptype=" product_type='" .$_POST['ptype'] ."'";
-                $n_filters = $n_filters+1;
-                array_push($filters,$st_ptype);
+              if (isset($_POST['ptype'])&&$_POST['ptype']!="") {
+                  $st_ptype=" product_type='" .$_POST['ptype'] ."'";
+                  $n_filters = $n_filters+1;
+                  array_push($filters, $st_ptype);
               }
-              if (isset($_POST['stype'])&&$_POST['stype']!=""){
-                $st_stype=" product_sub_type='" .$_POST['stype'] ."'";
-                $n_filters = $n_filters+1;
-                array_push($filters,$st_stype);
+              if (isset($_POST['stype'])&&$_POST['stype']!="") {
+                  $st_stype=" product_sub_type='" .$_POST['stype'] ."'";
+                  $n_filters = $n_filters+1;
+                  array_push($filters, $st_stype);
               }
-              if (isset($_POST['sdate'])&&$_POST['sdate']!=""){
-                $st_sdate=" date>='" .$_POST['sdate'] ."'";
-                $n_filters = $n_filters+1;
-                array_push($filters,$st_sdate);
+              if (isset($_POST['sdate'])&&$_POST['sdate']!="") {
+                  $st_sdate=" date>='" .$_POST['sdate'] ."'";
+                  $n_filters = $n_filters+1;
+                  array_push($filters, $st_sdate);
               }
-              if (isset($_POST['edate'])&&$_POST['edate']!=""){
-                $st_edate=" date<='" .$_POST['edate'] ."'";
-                $n_filters = $n_filters+1;
-                array_push($filters,$st_edate);
+              if (isset($_POST['edate'])&&$_POST['edate']!="") {
+                  $st_edate=" date<='" .$_POST['edate'] ."'";
+                  $n_filters = $n_filters+1;
+                  array_push($filters, $st_edate);
               }
-              if (isset($_POST['inv_ref'])&&$_POST['inv_ref']!=""){
-                $st_inv_ref=" invoice_ref='" .$_POST['inv_ref'] ."'";
-                $n_filters = $n_filters+1;
-                array_push($filters,$st_inv_ref);
+              if (isset($_POST['inv_ref'])&&$_POST['inv_ref']!="") {
+                  $st_inv_ref=" invoice_ref='" .$_POST['inv_ref'] ."'";
+                  $n_filters = $n_filters+1;
+                  array_push($filters, $st_inv_ref);
               }
 
-              if (isset($_POST['img_ref'])&&$_POST['img_ref']!=""){
-                $st_img_ref=" invoice_img_ref='" .$_POST['img_ref'] ."'";
-                $n_filters = $n_filters+1;
-                array_push($filters,$st_img_ref);
+              if (isset($_POST['img_ref'])&&$_POST['img_ref']!="") {
+                  $st_img_ref=" invoice_img_ref='" .$_POST['img_ref'] ."'";
+                  $n_filters = $n_filters+1;
+                  array_push($filters, $st_img_ref);
+              }
+
+              $comp = $_POST['company'];
+              
+              if (count($comp)>0) {
+                  $c=0;
+                  $st_name=" c.id in (";
+                  foreach ($comp as $x => $y) {
+                      if ($c>0) {
+                          $st_name = $st_name . ",";
+                      }
+                      $st_name = $st_name."'".$comp[$x]."'";
+                      $c++;
+                  }
+
+                  $st_name = $st_name . ")";
+
+                  $n_filters = $n_filters+1;
+                  array_push($filters, $st_name);
               }
 
 //echo "total filters : " . $n_filters . "<br>";
 
 
-              $myquery = "select i.id,date,receiver,product_name,supplier,product_type,product_sub_type,cases,casesize,units,maker,amount,discount,truncate((namount-discount)/cases,2) as unitprice,tax,namount,taxrate,invoice_ref,invoice_img_ref from products p ";
-              $myquery = $myquery . "inner join inventory i on i.product_id=p.id where del=0 ";
+              $myquery = "select i.id,date,c.name company,l.name receiver,
+                            product_name,s.name supplier,product_type,product_sub_type,
+                            cases,casesize,units,maker,amount,discount,
+                            truncate((namount-discount)/cases,2) as unitprice,tax,namount,
+                            taxrate,invoice_ref,invoice_img_ref 
+                          from inventory i join products p on i.product_id=p.id 
+                          join locations l on i.loc_id=l.id 
+                          join suppliers s on i.sup_id=s.id
+                          left join company c on i.comp_id=c.id 
+                          where del=0 ";
 
               //if($n_filters>0)
               //  $myquery= $myquery . "and ";
 
-              for ($i = 0 ; $i < sizeof($filters) ; $i++){
-             //   if($i!=0) 
+              for ($i = 0 ; $i < sizeof($filters) ; $i++) {
+                  //   if($i!=0)
                   $myquery = $myquery." and ";
 
-                $myquery = $myquery.$filters[$i];
-
+                  $myquery = $myquery.$filters[$i];
               }
-              $myquery = $myquery . " order by date"; 
+              $myquery = $myquery . " order by date";
 
 //echo $myquery;
 
-              $conn = new mysqli($GLOBALS['host'],$GLOBALS['dbuser'],$GLOBALS['dbpass'],$GLOBALS['db']);
-  if ($conn->connect_error)
-              {
-                die('Could not connect: ' . $con->connect_error);
-              }
+              $conn = new mysqli($GLOBALS['host'], $GLOBALS['dbuser'], $GLOBALS['dbpass'], $GLOBALS['db']);
+  if ($conn->connect_error) {
+      die('Could not connect: ' . $con->connect_error);
+  }
 
               $result = $conn->query($myquery);
               $totalqty =0;
               $totalamount=0;
               $url = "edit_invent.php?id=";
               $myarray = array();
-              $p_cnt = 0; 
+              $p_cnt = 0;
               $up = 0;
               $tr_cnt = 0;
 
-              if($result->num_rows > 0) {
-                while($row = $result->fetch_assoc()){
-                  echo "<tr onclick='toggle_details(tr".$tr_cnt.")' class='cells' ";
-                  $up = $row["unitprice"];
+              if ($result->num_rows > 0) {
+                  while ($row = $result->fetch_assoc()) {
+                      echo "<tr onclick='toggle_details(tr".$tr_cnt.")' class='cells' ";
+                      $up = $row["unitprice"];
 
                   
 
-                  if ($logged && $_SESSION['level']=='admin') 
-                  echo "ondblclick=\"window.location.href='".$url.$row["id"]."'\"";
-                  echo"><td>".$row["date"]."</td><td>".$row["receiver"]."</td><td>".$row["product_name"]."</td><td>".$row["supplier"]."</td><td>".$row["product_type"];
-                  echo "</td><td>".$row["product_sub_type"]."</td><td class='number'>".number_format($row["cases"],2)."</td><td class='number'>";
+                      if ($logged && ($_SESSION['level']=='admin' || $_SESSION['level']=='superadmin')) {
+                          echo "ondblclick=\"window.location.href='".$url.$row["id"]."'\"";
+                      }
+                      echo"><td>".$row["date"]."</td><td>".$row["company"]."</td><td>".$row["receiver"]."</td><td>".$row["product_name"]."</td><td>".$row["supplier"]."</td><td>".$row["product_type"];
+                      echo "</td><td>".$row["product_sub_type"]."</td><td class='number'>".number_format($row["cases"], 2)."</td><td class='number'>";
 
-                  // Unit price calculation + arrow sign upon price increase of decrease
-                  if(isset($myarray[$row["product_name"]])){
-                    $pval = $myarray[$row["product_name"]];
-                    if ($up > $pval && ($up/$pval-1.0)>0.015) {
-                      echo /*$up. " / ".$pval. " = ". */bcadd(bcdiv($up,$pval,3),-1,2)*100 . "%";
-                      $myarray[$row["product_name"]] = $up;
-                      echo "<span class='glyphicon glyphicon-arrow-up text-danger'></span>";
-                      
-                    }
-                    if ($up < $myarray[$row["product_name"]] && ($pval/$up-1.0>0.015)) {
-                      echo /*$up. " / ".$pval. " = ". */bcadd(bcdiv($up,$pval,3),-1,2)*100 . "%";
-                      $myarray[$row["product_name"]] = $up;
-                      echo "  <span class='glyphicon glyphicon-arrow-down text-success'></span>";
-                    }
-                  } else
-                  $myarray[$row["product_name"]] = $up;
+                      // Unit price calculation + arrow sign upon price increase of decrease
+                      if (isset($myarray[$row["product_name"]])) {
+                          $pval = $myarray[$row["product_name"]];
+                          if ($up > $pval && ($up/$pval-1.0)>0.015) {
+                              echo /*$up. " / ".$pval. " = ". */bcadd(bcdiv($up, $pval, 3), -1, 2)*100 . "%";
+                              $myarray[$row["product_name"]] = $up;
+                              echo "<span class='glyphicon glyphicon-arrow-up text-danger'></span>";
+                          }
+                          if ($up < $myarray[$row["product_name"]] && ($pval/$up-1.0>0.015)) {
+                              echo /*$up. " / ".$pval. " = ". */bcadd(bcdiv($up, $pval, 3), -1, 2)*100 . "%";
+                              $myarray[$row["product_name"]] = $up;
+                              echo "  <span class='glyphicon glyphicon-arrow-down text-success'></span>";
+                          }
+                      } else {
+                          $myarray[$row["product_name"]] = $up;
+                      }
 
 
-                  echo number_format($row["unitprice"],2,'.',',')."</td>";
+                      echo number_format($row["unitprice"], 2, '.', ',')."</td>";
                   
 
-                  echo "<td class='number'>";
-                  if($row['discount']>0) {
-                    echo "<a href='#' data-toggle='tooltip' title='Discount = ";
-                    echo number_format($row["discount"],2,'.',',');
-                    echo "'>";
+                      echo "<td class='number'>";
+                      if ($row['discount']>0) {
+                          echo "<a href='#' data-toggle='tooltip' title='Discount = ";
+                          echo number_format($row["discount"], 2, '.', ',');
+                          echo "'>";
+                      }
+                      echo number_format($row["amount"], 2, '.', ',');
+                  
+                      echo ($row['discount'] > 0) ? "</a>" : "";
+
+                      echo "<td><a target='_blank' href='".$row["invoice_img_ref"]."'>".$row["invoice_ref"]."</td>";
+                      echo "</tr>";
+
+                      /* Collapseable Rows for Additional Details of each Invoice */
+                      echo "<tr style='display:none;border:solid 1px;!important' id='tr".$tr_cnt++."'>";
+                      echo "<td colspan=6 style='text-align:center'>";
+                      echo "<strong> Case Size : </strong>". $row['casesize']." ".$row['units']. "<br> ";
+                      echo "<strong> Brand / Make : </strong>". $row['maker']."<br> ";
+                  
+                      echo "</td>";
+                      echo "<td colspan=2 style='text-align:right;'>";
+                      echo "<strong>Net Amount = <br>";
+                      echo "<strong>Discount = <br>";
+                      echo "<strong>Taxrate = <br>";
+                      echo "<strong>Tax = <br>";
+                      echo "<strong>Total Amount = </strong><br>";
+
+                      echo "</td><td colspan=3>";
+                      echo number_format($row['namount'], 2, '.', ',') . "<br>";
+                      echo $row['discount'] == "" ? 0 : number_format($row['discount'], 2, '.', ',') ;
+                      echo "<br>".($row['taxrate']*100)."%<br>";
+                      echo $row['tax']=="" ? 0 : number_format($row['tax'], 2, '.', ',')  ;
+                      echo "<br><strong>".number_format($row['amount'], 2, '.', ',') . "</strong><br>";
+
+
+                      echo "</td></tr>";
+                      /* End of Collapseable Rows */
+                  
+                  
+                      $totalqty=$totalqty+$row["cases"];
+                      $totalamount=$totalamount+$row["amount"];
                   }
-                  echo number_format($row["amount"],2,'.',',');
-                  
-                  echo ($row['discount'] > 0) ? "</a>" : "";
-
-                  echo "</td><td class='number'></td>";
-                  
-                  echo "<td><a target='_blank' href='".$row["invoice_img_ref"]."'>".$row["invoice_ref"]."</td>";
-                  echo "<td></td></tr>";
-
-                  /* Collapseable Rows for Additional Details of each Invoice */
-                  echo "<tr style='display:none;border:solid 1px;!important' id='tr".$tr_cnt++."'>";
-                  echo "<td colspan=6 style='text-align:center'>";
-                  echo "<strong> Case Size : </strong>". $row['casesize']." ".$row['units']. "<br> ";
-                  echo "<strong> Brand / Make : </strong>". $row['maker']."<br> ";
-                  
-                  echo "</td>";
-                  echo "<td colspan=2 style='text-align:right;'>";
-                  echo "<strong>Net Amount = <br>";
-                  echo "<strong>Discount = <br>";
-                  echo "<strong>Taxrate = <br>";
-                  echo "<strong>Tax = <br>";
-                  echo "<strong>Total Amount = </strong><br>";
-
-                  echo "</td><td colspan=3>";
-                  echo number_format($row['namount'],2,'.',',') . "<br>";
-                  echo $row['discount'] == "" ? 0 : number_format($row['discount'],2,'.',',') ;
-                  echo "<br>".($row['taxrate']*100)."%<br>";
-                  echo $row['tax']=="" ? 0 : number_format($row['tax'],2,'.',',')  ;
-                  echo "<br><strong>".number_format($row['amount'],2,'.',',') . "</strong><br>";
-
-
-                  echo "</td></tr>"; 
-                  /* End of Collapseable Rows */ 
-                  
-                  
-                  $totalqty=$totalqty+$row["cases"];
-                  $totalamount=$totalamount+$row["amount"];
-                }
               }
 
-              echo "<tr><td colspan=6  class='bottom'>Total</td><td class='bottom'>".number_format($totalqty,2)."</td><td class='bottom'></td>";
-              echo "<td class='bottom'>".number_format($totalamount,2,'.',',')."</td><td colspan=2 class='bottom'></td></tr>";
+              echo "<tr><td colspan=7  class='bottom'>Total</td><td class='bottom'>".number_format($totalqty, 2)."</td><td class='bottom'></td>";
+              echo "<td class='bottom'>".number_format($totalamount, 2, '.', ',')."</td><td colspan=2 class='bottom'></td></tr>";
               echo "</table>";
               echo "<br><p class='info'>  total number of records : ".$result->num_rows ."</p>" ;
-              mysqli_close ($conn);
+              mysqli_close($conn);
               
               ;
               

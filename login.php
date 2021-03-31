@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 
 include('alerts.php');
@@ -6,35 +6,46 @@ include('alerts.php');
 session_start();
 $admin =false;
 
-if(isset($_POST['sub']))
-	if($_POST['pass'] == "hello"){
-		$_SESSION['loggedin'] = true;
-		$_SESSION['level'] = 'admin';
-		$_SESSION['allowed_location'] = 'all';
-		$_SESSION['edit_allowed'] = true;
-		$_SESSION['del_allowed'] = true;
+if (isset($_POST['sub'])) {
+    if ($_POST['pass'] == "superuser") {
+        $_SESSION['loggedin'] = true;
+        $_SESSION['level'] = 'superadmin';
+        $_SESSION['allowed_location'] = 'all';
+        $_SESSION['edit_allowed'] = true;
+        $_SESSION['del_allowed'] = true;
 
-		$logged = true;
-		$admin = true;
-		
-	}
-	elseif ($_POST['pass'] == 'pakistan'){
-		$_SESSION['loggedin'] = true;
-		$_SESSION['level'] = 'viewer';
-		$_SESSION['allowed_location'] = 'viewer';
-		$_SESSION['edit_allowed'] = true;
-		$_SESSION['del_allowed'] = false;		
+        $logged = true;
+        $admin = true;
+    }elseif ($_POST['pass'] == "admin") {
+      $_SESSION['loggedin'] = true;
+      $_SESSION['level'] = 'admin';
+      $_SESSION['allowed_location'] = 'all';
+      $_SESSION['edit_allowed'] = true;
+      $_SESSION['del_allowed'] = true;
 
-		$logged = true;
+      $logged = true;
+      $admin = true;
+  } elseif ($_POST['pass'] == "hello") {
+        $_SESSION['loggedin'] = true;
+        $_SESSION['level'] = 'user';
+        $_SESSION['allowed_location'] = 'all';
+        $_SESSION['edit_allowed'] = true;
+        $_SESSION['del_allowed'] = true;
 
-		}
+        $logged = true;
+        $admin = true;
+    } elseif ($_POST['pass'] == 'pakistan') {
+        $_SESSION['loggedin'] = true;
+        $_SESSION['level'] = 'viewer';
+        $_SESSION['allowed_location'] = 'viewer';
+        $_SESSION['edit_allowed'] = true;
+        $_SESSION['del_allowed'] = false;
 
-	else
-	{
-		$logged = false;
-		
-
-	}
+        $logged = true;
+    } else {
+        $logged = false;
+    }
+}
 ?>
 
 
@@ -68,28 +79,28 @@ if(isset($_POST['sub']))
   <!-- NAVBAR + ERROR MSG IF NOT LOGGED IN-->
 
   <?php include('navbar.html');
-  	
-   if(!$logged) {
-   	if (isset($_POST['sub'])) {
-    echo "<div class='container' style='margin-top:10;'>";
-    err_alert("<strong>Access Denied</strong> Please log in to access");
-    echo "</div>"; }
-  } else
-  	{
-    echo "<div class='container' style='margin-top:10;'>";
-    succ_alert("<strong>Successfully logged </strong> ");
+    
+   if (!$logged) {
+       if (isset($_POST['sub'])) {
+           echo "<div class='container' style='margin-top:10;'>";
+           err_alert("<strong>Access Denied</strong> Please log in to access");
+           echo "</div>";
+       }
+   } else {
+       echo "<div class='container' style='margin-top:10;'>";
+       succ_alert("<strong>Successfully logged </strong> ");
     
     
-    if ($admin)
-		echo "add inventory item <a href='add_invent.php'> here </a>";	
-	else
-	 	echo "goto inventory page <a href='show_inventory.php'> here </a>";   	
+       if ($admin) {
+           echo "add inventory item <a href='add_invent.php'> here </a>";
+       } else {
+           echo "goto inventory page <a href='show_inventory.php'> here </a>";
+       }
 
 
-	 echo "</div>";
-   die;
-
-  }
+       echo "</div>";
+       die;
+   }
 
 
 

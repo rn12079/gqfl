@@ -1,0 +1,7 @@
+./edit_invent copy.php:79:      url: 'retrieve_rows_jq.php',
+./myjs.js:25:  //     url: "retrieve_rows_jq.php",
+./show_inventory.php:208:    url: 'retrieve_rows_jq.php',
+./show_inventory.php:591:              $url = "edit_invent.php?id=";
+./show_inventory.php:605:                          echo "ondblclick=\"window.location.href='".$url.$row["id"]."'\"";
+./tabledata.js:3:const postData = async (url, data) => {
+./tabledata.js:5:  const response = await fetch(url, {

@@ -1,4 +1,4 @@
-<?php 
+<?php
 /*
 function err_alert($err_msg){
 echo "<div class='alert alert-danger' role='alert'>".$err_msg."</div>";
@@ -11,10 +11,11 @@ session_start();
 $errmsg = "";
 
 
-if(!$_SESSION['loggedin']) 
-  $logged = false;
-else
-  $logged = true;
+if (!$_SESSION['loggedin']) {
+    $logged = false;
+} else {
+    $logged = true;
+}
 
 ?>
 
@@ -57,12 +58,12 @@ label {
 <body>
  <?php include('navbar.html');
 
-      if(!$logged) {
-    echo "<div class='container' style='margin-top:10;'>";
-    err_alert("<strong>Access Denied</strong> Please log in to access");
-    echo "</div>";
-    die;
-  }
+      if (!$logged) {
+          echo "<div class='container' style='margin-top:10;'>";
+          err_alert("<strong>Access Denied</strong> Please log in to access");
+          echo "</div>";
+          die;
+      }
 
 
   $cnt = 0;
@@ -85,23 +86,20 @@ label {
           <th>Price</th>
         </tr>
 
-  <?php 
-  $result = get_current_prices(); 
-  $curr_supp = ""; 
-  while ($row = $result->fetch_assoc()){
-    if($curr_supp != $row['supplier']) {
-      echo "<tr><th colspan='3'>" .  $row['supplier']  . "</th></tr>";
-      $curr_supp = $row['supplier'];
-    }
+  <?php
+  $result = get_current_prices();
+  $curr_supp = "";
+  while ($row = $result->fetch_assoc()) {
+      if ($curr_supp != $row['supplier']) {
+          echo "<tr><th colspan='3'>" .  $row['supplier']  . "</th></tr>";
+          $curr_supp = $row['supplier'];
+      }
 
-    echo "<tr><td>".$row['product_id']."</td><td>".$row['product_name']."</td><td>".$row['casesize']." ".$row['units']."</td><td>".$row['current_rate']."</td><td>";
-              if($_SESSION['loggedin'] AND $_SESSION['level'] == 'admin') {
-                echo "<a class='btn btn-xs btn-primary' href='edit_product_main.php?id=".$row['product_id']."'>Edit Products </a></li>";
-                
-                }
-    echo "</td></tr>";
-
-
+      echo "<tr><td>".$row['product_id']."</td><td>".$row['product_name']."</td><td>".$row['casesize']." ".$row['units']."</td><td>".$row['current_rate']."</td><td>";
+      if ($_SESSION['loggedin'] and ($_SESSION['level'] == 'admin' || $_SESSION['level'] == 'superadmin' )) {
+          echo "<a class='btn btn-xs btn-primary' href='edit_product_main.php?id=".$row['product_id']."'>Edit Products </a></li>";
+      }
+      echo "</td></tr>";
   }
   ?>
 </table>

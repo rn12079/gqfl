@@ -17,28 +17,23 @@ $myquery = $myquery . "i.id!='".$myjson->id."' ";
 $myquery = $myquery . "and del=0 ";
 
 
-$conn = new mysqli($GLOBALS['host'],$GLOBALS['dbuser'],$GLOBALS['dbpass'],$GLOBALS['db']);
-  if ($conn->connect_error)
-{
-	die('Could not connect: ' . $conn->connect_error);
-}
+$conn = new mysqli($GLOBALS['host'], $GLOBALS['dbuser'], $GLOBALS['dbpass'], $GLOBALS['db']);
+  if ($conn->connect_error) {
+      die('Could not connect: ' . $conn->connect_error);
+  }
 
 //echo $myquery;
 
 $result = $conn->query($myquery);
 
 
-	if($result->num_rows > 0) {
-		while($row = $result->fetch_assoc()){
+    if ($result->num_rows > 0) {
+        while ($row = $result->fetch_assoc()) {
+            echo "<option>".$row["invoice_img_ref"]."</option>";
+        }
+    }
 
-			echo "<option>".$row["invoice_img_ref"]."</option>";
-
-
-
-		}
-	}
-
-mysqli_close ($conn);
+mysqli_close($conn);
 
 ?>
 

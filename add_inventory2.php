@@ -1,4 +1,4 @@
-<?php 
+<?php
 /*
 function err_alert($err_msg){
 echo "<div class='alert alert-danger' role='alert'>".$err_msg."</div>";
@@ -12,13 +12,13 @@ $errmsg = "";
 
 $logged = false;
 
-if(!$_SESSION["loggedin"]) 
-  $logged = false;
-else 
-  {
-    if($_SESSION["level"] == "admin")
-    $logged = true;
-  }
+if (!$_SESSION["loggedin"]) {
+    $logged = false;
+} else {
+    if ($_SESSION["level"] == "admin") {
+        $logged = true;
+    }
+}
 
 
 ?>
@@ -67,11 +67,11 @@ label {
   $bool_upload = false;
   $bool_succ = false;
 
-  if(!$logged) {
-    echo "<div class='container' style='margin-top:10;'>";
-    err_alert("<strong>Access Denied</strong> Please log in to access");
-    echo "</div>";
-    die;
+  if (!$logged) {
+      echo "<div class='container' style='margin-top:10;'>";
+      err_alert("<strong>Access Denied</strong> Please log in to access");
+      echo "</div>";
+      die;
   }
 
   ?>
@@ -87,66 +87,59 @@ label {
  <div class="container">
    <?php
 
-    if(!isset($_POST['existing']) )
-    {
+    if (!isset($_POST['existing'])) {
+        $upload_filename = $_FILES["file"]["name"];
+        if ($upload_filename!="") {
+            //echo $upload_filename;
+            if ($_FILES['file']['error']!== UPLOAD_ERR_OK) {
+                die(err_alert("Upload failed with error". $_FILES['file']['error']));
+            }
 
-      
-      $upload_filename = $_FILES["file"]["name"];
-      if ($upload_filename!="") {
-//echo $upload_filename;
-        if($_FILES['file']['error']!== UPLOAD_ERR_OK) {
-          die(err_alert("Upload failed with error". $_FILES['file']['error']));
-        }
-
-        $filetemp = $_FILES["file"]["name"];
-        $filename = str_replace(" ","_",$filetemp);
+            $filetemp = $_FILES["file"]["name"];
+            $filename = str_replace(" ", "_", $filetemp);
 
 
-        $finfo = finfo_open(FILEINFO_MIME_TYPE);
-        $mime = finfo_file($finfo, $_FILES['file']['tmp_name']);
-        $ok = false;
+            $finfo = finfo_open(FILEINFO_MIME_TYPE);
+            $mime = finfo_file($finfo, $_FILES['file']['tmp_name']);
+            $ok = false;
 
-        $allowedmimes = array(
+            $allowedmimes = array(
           'application/pdf',
           'text/pdf',
           'image/png',
           'image/jpeg');
 
 
-        if(! (in_array($mime,$allowedmimes)))
-          die (err_alert("Unknown file type"));
+            if (! (in_array($mime, $allowedmimes))) {
+                die(err_alert("Unknown file type"));
+            }
 
         
-        $ofile = "upload/".$filename;
-        $filen = end(explode(".", $_FILES["file"]["name"]));
-        $filenam = current(explode(".", $_FILES["file"]["name"]));
+            $ofile = "upload/".$filename;
+            $filen = end(explode(".", $_FILES["file"]["name"]));
+            $filenam = current(explode(".", $_FILES["file"]["name"]));
 
 
-        $n= 0;
+            $n= 0;
 
 
         
-        while (file_exists("upload/" . $filename))
-        {
+            while (file_exists("upload/" . $filename)) {
+                $filename = $filenam . $n . "." . $filen;
+                //echo $filename;
+                $n = $n+1;
+                $ofile = "upload/".$filename;
+            }
 
-         $filename = $filenam . $n . "." . $filen;
-       //echo $filename;
-         $n = $n+1;
-         $ofile = "upload/".$filename;
-       }
-
-       move_uploaded_file($_FILES["file"]["tmp_name"],"upload/" . $filename);
-       $bool_upload = true;
-     }
-     else 
-      err_alert("No Image Uploaded");
-  }
-  else 
-    { 
+            move_uploaded_file($_FILES["file"]["tmp_name"], "upload/" . $filename);
+            $bool_upload = true;
+        } else {
+            err_alert("No Image Uploaded");
+        }
+    } else {
       $ofile = $_POST["img_name"];
       $bool_upload = true;
-      
-    }
+  }
 
 
 //echo "Stored in: " . "upload/" . $filename."<br>";
@@ -159,7 +152,7 @@ label {
 //if($check==1)
 
 $t_date = $_POST["t_date"]; // date
-$receiver = $_POST["receiver"]; // receiver 
+$receiver = $_POST["receiver"]; // receiver
 $supplier = $_POST["supplier"];
 $product_type = $_POST["product_type"]; // product_type
 $inv_num = $_POST["inv_num"];
@@ -177,14 +170,13 @@ $acc_ref = $_POST["acc_ref"];
 
 print_r($tad);
 print_r($discount);
-  $conn = new mysqli($GLOBALS['host'],$GLOBALS['dbuser'],$GLOBALS['dbpass'],$GLOBALS['db']);
-if ($conn->connect_error)
-{
-  die('Could not connect: ' . $conn->connect_error);
+  $conn = new mysqli($GLOBALS['host'], $GLOBALS['dbuser'], $GLOBALS['dbpass'], $GLOBALS['db']);
+if ($conn->connect_error) {
+    die('Could not connect: ' . $conn->connect_error);
 }
 $cnt=1;
 
-foreach($product as $x => $y) {
+foreach ($product as $x => $y) {
 
 /*
     echo "product " . $product[$x] . "<br>";
@@ -195,46 +187,45 @@ foreach($product as $x => $y) {
     echo "tax_rate " . $tax_rate[$x] . "<br>";
     echo "tax " . $tax[$x] . "<br>";
     echo "amount " . $amount[$x] . "<br>";
-  
+
 */
 
-$b_tad = 0;
-  if($product[$x]!="") {
+    $b_tad = 0;
+    if ($product[$x]!="") {
+        if (isset($tad[$x])) {
+            $b_tad = 1;
+            $tad_cnt++;
+        }
 
-    if (isset($tad[$x])){
-      $b_tad = 1;
-      $tad_cnt++;
-    }
+        if ($discount[$x]=="") {
+            $discount[$x]=0;
+        }
+        $subquery = "select distinct id from products where product_name='".$product[$x]."' and product_type='".$product_type. "'";
+        $subquery = $subquery . " and product_sub_type='".$product_sub_type[$x]."' and supplier='".$supplier."'";
 
-    if ($discount[$x]=="") 
-	$discount[$x]=0;
-    $subquery = "select distinct id from products where product_name='".$product[$x]."' and product_type='".$product_type. "'";
-    $subquery = $subquery . " and product_sub_type='".$product_sub_type[$x]."' and supplier='".$supplier."'";
-
-    $myquery="insert into inventory(date,created_date,receiver,product_id,cases,namount,tad,discount,taxrate,tax,amount,invoice_ref,acc_ref,invoice_img_ref) values('";
-    $myquery = $myquery . $t_date . "','" . date("Y-m-d") ."','" . $receiver . "',";
-    $myquery = $myquery . $product[$x]."," . $qty[$x] . "," . $namount[$x] . "," .$b_tad. ",'";
-    $myquery = $myquery . $discount[$x] . "','" . $tax_rate[$x] . "'," . $tax[$x] . "," . $amount[$x] ;
-    $myquery= $myquery . ",'" . $inv_num . "','" . $acc_ref . "','" . $ofile . "')";
-    echo "<p>" . $myquery  ." </p><br>";
+        $myquery="insert into inventory(date,created_date,receiver,product_id,cases,namount,tad,discount,taxrate,tax,amount,invoice_ref,acc_ref,invoice_img_ref) values('";
+        $myquery = $myquery . $t_date . "','" . date("Y-m-d") ."','" . $receiver . "',";
+        $myquery = $myquery . $product[$x]."," . $qty[$x] . "," . $namount[$x] . "," .$b_tad. ",'";
+        $myquery = $myquery . $discount[$x] . "','" . $tax_rate[$x] . "'," . $tax[$x] . "," . $amount[$x] ;
+        $myquery= $myquery . ",'" . $inv_num . "','" . $acc_ref . "','" . $ofile . "')";
+        echo "<p>" . $myquery  ." </p><br>";
 
 
     
-    if (!$conn->query($myquery))  {
-      unlink($ofile);
-      err_alert( "<strong>Insert query failed.</strong> Image also deleted ");
-      die('Could not connect: ' . $conn->error);
-      
+        if (!$conn->query($myquery)) {
+            unlink($ofile);
+            err_alert("<strong>Insert query failed.</strong> Image also deleted ");
+            die('Could not connect: ' . $conn->error);
+        }
+        succ_alert("<strong>Successful</strong> :  ".$cnt++." record added");
+        $bool_succ = true;
     }
-    succ_alert("<strong>Successful</strong> :  ".$cnt++." record added");
-    $bool_succ = true;
-  }
-
 }
 
-if ($bool_upload==true)
+if ($bool_upload==true) {
     succ_alert("existing image file used: <strong>" . $ofile . "</strong>");
-mysqli_close ($conn);
+}
+mysqli_close($conn);
 //}*/
 
 

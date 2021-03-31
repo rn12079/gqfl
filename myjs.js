@@ -2,34 +2,50 @@
 Ajax block to get items for search tab
 */
 function pop_products2() {
-  console.log("pop products");
-  $(".product2").select2({
-    width: "200px",
-    placeholder: "select a product",
-    ajax: {
-      url: "retrieve_rows_jq.php",
-      dataType: "json",
-      cache: true,
-      data: function (params) {
-        return {
-          q: params.term,
-          s: $("#supplier2").val(),
-        };
-      },
+  const comp_id = document.getElementById("company").value;
+  const sup_id = document.getElementById("supplier2").value;
+  const product_select = document.getElementById("product2");
+  console.log("company id", comp_id);
 
-      processResults: function (data) {
-        return {
-          results: $.map(data, function (obj) {
-            console.log(obj);
-            return {
-              id: obj.id,
-              text: obj.text + " || " + obj.hint,
-            };
-          }),
-        };
-      },
-    },
+  //2. pop suppliers
+  data = {
+    purpose: "getProductsForInventory",
+    comp_id: comp_id,
+    sup_id: sup_id
+  };
+  console.log(data);
+  getSelectOptions(data, product_select).then(res => {
+    console.log("products popped");
   });
+
+  // $(".product2").select2({
+  //   width: "200px",
+  //   placeholder: "select a product",
+  //   ajax: {
+  //     url: "retrieve_rows_jq.php",
+  //     dataType: "json",
+  //     cache: true,
+  //     data: function (params) {
+  //       return {
+  //         q: params.term,
+  //         s: $("#supplier2").val(),
+  //         comp_id: comp_id
+  //       };
+  //     },
+
+  //     processResults: function (data) {
+  //       return {
+  //         results: $.map(data, function (obj) {
+  //           //console.log(obj);
+  //           return {
+  //             id: obj.id,
+  //             text: obj.text + " || " + obj.hint
+  //           };
+  //         })
+  //       };
+  //     }
+  //   }
+  // });
 }
 
 function ajaxsearch(myitem, filter, subfield) {
@@ -107,7 +123,7 @@ function ret_inv_items() {
     supplier: escape(supplier),
     receiver: escape(receiver),
     invoice_ref: escape(invoice_ref),
-    id: escape(id),
+    id: escape(id)
   };
   data_params = JSON.stringify(myjson);
 
@@ -189,7 +205,7 @@ function ret_inv_items(retfields) {
     receiver: escape(receiver),
     invoice_ref: escape(invoice_ref),
     id: escape(id),
-    d_date: escape(d_date),
+    d_date: escape(d_date)
   };
   data_params = JSON.stringify(myjson);
 
@@ -238,9 +254,6 @@ function newrow() {
   for (var i = 0; i < colcount; i++) {
     var newcell = row.insertCell(i);
     if (i === 0) newcell.innerHTML = rowcount;
-    else if (i === 1)
-      newcell.innerHTML =
-        "<select name='product2[]' class='product2'></select>";
     else if (i === 10)
       newcell.innerHTML =
         "<span class='glyphicon glyphicon-remove text-danger' onclick='remove_row(this)'></span>";
@@ -253,7 +266,6 @@ function newrow() {
         "]'>";
     else newcell.innerHTML = table.rows[1].cells[i].innerHTML;
   }
-  pop_products2();
   compute_totals();
 }
 
@@ -304,7 +316,7 @@ function compute_rows() {
 
   for (i = 0; i < nam.length; i++) {
     var d = "tad[" + i + "]";
-    console.log(d);
+    //console.log(d);
     if (document.getElementById(d).checked == false)
       tam[i].value =
         Math.round(parseFloat(nam[i].value * tax[i].value) * 100) / 100;
