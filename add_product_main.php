@@ -8,7 +8,7 @@ $logged = false;
 if (!$_SESSION["loggedin"]) {
     $logged = false;
 } else {
-    if ($_SESSION["level"] == "admin" || $_SESSION["level"] == "superadmin") {
+    if ($_SESSION["level"] == "superadmin") {
         $logged = true;
     }
 }
