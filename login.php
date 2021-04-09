@@ -50,6 +50,8 @@ if (isset($_POST['sub'])) {
 
 
 <head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script   src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
   <link href="bootstrap1/css/bootstrap.min.css" rel="stylesheet">
   <style>
