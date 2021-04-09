@@ -253,7 +253,7 @@ label {
           console.log(obj);
           return {
             id: obj.id,
-            text: obj.text ,
+            text: obj.text + ' || ' +  obj.hint,
           };
 
         })
