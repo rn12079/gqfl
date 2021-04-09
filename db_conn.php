@@ -94,7 +94,7 @@ class Prods_assign extends Dbh
 
     public function getProductsBySupplier($supid="0")
     {
-        $sql = "select p.id,p.product_name from prod_sup ps join products p
+        $sql = "select p.id,concat(product_name,' | ',coalesce(maker,'na')) product_name from prod_sup ps join products p
          on ps.prod_id=p.id   where sup_id=:id order by 2";
         
         try {
