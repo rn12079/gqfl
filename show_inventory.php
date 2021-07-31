@@ -648,7 +648,7 @@ function toggle_details(t_row){
               }
               $myquery = $myquery . " order by date";
 
-//echo $myquery;
+echo $myquery;
 
               $conn = new mysqli($GLOBALS['host'], $GLOBALS['dbuser'], $GLOBALS['dbpass'], $GLOBALS['db']);
   if ($conn->connect_error) {
