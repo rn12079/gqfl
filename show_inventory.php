@@ -568,7 +568,7 @@ function toggle_details(t_row){
                   array_push($filters, $st_receiver);
               }
               if (isset($_POST['supplier'])&&$_POST['supplier']!="") {
-                  $st_supplier=" supplier='" .$_POST['supplier'] ."'";
+                  $st_supplier=" s.name='" .$_POST['supplier'] ."'";
                   $n_filters = $n_filters+1;
                   array_push($filters, $st_supplier);
               }
