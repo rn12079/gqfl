@@ -45,7 +45,17 @@ if (!$_SESSION["loggedin"]) {
 
   <script>
     document.addEventListener("DOMContentLoaded",() => {
+      let bool_add_new=false;
+      
+      const t_name = document.getElementById("t_name");
+      const t_source = document.getElementById("t_source");
+      const t_type = document.getElementById("t_type");
+      const t_sub_type = document.getElementById("t_sub_type");
+      const t_cases = document.getElementById("t_cases");
+      const t_units = document.getElementById("t_units");
       const submit = document.getElementById("add_prod");
+      const addnew = document.getElementById("addnew");
+      
       const status = document.getElementById("res");
 
       submit.addEventListener("click",() => {
@@ -53,14 +63,14 @@ if (!$_SESSION["loggedin"]) {
         submit.disabled = true;
 
         //getting values from FORM
-        const t_name = document.getElementById("t_name").value;
-        const t_source = document.getElementById("t_source").value;
-        const t_type = document.getElementById("t_type").value;
-        const t_sub_type = document.getElementById("t_sub_type").value;
-        const t_cases = document.getElementById("t_cases").value;
-        const t_units = document.getElementById("t_units").value;
+        const t_name_val = t_name.value;
+        const t_source_val = t_source.value;
+        const t_type_val = t_type.value;
+        const t_sub_type_val = t_sub_type.value;
+        const t_cases_val = t_cases.value;
+        const t_units_val = t_units.value;
         
-        if(t_name == "" || t_source == "" || t_type == "" || t_sub_type == "" || t_cases == "" || t_units == "")
+        if(t_name_val == "" || t_source_val == "" || t_type_val == "" || t_sub_type_val == "" || t_cases_val == "" || t_units_val == "")
           {
               console.log("data empty");
               status.classList = "";
@@ -72,13 +82,15 @@ if (!$_SESSION["loggedin"]) {
         //Preparing data
         const data = {
           purpose: 'add_product',
-          t_name,
-          t_source,
-          t_type,
-          t_sub_type,
-          t_cases,
-          t_units
+          t_name: t_name_val,
+          t_source_val: t_source_val,
+          t_type: t_type_val,
+          t_sub_type: t_sub_type_val,
+          t_cases: t_cases_val,
+          t_units: t_units_val
         }
+
+        console.log(data);
 
         //sending to setdata for inserting into database
         postData("setdata.php",data).then(res => {
@@ -87,6 +99,11 @@ if (!$_SESSION["loggedin"]) {
           status.classList = "";
           status.classList.add("label","label-success");
           status.innerHTML = "Product Addition Successful";
+          addnew.disabled=false;
+          bool_add_new = false;
+
+          
+
           return "success";
 
           }).catch( e => {
@@ -98,6 +115,24 @@ if (!$_SESSION["loggedin"]) {
 
 
       })
+      
+
+      addnew.addEventListener("click", () => {
+        bool_add_new = true;
+        console.log("new product clicked");
+        status.innerHTML = "";
+        addnew.disabled=true;
+  
+
+      })
+
+      t_name.addEventListener("keyup", () => {
+        console.log("product name change")
+          if (bool_add_new) {
+            console.log("adding new product");
+          }
+          submit.disabled = false;
+        })
 
     })
   
@@ -175,8 +210,9 @@ if (!$_SESSION["loggedin"]) {
     </div>
 
             
-
+    <div>
             <BUTTON type="submit" class="btn btn-primary" id="add_prod">Add Product</BUTTON>
+            <button type="button" class="btn btn-warning" id="addnew" disabled>Add New Product</button>
             <span id="res"></span>
           
     </div>
