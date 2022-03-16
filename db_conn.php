@@ -167,6 +167,18 @@ class Prods_assign extends Dbh
         }
     }
 
+    public function getProductByName($prod_name){
+        $sql = "select * from products where product_name like ? order by product_name limit 15;";
+        try{
+            $stmt = $this->conn()->prepare($sql);
+            $stmt->execute([$prod_name]);
+            $row = $stmt->fetchAll();
+            return $row;
+        }catch(PDOException $e){
+            die($e->getMessage());
+        }
+    }
+
 }
 
 class Companies extends Dbh

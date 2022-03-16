@@ -17,6 +17,11 @@ if (isset($test['purpose']) && $purpose=="getsuppliers") {
     echo json_encode($res);
 }
 
+if (isset($test['purpose']) && $purpose=="get_products") {
+    $obj = new Prods_assign;
+    $res = $obj->getProductByName($sup);
+    echo json_encode($res);
+}
 
 if (isset($test['purpose']) && $purpose=="get_companies") {
     $obj = new Companies();

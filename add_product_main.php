@@ -129,12 +129,52 @@ if (!$_SESSION["loggedin"]) {
       t_name.addEventListener("keyup", () => {
         console.log("product name change")
           if (bool_add_new) {
-            console.log("adding new product");
+            console.log("adding new product")
+            submit.disabled = false;            
           }
-          submit.disabled = false;
+          
+        getproducts();
         })
 
+
+
     })
+
+    const getproducts = () => {
+    const prod = document.getElementById("t_name").value
+    //console.log(sup);
+    data = {
+      purpose: 'get_products',
+      suptext: '%'+ prod+'%'
+    }
+    console.log(data);
+    const resdiv = document.getElementById("resdiv");
+    postData('getdata.php',data).then(res => {
+      ans = "<table class='table small table-striped table-bordered table-hover table-condensed'>";
+      ans += `<tr><th>Product Name</th><th>Source/Make</th><th>Product Type</th><th>Sub Type</th><th>Case Size</th></tr>`
+      res.forEach(prod => {
+        ans += `
+        <tr><td>${prod.product_name}</td>
+        <td>${prod.maker}</td>
+        <td>${prod.product_type}</td>
+        <td>${prod.product_sub_type}</td>
+        <td>${prod.casesize} ${prod.units}</td>
+        </tr>`;
+
+      
+      })
+      ans += '</table>';
+
+      console.log(ans)
+      resdiv.innerHTML = ans;
+
+
+    })
+
+
+
+};
+
   
   </script>
 </head>
@@ -217,7 +257,9 @@ if (!$_SESSION["loggedin"]) {
           
     </div>
   
+    <div style="height:100px"></div>
+    <div id="resdiv"></div>
 </div>
-<div style="height:400px"></div>
+
 </body>
 </html>
