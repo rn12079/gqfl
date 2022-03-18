@@ -43,7 +43,10 @@ if ($myjson->stype!="") {
 
 
 $myquery = "select distinct ".$myjson->ret_field." from products p ";
-$myquery = $myquery . "inner join inventory i on i.product_id=p.id where del=0 ";
+$myquery = $myquery . "inner join inventory i on i.product_id=p.id ";
+$myquery .= "inner join suppliers s on i.sup_id=s.id  ";
+$myquery .= "inner join locations l on i.loc_id=l.id  ";
+$myquery .= "where del=0 order by 1";
 
 //if($n_filters>0)
 //  $myquery= $myquery . "where ";
@@ -55,7 +58,9 @@ for ($i = 0 ; $i < sizeof($filters) ; $i++) {
     $myquery = $myquery.$filters[$i];
 }
 
-//echo $myquery;
+//fix for removing s.name or l.name to only 'name'
+if ($myjson->ret_field == "l.name" || $myjson->ret_field == "s.name")
+    $myjson->ret_field = "name";
 
 $conn = new mysqli($GLOBALS['host'], $GLOBALS['dbuser'], $GLOBALS['dbpass'], $GLOBALS['db']);
   if ($conn->connect_error) {

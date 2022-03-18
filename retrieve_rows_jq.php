@@ -5,12 +5,14 @@ header("Content-Type: application/json; charset=UTF-8");
 
 $myquery  = "select distinct p.id,product_name text,concat(coalesce(maker,'na'),' | ',coalesce(casesize,'na'),coalesce(units,'na')) as hint from products p ";
 $myquery .= "join comp_prods cp on p.id=cp.prod_id ";
-$myquery .= "join prod_sup ps on p.id=ps.prod_id left join inventory i on i.product_id=p.id where product_name like '%".$_GET['q']."%'";
+$myquery .= "join prod_sup ps on p.id=ps.prod_id ";
+$myquery .= "join suppliers s on ps.sup_id=s.id ";
+$myquery .= "left join inventory i on i.product_id=p.id where product_name like '%".$_GET['q']."%'";
 if ($_GET['comp_id']!="") {
     $myquery = $myquery . "and cp.comp_id = '".$_GET['comp_id']."'";
 }
 if ($_GET['s']!="") {
-    $myquery = $myquery . "and ps.sup_id = '".$_GET['s']."'";
+    $myquery = $myquery . "and s.name = '".$_GET['s']."'";
 }
 if ($_GET['r']!="") {
     $myquery = $myquery . "and receiver = '".$_GET['r']."'";

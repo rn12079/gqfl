@@ -226,6 +226,7 @@ label {
 })
 
   $('#test').select2({
+    
     closeOnSelect: false,
     placeholder: "select a product",
     width:'300px',
@@ -234,6 +235,7 @@ label {
     dataType: 'json',
     cache: true,
     data: function(params) {
+      
       return {
         q: params.term,
         s: $('#supplier').val(),
@@ -250,7 +252,6 @@ label {
 
       return {
         results: $.map(data, function(obj) {
-          console.log(obj);
           return {
             id: obj.id,
             text: obj.text + ' || ' +  obj.hint,
@@ -310,7 +311,7 @@ function ajaxsearch(ret_field,upd_field){
     if(xhr.readyState==4){
       if(xhr.status == 200) {
 
-        document.getElementById(upd_field).innerHTML = xhr.responseText;
+        document.getElementById(upd_field=="l.name"?"receiver":(upd_field=="s.name"?"supplier":upd_field)).innerHTML = xhr.responseText;
 
       }
       else
@@ -326,11 +327,13 @@ function ajaxsearch(ret_field,upd_field){
 }
 
 
+
+
 function init(){
   //ajaxsearch("product_name","plist");
   ajaxsearch("product_type","tlist");
-  ajaxsearch("receiver","rlist");
-  ajaxsearch("supplier","slist");
+  ajaxsearch("l.name","rlist");
+  ajaxsearch("s.name","slist");
   ajaxsearch("product_sub_type","stlist");
   
 
