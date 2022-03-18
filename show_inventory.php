@@ -566,7 +566,7 @@ function toggle_details(t_row){
                   array_push($filters, $st_name);
               }
               if (isset($_POST['receiver'])&&$_POST['receiver']!="") {
-                  $st_receiver=" receiver='" .$_POST['receiver'] ."'";
+                  $st_receiver=" l.name='" .$_POST['receiver'] ."'";
                   $n_filters = $n_filters+1;
                   array_push($filters, $st_receiver);
               }

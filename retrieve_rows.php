@@ -19,12 +19,12 @@ if ($myjson->pname!="") {
     array_push($filters, $st_name);
 }
 if ($myjson->receiver!="") {
-    $st_receiver=" receiver='" .$myjson->receiver."'";
+    $st_receiver=" l.name='" .$myjson->receiver."'";
     $n_filters = $n_filters+1;
     array_push($filters, $st_receiver);
 }
 if ($myjson->supplier!="") {
-    $st_supplier=" supplier='" .$myjson->supplier."'";
+    $st_supplier=" s.name='" .$myjson->supplier."'";
     $n_filters = $n_filters+1;
     array_push($filters, $st_supplier);
 }
