@@ -5,21 +5,25 @@ const postData = async (url, data) => {
   const response = await fetch(url, {
     method: "POST",
     headers: {
-      "Content-Type": "application/json"
+      "Content-Type": "application/json",
     },
-    body: JSON.stringify(data)
+    body: JSON.stringify(data),
   });
   return await response.json();
 };
 
-async function postUploadData(fd) {
+async function postUploadData(fd, fileexists) {
+  if (!fileexists) {
+    return "Failure";
+  }
+
   const mydata = {
     method: "POST",
     headers: {
-      Accept: "application/json"
+      Accept: "application/json",
     },
     mode: "no-cors",
-    body: fd
+    body: fd,
   };
   const response = await fetch("fileupload.php", mydata);
   return await response.json();
@@ -29,8 +33,8 @@ async function postUploadData(fd) {
 async function getSelectOptions(data, target) {
   let res = "";
   // requesting data from Fetch api;
-  await postData("getdata.php", data).then(opt => {
-    opt.forEach(option => {
+  await postData("getdata.php", data).then((opt) => {
+    opt.forEach((option) => {
       res += `<option value='${option.id}'>${
         option.name === null ? "" : option.name
       }</option>`;

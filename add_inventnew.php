@@ -144,14 +144,23 @@ label {
     };
     
     //image upload before rest of data is inserted.
-    if (document.getElementById("file").files[0] != undefined) {
       let fd = new FormData();
+      let fileexists = true;     
       const upload = document.getElementById("file").files[0];
+      if (upload===undefined) {
+        console.log("no file exists")
+        fileexists = false;
+      }
       fd.append("fileupload", upload);
-      
-      postUploadData(fd).then(res => {
+      console.log("fileupload",fd);
+
+
+      postUploadData(fd,fileexists).then(res => {
         if(res[0] == 'success'){
           data.img_ref = res[1];
+        }else {
+          data.img_ref="";
+        }
 
           console.log("image uploading successful,attempting data");
           postData("setdata.php",data).then(res => {
@@ -167,10 +176,10 @@ label {
             status.innerHTML = "inventory record addition failed";
 
           })
-        }
+        
       });
     
-    }
+    
     
     
     // UPLOADING REST OF The DATA
