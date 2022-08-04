@@ -194,16 +194,24 @@ document.addEventListener("DOMContentLoaded",e => {
       if(document.getElementById("existing").checked == false ) {
         console.log("upload different photo");
         let fd = new FormData();
+        let fileexists = true;     
         const upload = document.getElementById("file").files[0];
+        if (upload===undefined) {
+          console.log("no file exists")
+          fileexists = false;
+        }
         fd.append("fileupload", upload);
+        console.log("fileupload",fd);
         
-        postUploadData(fd).then(res => {
+        postUploadData(fd,fileexists).then(res => {
+          console.log("post upload res", res);
           if(res[0] == 'success'){
             data.img_ref = res[1];
 
             console.log("image uploading successful,attempting data");
             //console.log(data);
             postData("setdata.php",data).then(res => {
+              
               console.log(res);
               status.classList = "";
               status.classList.add("label","label-success");

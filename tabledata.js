@@ -14,6 +14,7 @@ const postData = async (url, data) => {
 
 async function postUploadData(fd, fileexists) {
   if (!fileexists) {
+    console.log("file does not exists, errors");
     return "Failure";
   }
 
@@ -25,6 +26,7 @@ async function postUploadData(fd, fileexists) {
     mode: "no-cors",
     body: fd,
   };
+  console.log("attempting upload");
   const response = await fetch("fileupload.php", mydata);
   return await response.json();
 }
