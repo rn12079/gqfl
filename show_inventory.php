@@ -661,8 +661,7 @@ function toggle_details(t_row){
       die('Could not connect: ' . $con->connect_error);
   }
 
-              $result = $conn->queryl
-              ($myquery);
+              $result = $conn->query($myquery);
               $totalqty =0;
               $totalamount=0;
               $url = "edit_invent.php?id=";
