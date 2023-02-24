@@ -10,7 +10,7 @@ include('db_funcs.php');
 session_start();
 $errmsg = "";
 
-if (!$_SESSION["loggedin"]) {
+if (!$_SESSION["gqfllog"]) {
     $logged = false;
 } else {
     $logged = true;

@@ -8,7 +8,7 @@ $admin =false;
 
 if (isset($_POST['sub'])) {
     if ($_POST['pass'] == "superuser") {
-        $_SESSION['loggedin'] = true;
+        $_SESSION['gqfllog'] = true;
         $_SESSION['level'] = 'superadmin';
         $_SESSION['allowed_location'] = 'all';
         $_SESSION['edit_allowed'] = true;
@@ -17,7 +17,7 @@ if (isset($_POST['sub'])) {
         $logged = true;
         $admin = true;
     }elseif ($_POST['pass'] == "admin") {
-      $_SESSION['loggedin'] = true;
+      $_SESSION['gqfllog'] = true;
       $_SESSION['level'] = 'admin';
       $_SESSION['allowed_location'] = 'all';
       $_SESSION['edit_allowed'] = true;
@@ -26,7 +26,7 @@ if (isset($_POST['sub'])) {
       $logged = true;
       $admin = true;
   } elseif ($_POST['pass'] == "hello") {
-        $_SESSION['loggedin'] = true;
+        $_SESSION['gqfllog'] = true;
         $_SESSION['level'] = 'user';
         $_SESSION['allowed_location'] = 'all';
         $_SESSION['edit_allowed'] = true;
@@ -35,7 +35,7 @@ if (isset($_POST['sub'])) {
         $logged = true;
         $admin = true;
     } elseif ($_POST['pass'] == 'pakistan') {
-        $_SESSION['loggedin'] = true;
+        $_SESSION['gqfllog'] = true;
         $_SESSION['level'] = 'viewer';
         $_SESSION['allowed_location'] = 'viewer';
         $_SESSION['edit_allowed'] = true;

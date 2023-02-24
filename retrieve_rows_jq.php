@@ -31,6 +31,7 @@ $conn = new mysqli($GLOBALS['host'], $GLOBALS['dbuser'], $GLOBALS['dbpass'], $GL
   }
 
 $result = $conn->query($myquery);
+
 $ans = array();
 while ($row = $result->fetch_assoc()) {
     $ans[] = $row;

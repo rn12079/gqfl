@@ -5,7 +5,7 @@ session_start();
 $errmsg = "";
 $logged = false;
 
-if (!$_SESSION["loggedin"]) {
+if (!$_SESSION["gqfllog"]) {
     $logged = false;
 } else {
     if ($_SESSION["level"] == "superadmin" ) {

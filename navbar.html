@@ -15,7 +15,7 @@
       <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
         <ul class="nav navbar-nav">
             <?php 
-            if($_SESSION['loggedin'] AND $_SESSION['level'] == 'superadmin') {
+            if($_SESSION['gqfllog'] AND $_SESSION['level'] == 'superadmin') {
               // Add Navigation
               echo "<li class='dropdown'>";
               echo "<a href='#' class='dropdown-toggle' data-toggle='dropdown' 
@@ -48,7 +48,7 @@
               echo "</ul>";
               echo "</li>";
             }
-            if($_SESSION['loggedin'] AND ($_SESSION['level'] == 'admin' || $_SESSION['level'] == 'user')){
+            if($_SESSION['gqfllog'] AND ($_SESSION['level'] == 'admin' || $_SESSION['level'] == 'user')){
               // Inventory Navigation
               echo "<li class='dropdown'>";
               echo "<a href='#' class='dropdown-toggle' data-toggle='dropdown' 
@@ -64,7 +64,7 @@
             }
 
             // Price list
-            if($_SESSION['loggedin'] ){
+            if($_SESSION['gqfllog'] ){
                 echo "<li><a href='pricelist.php'>Price List </a></li>";
                 } ?>
               

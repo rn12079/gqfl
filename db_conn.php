@@ -261,7 +261,8 @@ class Locations extends Dbh
         $sql = "select l.*,c.name comp_name from locations l left join company c on l.comp_id=c.id";
 
         try {
-            $stmt = $this->conn()->query($sql);
+            $stmt = $this->conn()->prepare($sql);
+            $stmt->execute();
             $row = $stmt->fetchAll();
         
             return $row;
@@ -306,7 +307,8 @@ class Suppliers extends Dbh
         $sql = "select * from suppliers";
 
         try {
-            $stmt = $this->conn()->query($sql);
+            $stmt = $this->conn()->prepare($sql);
+            $stmt->execute();
             $row = $stmt->fetchAll();
         
             return $row;

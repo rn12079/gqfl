@@ -11,7 +11,7 @@ session_start();
 $errmsg = "";
 
 
-if (!$_SESSION['loggedin']) {
+if (!$_SESSION['gqfllog']) {
     $logged = false;
 } else {
     $logged = true;
@@ -96,7 +96,7 @@ label {
       }
 
       echo "<tr><td>".$row['product_id']."</td><td>".$row['product_name']."</td><td>".$row['casesize']." ".$row['units']."</td><td>".$row['current_rate']."</td><td>";
-      if ($_SESSION['loggedin'] and ($_SESSION['level'] == 'admin' || $_SESSION['level'] == 'superadmin' )) {
+      if ($_SESSION['gqfllog'] and ($_SESSION['level'] == 'admin' || $_SESSION['level'] == 'superadmin' )) {
           echo "<a class='btn btn-xs btn-primary' href='edit_product_main.php?id=".$row['product_id']."'>Edit Products </a></li>";
       }
       echo "</td></tr>";

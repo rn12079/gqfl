@@ -10,7 +10,7 @@ include('db_funcs.php');
 session_start();
 $errmsg = "";
 
-if (!$_SESSION["loggedin"]) {
+if (!$_SESSION["gqfllog"]) {
     $logged = false;
 } else {
     $logged = true;
@@ -19,6 +19,8 @@ if (!$_SESSION["loggedin"]) {
 if (!isset($_POST['sdate'])) {
     $_POST['sdate'] = date('Y-m-d', strtotime("-30 days"));
 }
+
+$logged=true;
 ?>
 
 
@@ -441,9 +443,10 @@ function toggle_details(t_row){
               <td>
               <select id="test" multiple="multiple" name="test[]" width="100px">
               <?php
+              
               $prodobj = new Prods_assign();
               $arr = $_POST['test'];
-              if (count($arr)>0) {
+              if (count((array)$arr)>0) {
                   foreach ($arr as $x => $y) {
                       echo "<option value='".$arr[$x]."' selected>".$prodobj->getProductName($arr[$x])."</option>";
                   }
@@ -487,7 +490,7 @@ function toggle_details(t_row){
                   <td>
                   <select name="company[]" id="company" multiple="multiple">
                   <?php $comp_arr = $_POST['company'];
-                  if (count($comp_arr)>0) {
+                  if (count((array)$comp_arr)>0) {
                     $compobj = new Companies();
                     foreach ($comp_arr as $x => $y) {
                       echo "<option value='".$comp_arr[$x]."' selected>".$compobj->getCompanyName($comp_arr[$x])."</option>";
@@ -549,7 +552,7 @@ function toggle_details(t_row){
               $filters=array();
               $n_filters=0;
 
-              if (count($arr)>0) {
+              if (count((array)$arr)>0) {
                   $c=0;
                   $st_name=" p.id in (";
                   foreach ($arr as $x => $y) {
@@ -609,7 +612,7 @@ function toggle_details(t_row){
 
               $comp = $_POST['company'];
               
-              if (count($comp)>0) {
+              if (count((array)$comp)>0) {
                   $c=0;
                   $st_name=" c.id in (";
                   foreach ($comp as $x => $y) {
@@ -658,7 +661,8 @@ function toggle_details(t_row){
       die('Could not connect: ' . $con->connect_error);
   }
 
-              $result = $conn->query($myquery);
+              $result = $conn->queryl
+              ($myquery);
               $totalqty =0;
               $totalamount=0;
               $url = "edit_invent.php?id=";

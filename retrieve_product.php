@@ -46,7 +46,8 @@ if ($product_code=="product_sub_type") {
 }
 
 $myquery=$myquery. " order by ".$product_code;
-$result = $conn->query($myquery);
+$result = $conn->prepare($myquery);
+$result->execute();
 
 
 while ($row = $result->fetch_assoc()) {

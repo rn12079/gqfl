@@ -24,7 +24,8 @@ $conn = new mysqli($GLOBALS['host'], $GLOBALS['dbuser'], $GLOBALS['dbpass'], $GL
 
 //echo $myquery;
 
-$result = $conn->query($myquery);
+$result = $conn->prepare($myquery);
+$result->execute();
 
 
     if ($result->num_rows > 0) {

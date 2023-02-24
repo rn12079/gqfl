@@ -67,7 +67,8 @@ $conn = new mysqli($GLOBALS['host'], $GLOBALS['dbuser'], $GLOBALS['dbpass'], $GL
       die('Could not connect: ' . $con->connect_error);
   }
 
-$result = $conn->query($myquery);
+$result = $conn->prepare($myquery);
+$result->execute();
 
 if ($result->num_rows > 0) {
     while ($row = $result->fetch_assoc()) {
