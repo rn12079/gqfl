@@ -20,7 +20,6 @@ if (!isset($_POST['sdate'])) {
     $_POST['sdate'] = date('Y-m-d', strtotime("-30 days"));
 }
 
-$logged=true;
 ?>
 
 
